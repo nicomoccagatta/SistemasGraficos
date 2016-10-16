@@ -43,17 +43,17 @@
 
     void main(void) {
     
-        // Transformamos al vÃÂÃÂ©rtice al espacio de la cÃÂÃÂ¡mara
+        // Transformamos al vertice al espacio de la camara
         vec4 pos_camera_view = uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
         
-        // Transformamos al vÃÂÃÂ©rtice al espacio de la proyecciÃÂÃÂ³n
+        // Transformamos al vertice al espacio de la proyeccion
         gl_Position = uPMatrix * pos_camera_view;
         
         // Coordenada de textura sin modifiaciones
         vVertexColor = aVertexColor;
                             
         ////////////////////////////////////////////
-        // Calculos de la iluminaciÃÂÃÂ³n
+        // Calculos de la iluminacion
         vec3 light_dir =  uLightPosition - vec3( pos_camera_view );
         normalize(light_dir);
         if (!uUseLighting) 
@@ -106,17 +106,17 @@
 
     void main(void) {
 	
-		// Transformamos al vÃÂÃÂ©rtice al espacio de la cÃÂÃÂ¡mara
+		// Transformamos al vertice al espacio de la camara
 		vec4 pos_camera_view = uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
 		
-		// Transformamos al vÃÂÃÂ©rtice al espacio de la proyecciÃÂÃÂ³n
+		// Transformamos al vertice al espacio de la proyeccion
         gl_Position = uPMatrix * pos_camera_view;
 		
 		// Coordenada de textura sin modifiaciones
         vTextureCoord = aTextureCoord;
 							
 		////////////////////////////////////////////
-		// Calculos de la iluminaciÃÂÃÂ³n
+		// Calculos de la iluminacion
 		vec3 light_dir =  uLightPosition - vec3( pos_camera_view );
 		normalize(light_dir);
         if (!uUseLighting) 
@@ -356,7 +356,7 @@
     const INTERN_HIGH_BORDER = 1;//0.7;
     const HALF_WIDTH = 4;
     
-    //Height sería ph1 según el enunciado.
+    //Height seria ph1 segun el enunciado.
     function PlainRoad(height, center_x, from, to) {
         this.position_buffer = null;
         this.normal_buffer = null;
@@ -369,25 +369,25 @@
         this.webgl_index_buffer = null;
         
         // Se generan los vertices para la esfera, calculando los datos para una esfera de radio 1
-        // Y tambiÃÂÃÂ©n la informaciÃÂÃÂ³n de las normales y coordenadas de textura para cada vertice de la esfera
-        // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de ÃÂÃÂ­ndices 
-        // a todos los triÃÂÃÂ¡ngulos de la esfera
+        // Y tambien la informaci�n de las normales y coordenadas de textura para cada vertice de la esfera
+        // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de indices 
+        // a todos los triangulos de la esfera
         this.initBuffers = function() {
             var middle_height = height + MIDDLE_HEIGHT_SEPARATION;
             var max_height = height + MAX_HEIGHT_SEPARATION;
             
-            var extreme_left_x = (center_x - HALF_WIDTH);
-            var extreme_right_x = (center_x + HALF_WIDTH);
+            var extreme_left_x = (center_x + HALF_WIDTH);
+            var extreme_right_x = (center_x - HALF_WIDTH);
             
-            var intern_low_left_x = (extreme_left_x + INTERN_LOW_BORDER);
-            var intern_low_right_x = (extreme_right_x - INTERN_LOW_BORDER);
+            var intern_low_left_x = (extreme_left_x - INTERN_LOW_BORDER);
+            var intern_low_right_x = (extreme_right_x + INTERN_LOW_BORDER);
             
-            var intern_high_left_x = (extreme_left_x + INTERN_HIGH_BORDER);
-            var intern_high_right_x = (extreme_right_x - INTERN_HIGH_BORDER);
+            var intern_high_left_x = (extreme_left_x - INTERN_HIGH_BORDER);
+            var intern_high_right_x = (extreme_right_x + INTERN_HIGH_BORDER);
             
             this.position_buffer = [
-                extreme_left_x, from, height,
-                extreme_left_x, from, height,
+                //extreme_left_x, from, height,
+                //extreme_left_x, from, height,
                 
                 extreme_left_x, from, height,
                 intern_high_left_x, from, height,
@@ -404,10 +404,10 @@
                 intern_high_right_x, from, middle_height,
                 intern_high_right_x, from, height,
                 
-                intern_high_right_x, from, middle_height,
-                intern_high_right_x, from, middle_height,
                 intern_high_right_x, from, max_height,
-                intern_low_right_x, from, max_height,
+                intern_high_right_x, from, max_height,
+                intern_low_right_x, from, middle_height,
+                intern_high_right_x, from, middle_height,
                 
                 intern_high_right_x, from, max_height,
                 intern_high_right_x, from, height,
@@ -459,10 +459,10 @@
                 intern_high_right_x, to, middle_height,
                 intern_high_right_x, to, height,
                 
-                intern_high_right_x, to, middle_height,
-                intern_high_right_x, to, middle_height,
                 intern_high_right_x, to, max_height,
-                intern_low_right_x, to, max_height,
+                intern_high_right_x, to, max_height,
+                intern_low_right_x, to, middle_height,
+                intern_high_right_x, to, middle_height,
                 
                 intern_high_right_x, to, max_height,
                 intern_high_right_x, to, height,
@@ -483,7 +483,7 @@
         }
         
         this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
-            // CreaciÃÂÃÂ³n e InicializaciÃÂÃÂ³n de los buffers a nivel de OpenGL
+            // Creacion e Inicializacion de los buffers a nivel de OpenGL
             this.webgl_normal_buffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
@@ -515,8 +515,8 @@
 
         this.setupLighting = function(lightPosition, ambientColor, diffuseColor){
             ////////////////////////////////////////////////////
-            // ConfiguraciÃÂÃÂ³n de la luz
-            // Se inicializan las variables asociadas con la IluminaciÃÂÃÂ³n
+            // Configuracion de la luz
+            // Se inicializan las variables asociadas con la Iluminacion
             var lighting;
             lighting = true;
             gl.uniform1i(shaderProgramColoredObject.useLightingUniform, lighting);       
@@ -532,7 +532,7 @@
             gl.uniformMatrix4fv(shaderProgramColoredObject.pMatrixUniform, false, pMatrix);
             gl.uniformMatrix4fv(shaderProgramColoredObject.ViewMatrixUniform, false, CameraMatrix); 
 
-            // Se configuran los buffers que alimentarÃÂÃÂ¡n el pipeline
+            // Se configuran los buffers que alimentaran el pipeline
             gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
             gl.vertexAttribPointer(shaderProgramColoredObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -561,7 +561,7 @@
     
     
     
-    //El delimitador es para saber quÃ© tan grande es esa parte de la columna.
+    //El delimitador es para saber que tan grande es esa parte de la columna.
     function CurvedRoad(base_height, max_height, center_x, from, to) {
         this.position_buffer = [];
         this.normal_buffer = [];
@@ -606,9 +606,9 @@
         
         
         // Se generan los vertices para la esfera, calculando los datos para una esfera de radio 1
-        // Y tambiÃÂÃÂ©n la informaciÃÂÃÂ³n de las normales y coordenadas de textura para cada vertice de la esfera
-        // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de ÃÂÃÂ­ndices 
-        // a todos los triÃÂÃÂ¡ngulos de la esfera
+        // Y tambien la informacion de las normales y coordenadas de textura para cada vertice de la esfera
+        // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de indices 
+        // a todos los triangulos de la esfera
         this.initBuffers = function() {
             var y = from;
             var z = base_height;
@@ -757,7 +757,7 @@
         }
         
         this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
-            // CreaciÃÂÃÂ³n e InicializaciÃÂÃÂ³n de los buffers a nivel de OpenGL
+            // Creacion e Inicializacion de los buffers a nivel de OpenGL
             this.webgl_normal_buffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
@@ -789,8 +789,8 @@
 
         this.setupLighting = function(lightPosition, ambientColor, diffuseColor){
             ////////////////////////////////////////////////////
-            // ConfiguraciÃÂÃÂ³n de la luz
-            // Se inicializan las variables asociadas con la IluminaciÃÂÃÂ³n
+            // Configuracion de la luz
+            // Se inicializan las variables asociadas con la Iluminacion
             var lighting;
             lighting = true;
             gl.uniform1i(shaderProgramColoredObject.useLightingUniform, lighting);       
@@ -806,7 +806,7 @@
             gl.uniformMatrix4fv(shaderProgramColoredObject.pMatrixUniform, false, pMatrix);
             gl.uniformMatrix4fv(shaderProgramColoredObject.ViewMatrixUniform, false, CameraMatrix); 
 
-            // Se configuran los buffers que alimentarÃÂÃÂ¡n el pipeline
+            // Se configuran los buffers que alimentaran el pipeline
             gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
             gl.vertexAttribPointer(shaderProgramColoredObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -839,44 +839,34 @@
     
     
     
-    function Column(first_max_height, second_max_height, third_max_height, center_x, center_y, delimiter) {
-        first_base_column_one = new BaseColumnOne(first_max_height, const_min_height, center_x, center_y, delimiter);
-        first_base_column_one.initBuffers();
-        first_base_column_two = new BaseColumnTwo(first_max_height + const_min_height, center_x, center_y, delimiter);
-        first_base_column_two.initBuffers();
-        second_base_column_one = new BaseColumnOne(second_max_height, first_max_height + const_min_height + const_height_base_column_two, center_x, center_y, delimiter_diff + delimiter);
-        second_base_column_one.initBuffers();
-        second_base_column_two = new BaseColumnTwo(second_max_height + const_min_height, center_x, center_y, delimiter_diff + delimiter);
-        second_base_column_two.initBuffers();
-        third_base_column_one = new BaseColumnOne(third_max_height, second_max_height + const_min_height + const_height_base_column_two, center_x, center_y, (2 * delimiter_diff) + delimiter);
-        third_base_column_one.initBuffers();
+    function Road(base_height, max_height, center_x) {
+        plain_road_one = new PlainRoad(base_height, center_x, -10, -5);//PlainRoad(height, center_x, from, to);
+        plain_road_one.initBuffers();
+        curved_road = new CurvedRoad(base_height, max_height, center_x, -5, 10)//CurvedRoad(base_height, max_height, center_x, from, to);
+        curved_road.initBuffers();
+        plain_road_two = new PlainRoad(base_height, center_x, 10, 15);
+        plain_road_two.initBuffers();
         
         
         
         
         
         this.setupShaders = function(){
-            first_base_column_one.setupShaders();
-            first_base_column_two.setupShaders();
-            second_base_column_one.setupShaders();
-            second_base_column_two.setupShaders();
-            third_base_column_one.setupShaders();
+            plain_road_one.setupShaders();
+            curved_road.setupShaders();
+            plain_road_two.setupShaders();
         }
 
         this.setupLighting = function(lightPosition, ambientColor, diffuseColor){
-            first_base_column_one.setupLighting(lightPosition, ambientColor, diffuseColor);
-            first_base_column_two.setupLighting(lightPosition, ambientColor, diffuseColor);
-            second_base_column_one.setupLighting(lightPosition, ambientColor, diffuseColor);
-            second_base_column_two.setupLighting(lightPosition, ambientColor, diffuseColor);
-            third_base_column_one.setupLighting(lightPosition, ambientColor, diffuseColor);
+            plain_road_one.setupLighting(lightPosition, ambientColor, diffuseColor);
+            curved_road.setupLighting(lightPosition, ambientColor, diffuseColor);
+            plain_road_two.setupLighting(lightPosition, ambientColor, diffuseColor);
         }
 
         this.draw = function(modelMatrix){ 
-            first_base_column_one.draw(modelMatrix);
-            first_base_column_two.draw(modelMatrix);
-            second_base_column_one.draw(modelMatrix);
-            second_base_column_two.draw(modelMatrix);
-            third_base_column_one.draw(modelMatrix);
+            plain_road_one.draw(modelMatrix);
+            curved_road.draw(modelMatrix);
+            plain_road_two.draw(modelMatrix);
         }
     }
     
@@ -892,24 +882,24 @@
 
     function drawScene() {
 	
-		// Se configura el vierport dentro de ÃÂÃÂ¡rea ÃÂÃÂ¨canvasÃÂÃÂ¨. en este caso se utiliza toda 
-		// el ÃÂÃÂ¡rea disponible
+		// Se configura el vierport dentro de area canvas. En este caso se utiliza toda 
+		// el area disponible
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 		
 		// Se habilita el color de borrado para la pantalla (Color Buffer) y otros buffers
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-		// Se configura la matriz de proyecciÃÂÃÂ³n
+		// Se configura la matriz de proyeccion
         mat4.perspective(pMatrix, 3.14/12.0, gl.viewportWidth / gl.viewportHeight, 0.1, 1000.0);
 
         /////////////////////////////////////////////////////
-        // ConfiguraciÃÂÃÂ³n de la luz
-        // Se inicializan las variables asociadas con la IluminaciÃÂÃÂ³n
+        // Configuracion de la luz
+        // Se inicializan las variables asociadas con la Iluminacion
        
 		
         /////////////////////////////////////////////////////
-		// Definimos la ubicaciÃÂÃÂ³n de la camara
-		// Pensamos por el momento marsamente la posiciÃÂÃÂ³n de la cÃÂÃÂ¡mara, la cual siempre mira al mars.
+		// Definimos la ubicacion de la camara
+		// Pensamos por el momento marsamente la posicion de la camara, la cual siempre mira al mars.
 		var matriz_camara = mat4.create();
         mat4.identity(matriz_camara);
 		//mat4.identity(CameraMatrix);
@@ -928,9 +918,8 @@
 
         ///////////////////////////////////////////////////////
         //
-        // Dibujamos un cilindro
 
-        // Configuramos la iluminaciÃÂÃÂ³n 
+        // Configuramos la iluminacion 
         base_column_one.setupShaders();
 
         // function(lightPosition, ambientColor, diffuseColor)
@@ -951,8 +940,9 @@
         initGL(canvas);
         initShaders();
 
-        base_column_one = new CurvedRoad(2, 7, 0, -3, 8);//PlainRoad(2, 0, -3, 2);//BaseColumnTwo(1, 0, 0, 1);//BaseColumnOne(1, 0.8, 0, 0, 1);
-        base_column_one.initBuffers();
+        //road = new Road();
+        base_column_one = new Road(0, 7, 0);//PlainRoad(2, 0, -3, 2);//CurvedRoad(2, 7, 0, -3, 8);//PlainRoad(2, 0, -3, 2);
+        //base_column_one.initBuffers();
         
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.enable(gl.DEPTH_TEST);
