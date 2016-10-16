@@ -43,17 +43,17 @@
 
     void main(void) {
     
-        // Transformamos al vÃÂ©rtice al espacio de la cÃÂ¡mara
+        // Transformamos al vertice al espacio de la camara
         vec4 pos_camera_view = uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
         
-        // Transformamos al vÃÂ©rtice al espacio de la proyecciÃÂ³n
+        // Transformamos al vertice al espacio de la proyeccion
         gl_Position = uPMatrix * pos_camera_view;
         
         // Coordenada de textura sin modifiaciones
         vVertexColor = aVertexColor;
                             
         ////////////////////////////////////////////
-        // Calculos de la iluminaciÃÂ³n
+        // Calculos de la iluminacion
         vec3 light_dir =  uLightPosition - vec3( pos_camera_view );
         normalize(light_dir);
         if (!uUseLighting) 
@@ -106,17 +106,17 @@
 
     void main(void) {
 	
-		// Transformamos al vÃÂ©rtice al espacio de la cÃÂ¡mara
+		// Transformamos al vertice al espacio de la camara
 		vec4 pos_camera_view = uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
 		
-		// Transformamos al vÃÂ©rtice al espacio de la proyecciÃÂ³n
+		// Transformamos al vertice al espacio de la proyeccion
         gl_Position = uPMatrix * pos_camera_view;
 		
 		// Coordenada de textura sin modifiaciones
         vTextureCoord = aTextureCoord;
 							
 		////////////////////////////////////////////
-		// Calculos de la iluminaciÃÂ³n
+		// Calculos de la iluminacion
 		vec3 light_dir =  uLightPosition - vec3( pos_camera_view );
 		normalize(light_dir);
         if (!uUseLighting) 
@@ -368,9 +368,9 @@
         this.webgl_index_buffer = null;
         
         // Se generan los vertices para la esfera, calculando los datos para una esfera de radio 1
-        // Y tambiÃÂ©n la informaciÃÂ³n de las normales y coordenadas de textura para cada vertice de la esfera
-        // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de ÃÂ­ndices 
-        // a todos los triÃÂ¡ngulos de la esfera
+        // Y tambien la informacion de las normales y coordenadas de textura para cada vertice de la esfera
+        // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de indices 
+        // a todos los triangulos de la esfera
         this.initBuffers = function() {
             var min_center_x = (center_x - delimiter);
             var max_center_x = (center_x + delimiter);
@@ -462,7 +462,7 @@
         }
         
         this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
-            // CreaciÃÂ³n e InicializaciÃÂ³n de los buffers a nivel de OpenGL
+            // Creacion e Inicializacion de los buffers a nivel de OpenGL
             this.webgl_normal_buffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
@@ -494,8 +494,8 @@
 
         this.setupLighting = function(lightPosition, ambientColor, diffuseColor){
             ////////////////////////////////////////////////////
-            // ConfiguraciÃÂ³n de la luz
-            // Se inicializan las variables asociadas con la IluminaciÃÂ³n
+            // Configuracion de la luz
+            // Se inicializan las variables asociadas con la Iluminacion
             var lighting;
             lighting = true;
             gl.uniform1i(shaderProgramColoredObject.useLightingUniform, lighting);       
@@ -511,7 +511,7 @@
             gl.uniformMatrix4fv(shaderProgramColoredObject.pMatrixUniform, false, pMatrix);
             gl.uniformMatrix4fv(shaderProgramColoredObject.ViewMatrixUniform, false, CameraMatrix); 
 
-            // Se configuran los buffers que alimentarÃÂ¡n el pipeline
+            // Se configuran los buffers que alimentaran el pipeline
             gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
             gl.vertexAttribPointer(shaderProgramColoredObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -553,9 +553,9 @@
         this.webgl_index_buffer = null;
         
         // Se generan los vertices para la esfera, calculando los datos para una esfera de radio 1
-        // Y tambiÃÂ©n la informaciÃÂ³n de las normales y coordenadas de textura para cada vertice de la esfera
-        // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de ÃÂ­ndices 
-        // a todos los triÃÂ¡ngulos de la esfera
+        // Y tambien la informacion de las normales y coordenadas de textura para cada vertice de la esfera
+        // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de indices 
+        // a todos los triangulos de la esfera
         this.initBuffers = function() {
             var base_height = height;
             var top_height = height + const_height_base_column_two;
@@ -624,7 +624,7 @@
         }
         
         this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
-            // CreaciÃÂ³n e InicializaciÃÂ³n de los buffers a nivel de OpenGL
+            // Creacion e Inicializacion de los buffers a nivel de OpenGL
             this.webgl_normal_buffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
@@ -656,8 +656,8 @@
 
         this.setupLighting = function(lightPosition, ambientColor, diffuseColor){
             ////////////////////////////////////////////////////
-            // ConfiguraciÃÂ³n de la luz
-            // Se inicializan las variables asociadas con la IluminaciÃÂ³n
+            // Configuracion de la luz
+            // Se inicializan las variables asociadas con la Iluminacion
             var lighting;
             lighting = true;
             gl.uniform1i(shaderProgramColoredObject.useLightingUniform, lighting);       
@@ -673,7 +673,7 @@
             gl.uniformMatrix4fv(shaderProgramColoredObject.pMatrixUniform, false, pMatrix);
             gl.uniformMatrix4fv(shaderProgramColoredObject.ViewMatrixUniform, false, CameraMatrix); 
 
-            // Se configuran los buffers que alimentarÃÂ¡n el pipeline
+            // Se configuran los buffers que alimentaran el pipeline
             gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
             gl.vertexAttribPointer(shaderProgramColoredObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -700,10 +700,7 @@
     }
     
     
-    
-    
-    
-    
+
     
     
     function Column(first_max_height, second_max_height, third_max_height, center_x, center_y, delimiter) {
@@ -717,10 +714,6 @@
         second_base_column_two.initBuffers();
         third_base_column_one = new BaseColumnOne(third_max_height, second_max_height + const_min_height + const_height_base_column_two, center_x, center_y, (2 * delimiter_diff) + delimiter);
         third_base_column_one.initBuffers();
-        
-        
-        
-        
         
         this.setupShaders = function(){
             first_base_column_one.setupShaders();
@@ -750,33 +743,28 @@
     
     
     
-    
-    
-    
-    
-
 
 
     function drawScene() {
 	
-		// Se configura el vierport dentro de ÃÂ¡rea ÃÂ¨canvasÃÂ¨. en este caso se utiliza toda 
-		// el ÃÂ¡rea disponible
+		// Se configura el vierport dentro de area canvas. En este caso se utiliza toda 
+		// el area disponible
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 		
 		// Se habilita el color de borrado para la pantalla (Color Buffer) y otros buffers
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-		// Se configura la matriz de proyecciÃÂ³n
+		// Se configura la matriz de proyeccion
         mat4.perspective(pMatrix, 3.14/12.0, gl.viewportWidth / gl.viewportHeight, 0.1, 1000.0);
 
         /////////////////////////////////////////////////////
-        // ConfiguraciÃÂ³n de la luz
-        // Se inicializan las variables asociadas con la IluminaciÃÂ³n
+        // Configuracion de la luz
+        // Se inicializan las variables asociadas con la Iluminacion
        
 		
         /////////////////////////////////////////////////////
-		// Definimos la ubicaciÃÂ³n de la camara
-		// Pensamos por el momento marsamente la posiciÃÂ³n de la cÃÂ¡mara, la cual siempre mira al mars.
+		// Definimos la ubicacion de la camara
+		// Pensamos por el momento marsamente la posicion de la camara, la cual siempre mira al mars.
 		var matriz_camara = mat4.create();
         mat4.identity(matriz_camara);
 		//mat4.identity(CameraMatrix);
@@ -794,10 +782,8 @@
 
 
         ///////////////////////////////////////////////////////
-        //
-        // Dibujamos un cilindro
 
-        // Configuramos la iluminaciÃÂ³n 
+        // Configuramos la iluminacion 
         base_column_one.setupShaders();
 
         // function(lightPosition, ambientColor, diffuseColor)

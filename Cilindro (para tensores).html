@@ -43,17 +43,17 @@
 
     void main(void) {
     
-        // Transformamos al vÃ©rtice al espacio de la cÃ¡mara
+        // Transformamos al vertice al espacio de la camara
         vec4 pos_camera_view = uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
         
-        // Transformamos al vÃ©rtice al espacio de la proyecciÃ³n
+        // Transformamos al vertice al espacio de la proyeccion
         gl_Position = uPMatrix * pos_camera_view;
         
         // Coordenada de textura sin modifiaciones
         vVertexColor = aVertexColor;
                             
         ////////////////////////////////////////////
-        // Calculos de la iluminaciÃ³n
+        // Calculos de la iluminacion
         vec3 light_dir =  uLightPosition - vec3( pos_camera_view );
         normalize(light_dir);
         if (!uUseLighting) 
@@ -106,17 +106,17 @@
 
     void main(void) {
 	
-		// Transformamos al vÃ©rtice al espacio de la cÃ¡mara
+		// Transformamos al vertice al espacio de la camara
 		vec4 pos_camera_view = uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
 		
-		// Transformamos al vÃ©rtice al espacio de la proyecciÃ³n
+		// Transformamos al vertice al espacio de la proyeccion
         gl_Position = uPMatrix * pos_camera_view;
 		
 		// Coordenada de textura sin modifiaciones
         vTextureCoord = aTextureCoord;
 							
 		////////////////////////////////////////////
-		// Calculos de la iluminaciÃ³n
+		// Calculos de la iluminacion
 		vec3 light_dir =  uLightPosition - vec3( pos_camera_view );
 		normalize(light_dir);
         if (!uUseLighting) 
@@ -350,153 +350,75 @@
     //////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////
 
-    function Cylinder(latitude_bands, piso, techo, radio) {
-        this.latitudeBands = latitude_bands;
-        this.piso = piso;
-        this.techo = techo;
-        this.radio = radio;
-        
-        this.position_buffer = null;
-        this.normal_buffer = null;
-        this.color_buffer = null;
-        this.index_buffer = null;
-
+    function Cylinder(number_of_sides, floor, ceiling, radius) {
         this.webgl_position_buffer = null;
         this.webgl_normal_buffer = null;
         this.webgl_color_buffer = null;
         this.webgl_index_buffer = null;
         
+        var color = 2.0;
+        
         // Se generan los vertices para la esfera, calculando los datos para una esfera de radio 1
-        // Y tambiÃ©n la informaciÃ³n de las normales y coordenadas de textura para cada vertice de la esfera
-        // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de Ã­ndices 
-        // a todos los triÃ¡ngulos de la esfera
-        this.initBuffers = function(){
+        // Y tambien la informacion de las normales y coordenadas de textura para cada vertice de la esfera
+        // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de indices 
+        // a todos los triangulos de la esfera
+        
+        this.fillBuffers = function(normal_buf, position_buf, color_buf, x, y, z) {
+            normal_buf.push(x);
+            normal_buf.push(y);
+            normal_buf.push(z);
 
+            color_buf.push(color)
+            color_buf.push(color)
+            color_buf.push(color)
+            
+            position_buf.push(x);
+            position_buf.push(y);
+            position_buf.push(z);
+        }
+        
+        this.initBuffers = function() {
             this.position_buffer = [];
             this.normal_buffer = [];
             this.color_buffer = [];
-            var color = 2.0;
-
-            var latNumber;
-
-            for (latNumber=0; latNumber <= this.latitudeBands; latNumber++) {
-                var theta = latNumber * 2 *  Math.PI / this.latitudeBands;
-                var sinTheta = Math.sin(theta);
-                var cosTheta = Math.cos(theta);
-                var x = radio * cosTheta;
-                var y = radio * sinTheta; 
-                var z = this.techo;
-
-                this.normal_buffer.push(x);
-                this.normal_buffer.push(y);
-                this.normal_buffer.push(z);
-
-
-                this.color_buffer.push(color)
-                this.color_buffer.push(color)
-                this.color_buffer.push(color)
-                
-                this.position_buffer.push(x);
-                this.position_buffer.push(y);
-                this.position_buffer.push(z);
-                
-                z = this.piso;
-
-                this.normal_buffer.push(x);
-                this.normal_buffer.push(y);
-                this.normal_buffer.push(z);
-
-                this.color_buffer.push(color)
-                this.color_buffer.push(color)
-                this.color_buffer.push(color)
-                
-                this.position_buffer.push(x);
-                this.position_buffer.push(y);
-                this.position_buffer.push(z);
-            }
-
-            // Buffer de indices de los triangulos
             this.index_buffer = [];
-          
-            for (latNumber=0; latNumber < this.latitudeBands * 2; latNumber++) {
-                this.index_buffer.push(latNumber);
-                this.index_buffer.push(latNumber + 1);
-                this.index_buffer.push(latNumber + 2);
-            }
-
-            
-            
             this.position_buffer_upper_lid = [];
             this.normal_buffer_upper_lid = [];
             this.color_buffer_upper_lid = [];
-            
-            for (latNumber=0; latNumber <= this.latitudeBands; latNumber++) {
-                var theta = latNumber * 2 *  Math.PI / this.latitudeBands;
-                var sinTheta = Math.sin(theta);
-                var cosTheta = Math.cos(theta);
-                var x = radio * cosTheta;
-                var y = radio * sinTheta; 
-                var z = this.techo;
-
-                this.normal_buffer_upper_lid.push(x);
-                this.normal_buffer_upper_lid.push(y);
-                this.normal_buffer_upper_lid.push(z);
-
-                this.color_buffer_upper_lid.push(color)
-                this.color_buffer_upper_lid.push(color)
-                this.color_buffer_upper_lid.push(color)
-                
-                this.position_buffer_upper_lid.push(x);
-                this.position_buffer_upper_lid.push(y);
-                this.position_buffer_upper_lid.push(z);
-            }
-
-            // Buffer de indices de los triangulos
             this.index_buffer_upper_lid = [];
-          
-            for (latNumber=0; latNumber < this.latitudeBands; latNumber++) {
-                this.index_buffer_upper_lid.push(latNumber);
-            }
-            
-            
-            
-            
-            
             this.position_buffer_lower_lid = [];
             this.normal_buffer_lower_lid = [];
             this.color_buffer_lower_lid = [];
-            
-            for (latNumber=0; latNumber <= this.latitudeBands; latNumber++) {
-                var theta = latNumber * 2 *  Math.PI / this.latitudeBands;
+            this.index_buffer_lower_lid = [];
+
+            for (var i = 0; i <= number_of_sides; i++) {
+                var theta = i * 2 *  Math.PI / number_of_sides;
                 var sinTheta = Math.sin(theta);
                 var cosTheta = Math.cos(theta);
-                var x = radio * cosTheta;
-                var y = radio * sinTheta; 
-                var z = this.piso;
+                var x = radius * cosTheta;
+                var y = radius * sinTheta; 
+                var z = ceiling;
 
-                this.normal_buffer_lower_lid.push(x);
-                this.normal_buffer_lower_lid.push(y);
-                this.normal_buffer_lower_lid.push(z);
-
-                this.color_buffer_lower_lid.push(color)
-                this.color_buffer_lower_lid.push(color)
-                this.color_buffer_lower_lid.push(color)
-                
-                this.position_buffer_lower_lid.push(x);
-                this.position_buffer_lower_lid.push(y);
-                this.position_buffer_lower_lid.push(z);
+                this.fillBuffers(this.normal_buffer_upper_lid, this.position_buffer_upper_lid, this.color_buffer_upper_lid, x, y, z);
+                this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z);
+                z = floor;
+                this.fillBuffers(this.normal_buffer_lower_lid, this.position_buffer_lower_lid, this.color_buffer_lower_lid, x, y, z);
+                this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z);
             }
-
-            // Buffer de indices de los triangulos
-            this.index_buffer_lower_lid = [];
-          
-            for (latNumber=0; latNumber < this.latitudeBands; latNumber++) {
-                this.index_buffer_lower_lid.push(latNumber);
+            
+            for (var i = 0; i < number_of_sides * 2; i++) {
+                this.index_buffer.push(i);
+                this.index_buffer.push(i + 1);
+                this.index_buffer.push(i + 2);
+                if (i < number_of_sides) {
+                    this.index_buffer_upper_lid.push(i);
+                    this.index_buffer_lower_lid.push(i);
+                }
             }
         }
         
         this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
-            // CreaciÃ³n e InicializaciÃ³n de los buffers a nivel de OpenGL
+            // Creacion e Inicializacion de los buffers a nivel de OpenGL
             this.webgl_normal_buffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
@@ -528,8 +450,8 @@
 
         this.setupLighting = function(lightPosition, ambientColor, diffuseColor){
             ////////////////////////////////////////////////////
-            // ConfiguraciÃ³n de la luz
-            // Se inicializan las variables asociadas con la IluminaciÃ³n
+            // Configuracion de la luz
+            // Se inicializan las variables asociadas con la Iluminacion
             var lighting;
             lighting = true;
             gl.uniform1i(shaderProgramColoredObject.useLightingUniform, lighting);       
@@ -545,7 +467,7 @@
             gl.uniformMatrix4fv(shaderProgramColoredObject.pMatrixUniform, false, pMatrix);
             gl.uniformMatrix4fv(shaderProgramColoredObject.ViewMatrixUniform, false, CameraMatrix); 
 
-            // Se configuran los buffers que alimentarÃ¡n el pipeline
+            // Se configuran los buffers que alimentaran el pipeline
             gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
             gl.vertexAttribPointer(shaderProgramColoredObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -584,24 +506,24 @@
 
     function drawScene() {
 	
-		// Se configura el vierport dentro de Ã¡rea Â¨canvasÂ¨. en este caso se utiliza toda 
-		// el Ã¡rea disponible
+		// Se configura el vierport dentro de area canvas. En este caso se utiliza toda 
+		// el area disponible
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 		
 		// Se habilita el color de borrado para la pantalla (Color Buffer) y otros buffers
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-		// Se configura la matriz de proyecciÃ³n
+		// Se configura la matriz de proyeccion
         mat4.perspective(pMatrix, 3.14/12.0, gl.viewportWidth / gl.viewportHeight, 0.1, 1000.0);
 
         /////////////////////////////////////////////////////
-        // ConfiguraciÃ³n de la luz
-        // Se inicializan las variables asociadas con la IluminaciÃ³n
+        // Configuracion de la luz
+        // Se inicializan las variables asociadas con la Iluminacion
        
 		
         /////////////////////////////////////////////////////
-		// Definimos la ubicaciÃ³n de la camara
-		// Pensamos por el momento marsamente la posiciÃ³n de la cÃ¡mara, la cual siempre mira al mars.
+		// Definimos la ubicacion de la camara
+		// Pensamos por el momento marsamente la posicion de la camara, la cual siempre mira al mars.
 		var matriz_camara = mat4.create();
         mat4.identity(matriz_camara);
 		//mat4.identity(CameraMatrix);
@@ -621,7 +543,7 @@
         //
         // Dibujamos un cilindro
 
-        // Configuramos la iluminaciÃ³n 
+        // Configuramos la iluminacion 
         cylinder.setupShaders();
 
         // function(lightPosition, ambientColor, diffuseColor)
@@ -642,7 +564,7 @@
         initGL(canvas);
         initShaders();
 
-        cylinder = new Cylinder(64, 0, 10, 2);//Cylinder(cantidad_lados, piso, techo, radio);
+        cylinder = new Cylinder(64, 0, 10, 2);//Cylinder(number_of_sides, floor, ceiling, radius);
         cylinder.initBuffers();
         
         gl.clearColor(0.0, 0.0, 0.0, 1.0);

@@ -284,8 +284,8 @@
         gl.bindTexture(gl.TEXTURE_2D, null);
 
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.bindTexture(gl.TEXTURE_2D, base_column_one.texture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, base_column_one.texture.image);
+        gl.bindTexture(gl.TEXTURE_2D, road.texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, road.texture.image);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
         gl.generateMipmap(gl.TEXTURE_2D);
@@ -311,7 +311,7 @@
     var lastMouseX = null;
     var lastMouseY = null;
 
-    var base_column_one = null;
+    var road = null;
     var mars = null;
     var phobos = null;
 
@@ -920,17 +920,17 @@
         //
 
         // Configuramos la iluminacion 
-        base_column_one.setupShaders();
+        road.setupShaders();
 
         // function(lightPosition, ambientColor, diffuseColor)
-        base_column_one.setupLighting(vec3.fromValues(-100.0, 0.0, -60.0), vec3.fromValues(0.5, 0.5, 0.5), vec3.fromValues(0.05, 0.05, 0.05))
+        road.setupLighting(vec3.fromValues(-100.0, 0.0, -60.0), vec3.fromValues(0.5, 0.5, 0.5), vec3.fromValues(0.05, 0.05, 0.05))
         
         // Matriz de modelado
-        var model_matrix_base_column_one = mat4.create();
-        mat4.identity(model_matrix_base_column_one);
+        var model_matrix_road = mat4.create();
+        mat4.identity(model_matrix_road);
 
 
-        base_column_one.draw(model_matrix_base_column_one);
+        road.draw(model_matrix_road);
         ////////////////////////////////////////////////////////
     }
 
@@ -941,7 +941,7 @@
         initShaders();
 
         //road = new Road();
-        base_column_one = new Road(0, 7, 0);//PlainRoad(2, 0, -3, 2);//CurvedRoad(2, 7, 0, -3, 8);//PlainRoad(2, 0, -3, 2);
+        road = new Road(0, 7, 0);//PlainRoad(2, 0, -3, 2);//CurvedRoad(2, 7, 0, -3, 8);//PlainRoad(2, 0, -3, 2);
         //base_column_one.initBuffers();
         
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
