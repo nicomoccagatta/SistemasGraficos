@@ -7,6 +7,7 @@
 
 <script type="text/javascript" src="js/gl-matrix.js"></script>
 <script type="text/javascript" src="js/webgl-utils.js"></script>
+<script type="text/javascript" src="js/keyboard-and-mouse-support.js"></script>
 
 <script id="shader-fs-colored-obj" type="x-shader/x-fragment">
     precision mediump float;
@@ -232,9 +233,6 @@
 
         ////////////////////////////////////////////
         ////////////////////////////////////////////
-
-        ////////////////////////////////////////////
-        ////////////////////////////////////////////
         //
         // Inicializamos todo lo relacionado con el program shader para
         // renderizar objetos Coloreados
@@ -282,7 +280,7 @@
         gl.generateMipmap(gl.TEXTURE_2D);
 
         gl.bindTexture(gl.TEXTURE_2D, null);
-
+/*
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
         gl.bindTexture(gl.TEXTURE_2D, deimos.texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, deimos.texture.image);
@@ -291,15 +289,7 @@
         gl.generateMipmap(gl.TEXTURE_2D);
 
         gl.bindTexture(gl.TEXTURE_2D, null);
-
-        //gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        //gl.bindTexture(gl.TEXTURE_2D, phobos.texture);
-        //gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, phobos.texture.image);
-        //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-        //gl.generateMipmap(gl.TEXTURE_2D);
-
-        //gl.bindTexture(gl.TEXTURE_2D, null);
+        */
     }
 
     var CameraMatrix = mat4.create();
@@ -674,6 +664,25 @@
     }
 
 
+    var cameraPosition = vec3.create();
+    var target = vec3.create();
+    var cameraMode = 1; //uno es default orbital
+    var phiAngle;
+    var thetaAngle;
+    
+    function initVariables () {
+        //Esto que hago acá es para que pongas en coordenadas cartesianas X,Y,Z donde queres
+        //que empiece la camara al iniciarse, y despues las traduzco a cordenadas esfericas
+        var initPosToTranslate = vec3.create();
+        vec3.set(initPosToTranslate,2.0,2.0,3.0);   //Aca pongo a donde quiero que vaya
+        var radius = vec3.squaredLength(initPosToTranslate);
+        thetaAngle = Math.acos(initPosToTranslate[2]/radius);   //para las rotaciones en zy e zx
+        phiAngle = Math.atan(initPosToTranslate[1]/initPosToTranslate[0]);  //para las rotaciones en el plano xy
+        target = [0,0,0];
+        cameraPosition = [radius*Math.cos(phiAngle)*Math.sin(thetaAngle),radius*Math.sin(phiAngle)*Math.sin(thetaAngle),radius*Math.cos(thetaAngle)];
+    }
+    
+
     function drawScene() {
 	
 		// Se configura el vierport dentro de área ¨canvas¨. en este caso se utiliza toda 
@@ -694,7 +703,9 @@
         /////////////////////////////////////////////////////
 		// Definimos la ubicación de la camara
 		// Pensamos por el momento marsamente la posición de la cámara, la cual siempre mira al mars.
-		var matriz_camara = mat4.create();
+	
+/*  ARREGLAR ESTO
+    	var matriz_camara = mat4.create();
         mat4.identity(matriz_camara);
 		//mat4.identity(CameraMatrix);
 		//mat4.translate(CameraMatrix, CameraMatrix, [0, 0, -60]);
@@ -708,7 +719,7 @@
         mat4.lookAt(CameraMatrix, eye_point, at_point, up_point);
         mat4.multiply(CameraMatrix, CameraMatrix, matriz_camara);
 		
-
+*/
 
         ///////////////////////////////////////////////////////
         //
@@ -811,9 +822,19 @@
         ////////////////////////////////////////////////////////
     }
 
+    function updateCamera(){
+        gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight); 
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);    
+        mat4.lookAt(CameraMatrix,cameraPosition,target,[0.0,0.0,1.0]);
+        console.log("cameraPosition: ",cameraPosition);
+        console.log("target: ",target);
+        mat4.perspective(pMatrix,degToRad(70), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0);
+    }
 
     function tick() {
-        requestAnimFrame(tick);
+        requestAnimFrame(tick); 
+        handleKeyPresses();
+        updateCamera();
 		var newRotationMatrix = mat4.create();
         mat4.identity(newRotationMatrix);
         mat4.rotate(newRotationMatrix, newRotationMatrix, 0.025, [0, 1, 0]);
@@ -828,6 +849,18 @@
 
     function webGLStart() {
         var canvas = document.getElementById("clase03-vertex shader");
+        widthOfCanvas = canvas.width;
+        heightOfCanvas = canvas.height;
+
+        if (canvas.addEventListener) {
+            // IE9, Chrome, Safari, Opera
+            canvas.addEventListener("mousewheel", MouseWheelHandler, false);
+            // Firefox
+            canvas.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+        }
+        // IE 6/7/8
+        else canvas.attachEvent("onmousewheel", MouseWheelHandler);     
+
         initGL(canvas);
         initShaders();
 
@@ -844,6 +877,9 @@
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.enable(gl.DEPTH_TEST);
 
+        document.onkeydown = handleKeyDown;
+        document.onkeyup = handleKeyUp;
+        
         tick();
     }
 
@@ -856,64 +892,17 @@
 <body onload="webGLStart();">
 
 <script src="js/dat.gui.min.js"></script>
-<script>
-
-var app={
-    alturaMaxima:10,
-    reiniciar:function(){
-        alert("apreto reiniciar");
-    },
-    detener:function(){
-        alert("apreto detener");
-    },
-    modo:"random",
-    ancho:0,
-    umbral:100
-        
-};
-
-function GUI (){
-
-        var gui = new dat.GUI();
-        //gui.remember(gof);
-
-        var f1 = gui.addFolder('Comandos');     
-            f1.add(app, 'reiniciar').name("Reiniciar");
-            f1.add(app, 'detener').name("detener");         
-        f1.open();
-
-        var f2 = gui.addFolder('Parametros generales');     
-        
-        f2.add(app, 'alturaMaxima', 1.0, 60.0).name("altura maxima").step(1);
-        f2.add(app, 'ancho',4,25).name("Ancho");
-
-        f2.add(app, 'modo',["random","secuencial"]).name("modo");
-
-        var f3 = gui.addFolder('Parametros Especiales ');               
-        f3.add(app,'umbral',0.0,1.0).name("umbral");
-        
-        f1.open();
-        f2.open();
-        f3.open();
-
-};
-
-GUI();
-</script>
+<script src="js/dinamicValues.js"></script>
 
     <center>
-            <h1>Sistemas Gráficos - 66.71</h1>
+            <h1>Sistemas Gr&aacute;ficos - 66.71</h1>
             <h2>Framework Trabajo Pr&aacute;ctico 2016</h2>
-            <canvas id="clase03-vertex shader" style="border: none;" width="1280" height="720">
+            <canvas id="clase03-vertex shader" onmousemove="onMouseMove(event)" onmousedown="onMouseDown(event)" onmouseup="onMouseUp(event)" 
+                    style="border: none;" width="1280" height="720">
             Your browser does not support the HTML5 canvas element.
             </scanvas>
             
-        </center>
-    <br/>
-    Las texturas son cortesía de <a href="http://maps.jpl.nasa.gov/">Jet Propulsion Laboratory</a>.
-    <br/>
-    <br/>
-
+    </center>
  </body>
 
 </html>
