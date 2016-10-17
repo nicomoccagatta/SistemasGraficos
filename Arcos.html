@@ -352,8 +352,9 @@
     const MAX_HEIGHT_MIDDLE_ARC_SEPARATION = 2;
     const MIN_HEIGHT_MIDDLE_ARC_SEPARATION = 1.5;
     const NUMBER_OF_SIDES = 100;
+    const RADIUS_CYLINDER_ARC = 1;
 
-    function Middle_Arc(base_height, top_height, center_x, from, to) {
+    function Middle_Arc(base_height, top_height, center_x, from, to, min_angle, max_angle) {
         this.webgl_position_buffer = null;
         this.webgl_normal_buffer = null;
         this.webgl_color_buffer = null;
@@ -406,38 +407,42 @@
             var height = top_height - MAX_HEIGHT_MIDDLE_ARC_SEPARATION;
             
             var radius = (to - from) / 2;
-            for (var angle = -79; angle <= 80; angle++) {
+            for (var angle = min_angle; angle <= max_angle; angle++) {
                 
                 var theta = angle * 2 *  Math.PI / 360;
                 var sinTheta = Math.sin(theta);
                 var cosTheta = Math.cos(theta);
-                var this_step_y = from + radius + (radius * sinTheta);
-                var this_step_z = base_height + (height * cosTheta);
-                var previous_step_y = from + radius + (radius * Math.sin((angle - 1) * 2 *  Math.PI / 360));
-                var previous_step_z = base_height + (height * Math.cos((angle - 1) * 2 *  Math.PI / 360));
+                var this_step_y = from + radius + (radius * cosTheta);
+                var this_step_z = height + (radius * sinTheta);
+                var previous_step_y = from + radius + (radius * Math.cos((angle - 1) * 2 *  Math.PI / 360));
+                var previous_step_z = height + (radius * Math.sin((angle - 1) * 2 *  Math.PI / 360));
             
             
 
                 for (var i = 0; i <= NUMBER_OF_SIDES; i++) {
-                    var theta = i * 2 *  Math.PI / NUMBER_OF_SIDES;
-                    var sinTheta = Math.sin(theta);
-                    var cosTheta = Math.cos(theta);
-                    var x = radius * cosTheta;
-                    var y = radius * sinTheta; 
+                    var alpha = i * 2 *  Math.PI / NUMBER_OF_SIDES;
+                    var sinAlpha = Math.sin(alpha);
+                    var cosAlpha = Math.cos(alpha);
+                    var x = center_x;
+                    var y = this_step_y + (RADIUS_CYLINDER_ARC * cosAlpha); 
                     
-                    var z = this_step_z;//ceiling;
-                    this.fillBuffers(this.normal_buffer_upper_lid, this.position_buffer_upper_lid, this.color_buffer_upper_lid, x, y, z);
+                    var z = this_step_z + (RADIUS_CYLINDER_ARC * sinAlpha);
                     this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z);
-                    z = previous_step_z;
-                    this.fillBuffers(this.normal_buffer_lower_lid, this.position_buffer_lower_lid, this.color_buffer_lower_lid, x, y, z);
+                    if (angle == min_angle) {
+                        this.fillBuffers(this.normal_buffer_upper_lid, this.position_buffer_upper_lid, this.color_buffer_upper_lid, x, y, z);
+                    }
+                    
+                    y = previous_step_y + (RADIUS_CYLINDER_ARC * cosAlpha);
+                    z = previous_step_z + (RADIUS_CYLINDER_ARC * sinAlpha);
                     this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z);
+                    if (angle == max_angle) {
+                        this.fillBuffers(this.normal_buffer_lower_lid, this.position_buffer_lower_lid, this.color_buffer_lower_lid, x, y, z);
+                    }
                 }
             }
             
-            for (var i = 0; i < NUMBER_OF_SIDES * 160; i++) {
+            for (var i = 0; i < (NUMBER_OF_SIDES + 1 ) * (max_angle - min_angle) * 2; i++) {
                 this.index_buffer.push(i);
-                this.index_buffer.push(i + 1);
-                this.index_buffer.push(i + 2);
                 if (i <= NUMBER_OF_SIDES) {
                     this.index_buffer_upper_lid.push(i);
                     this.index_buffer_lower_lid.push(i);
@@ -590,7 +595,7 @@
         initGL(canvas);
         initShaders();
 
-        cylinder = new Middle_Arc(0, 20, 0, -10, 10);//Middle_Arc(base_height, top_height, center_x, from, to)
+        cylinder = new Middle_Arc(0, 20, 0, -5, 5, 180, 360);//Middle_Arc(base_height, top_height, center_x, from, to, min_angle, max_angle)
         cylinder.initBuffers();
         
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
