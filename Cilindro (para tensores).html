@@ -356,7 +356,7 @@
         this.webgl_color_buffer = null;
         this.webgl_index_buffer = null;
         
-        var color = 2.0;
+        const COLOR = 2.0;
         
         // Se generan los vertices para la esfera, calculando los datos para una esfera de radio 1
         // Y tambien la informacion de las normales y coordenadas de textura para cada vertice de la esfera
@@ -368,9 +368,9 @@
             normal_buf.push(y);
             normal_buf.push(z);
 
-            color_buf.push(color)
-            color_buf.push(color)
-            color_buf.push(color)
+            color_buf.push(COLOR)
+            color_buf.push(COLOR)
+            color_buf.push(COLOR)
             
             position_buf.push(x);
             position_buf.push(y);
@@ -396,21 +396,20 @@
                 var sinTheta = Math.sin(theta);
                 var cosTheta = Math.cos(theta);
                 var x = radius * cosTheta;
-                var y = radius * sinTheta; 
+                var y = radius * sinTheta;
+                
                 var z = ceiling;
-
                 this.fillBuffers(this.normal_buffer_upper_lid, this.position_buffer_upper_lid, this.color_buffer_upper_lid, x, y, z);
                 this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z);
+                
                 z = floor;
                 this.fillBuffers(this.normal_buffer_lower_lid, this.position_buffer_lower_lid, this.color_buffer_lower_lid, x, y, z);
                 this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z);
             }
             
-            for (var i = 0; i < number_of_sides * 2; i++) {
+            for (var i = 0; i < number_of_sides * 2 + 2; i++) {
                 this.index_buffer.push(i);
-                this.index_buffer.push(i + 1);
-                this.index_buffer.push(i + 2);
-                if (i < number_of_sides) {
+                if (i <= number_of_sides) {
                     this.index_buffer_upper_lid.push(i);
                     this.index_buffer_lower_lid.push(i);
                 }
