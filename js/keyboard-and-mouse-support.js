@@ -54,18 +54,22 @@ function handleKeyPresses(){
 		cameraMode = 1;
 		target = [0,0,0];
 		var initPosToTranslate = vec3.create();
-		vec3.set(initPosToTranslate,2.0,2.0,3.0);	//Aca pongo a donde quiero que vaya
+		vec3.set(initPosToTranslate,10.0,10.0,4.0);
 		var radius = vec3.squaredLength(initPosToTranslate);
 		thetaAngle = Math.acos(initPosToTranslate[2]/radius);	//para las rotaciones en zy e zx
 		phiAngle = Math.atan(initPosToTranslate[1]/initPosToTranslate[0]);	//para las rotaciones en el plano xy
 		cameraPosition = [radius*Math.cos(phiAngle)*Math.sin(thetaAngle),radius*Math.sin(phiAngle)*Math.sin(thetaAngle),radius*Math.cos(thetaAngle)];
-		cameraPosition = [40.0,40.0,3.0];
 		return;
 	}
 	
 	//si presiono el boton 2, me cambio a otra cámara
 	if (currentlyPressedKeys[50] && cameraMode != 2) {
 		cameraMode = 2;
+		var initPosToTranslate = vec3.create();
+		vec3.set(initPosToTranslate,15.0,15.0,4.0);
+		var radius = vec3.squaredLength(initPosToTranslate);
+		thetaAngle = Math.acos(initPosToTranslate[2]/radius);	//para las rotaciones en zy e zx
+		phiAngle = Math.atan(initPosToTranslate[1]/initPosToTranslate[0]);	//para las rotaciones en el plano xy
 		vec3.set(cameraPosition,Math.cos(phiAngle)*Math.sin(thetaAngle),Math.sin(phiAngle)*Math.sin(thetaAngle),-Math.cos(thetaAngle));
 		vec3.normalize(cameraPosition,cameraPosition);
 		vec3.scale(target,cameraPosition,100);
