@@ -70,25 +70,25 @@ function handleKeyPresses(){
 		var radius = vec3.squaredLength(initPosToTranslate);
 		thetaAngle = Math.acos(initPosToTranslate[2]/radius);	//para las rotaciones en zy e zx
 		phiAngle = Math.atan(initPosToTranslate[1]/initPosToTranslate[0]);	//para las rotaciones en el plano xy
-		vec3.set(cameraPosition,Math.cos(phiAngle)*Math.sin(thetaAngle),Math.sin(phiAngle)*Math.sin(thetaAngle),-Math.cos(thetaAngle));
-		vec3.normalize(cameraPosition,cameraPosition);
-		vec3.scale(target,cameraPosition,100);
+		vec3.set(target,Math.cos(phiAngle)*Math.sin(thetaAngle),Math.sin(phiAngle)*Math.sin(thetaAngle),-Math.cos(thetaAngle));
+		vec3.normalize(target,target);
+		vec3.scale(target,target,100);
 		cameraPosition = [-20,-20,5];		
 		return;
 	}
 }
 
 //Testeo la ruedita del mouse
-//Ayuda de http://www.sitepoint.com/html5-javascript-mouse-wheel/
+//http://www.sitepoint.com/html5-javascript-mouse-wheel/
 function MouseWheelHandler(e) {
 	if(cameraMode == 1){
 		var e = window.event || e; // old IE support
 		e = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-		if ( e <= 0 && vec3.length(cameraPosition) < 20){
+		if ( e <= 0 && vec3.length(cameraPosition) < 200){
 			vec3.scale(cameraPosition,cameraPosition,1.1)
 		}
-		if(e > 0 && vec3.length(cameraPosition) > 2){
-				vec3.scale(cameraPosition,cameraPosition,0.9);
+		if(e > 0 && vec3.length(cameraPosition) > 20){
+			vec3.scale(cameraPosition,cameraPosition,0.9);
 		}
 	}
 }
