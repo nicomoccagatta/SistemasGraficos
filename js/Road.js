@@ -281,13 +281,14 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
             z = previous_step_z + MAX_HEIGHT_SEPARATION;
             this.fillBuffers(x, y, z);
             
-            z = previous_step_z + MAX_HEIGHT_SEPARATION;
-            y = previous_step_y;
             x = intern_high_right_x;
             this.fillBuffers(x, y, z);
+            
+            x = extreme_right_x;
             z = this_step_z + MAX_HEIGHT_SEPARATION;
             y = this_step_y;
             this.fillBuffers(x, y, z);
+            x = intern_high_right_x;
             this.fillBuffers(x, y, z);
             
             z = this_step_z + MIDDLE_HEIGHT_SEPARATION;

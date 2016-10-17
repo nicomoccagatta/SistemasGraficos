@@ -125,9 +125,7 @@ function onMouseMove(event) {
 		phiAngle += degToRad(testX)/widthOfCanvas;
 		testLimit += degToRad(-testY)/heightOfCanvas;
 
-		if (testLimit >= degToRad(25) && testLimit <= degToRad(88)){
-			thetaAngle = testLimit;
-		}
+		thetaAngle = testLimit;
 		clickX = x;
 		clickY = y;
 		if(cameraMode == 1){
