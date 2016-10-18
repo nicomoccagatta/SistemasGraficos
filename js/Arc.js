@@ -3,7 +3,7 @@ const MIN_HEIGHT_MIDDLE_ARC_SEPARATION = 1.5;
 const NUMBER_OF_SIDES = 100;
 const RADIUS_CYLINDER_ARC = 1;
 
-function Arc(base_height, top_height, center_x, from, to, min_angle, max_angle) {
+function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_angle) {
     this.webgl_position_buffer = null;
     this.webgl_normal_buffer = null;
     this.webgl_color_buffer = null;
@@ -38,7 +38,7 @@ function Arc(base_height, top_height, center_x, from, to, min_angle, max_angle) 
         this.index_buffer_lower_lid = [];
 
         var max_height = top_height - MAX_HEIGHT_MIDDLE_ARC_SEPARATION;
-        var height = max_height - MIN_HEIGHT_MIDDLE_ARC_SEPARATION;
+        var height = max_height + RADIUS_CYLINDER_ARC - distance_to_floor;
         var radius = (to - from) / 2;
         var from_aux = from + radius;
         var max_angle_aux = max_angle;

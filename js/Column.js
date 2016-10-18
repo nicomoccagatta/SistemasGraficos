@@ -1,9 +1,9 @@
 const HEIGHT_BASE_COLUMN_TWO = 0.5;
-const MIN_HEIGHT = -4; //TODO tal vez haya que cambiarlo
+const MIN_HEIGHT = -10; //TODO tal vez haya que cambiarlo
 const DELIMITER = 1;
 const DELIMITER_DIFF = 0.5;
 
-//El delimitador es para saber quÃ© tan grande es esa parte de la columna.
+//El delimitador es para saber que tan grande es esa parte de la columna.
 function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
     this.position_buffer = null;
     this.normal_buffer = null;
@@ -14,18 +14,14 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
     this.webgl_normal_buffer = null;
     this.webgl_color_buffer = null;
     this.webgl_index_buffer = null;
-    
-    // Se generan los vertices para la esfera, calculando los datos para una esfera de radio 1
-    // Y tambien la informacion de las normales y coordenadas de textura para cada vertice de la esfera
-    // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de indices 
-    // a todos los triangulos de la esfera
+
     this.initBuffers = function() {
         var min_center_x = (center_x - delimiter);
         var max_center_x = (center_x + delimiter);
         var min_center_y = (center_y - delimiter);
         var max_center_y = (center_y + delimiter);
         var base_height = min_height;
-        var top_height = (max_height + base_height);
+        var top_height = max_height;// + base_height);
         var middle_left_x = (center_x - delimiter * 0.8);
         var middle_right_x = (center_x + delimiter * 0.8);
         var middle_left_y = (center_y - delimiter * 0.2);
@@ -188,7 +184,7 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
 
 
 
-//El delimitador es para saber quÃ© tan grande es esa parte de la columna.
+//El delimitador es para saber que tan grande es esa parte de la columna.
 function BaseColumnTwo(height, center_x, center_y, delimiter) {
     this.position_buffer = null;
     this.normal_buffer = null;
@@ -200,32 +196,29 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
     this.webgl_color_buffer = null;
     this.webgl_index_buffer = null;
     
-    // Se generan los vertices para la esfera, calculando los datos para una esfera de radio 1
-    // Y tambien la informacion de las normales y coordenadas de textura para cada vertice de la esfera
-    // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de indices 
-    // a todos los triangulos de la esfera
     this.initBuffers = function() {
         var base_height = height;
         var top_height = height + HEIGHT_BASE_COLUMN_TWO;
-    
-        var min_center_x_base = (center_x - delimiter);
-        var max_center_x_base = (center_x + delimiter);
-        var min_center_y_base = (center_y - delimiter);
-        var max_center_y_base = (center_y + delimiter);
-        var middle_left_x_base = (center_x - delimiter * 0.8);
-        var middle_right_x_base = (center_x + delimiter * 0.8);
-        var middle_left_y_base = (center_y - delimiter * 0.2);
-        var middle_right_y_base = (center_y + delimiter * 0.2);
+
+        var min_center_x_top = (center_x - delimiter);
+        var max_center_x_top = (center_x + delimiter);
+        var min_center_y_top = (center_y - delimiter);
+        var max_center_y_top = (center_y + delimiter);
+        var middle_left_x_top = (center_x - delimiter * 0.8);
+        var middle_right_x_top = (center_x + delimiter * 0.8);
+        var middle_left_y_top = (center_y - delimiter * 0.2);
+        var middle_right_y_top = (center_y + delimiter * 0.2);
         
         var new_delimiter = delimiter + DELIMITER_DIFF;
-        var min_center_x_top = (center_x - new_delimiter);
-        var max_center_x_top = (center_x + new_delimiter);
-        var min_center_y_top = (center_y - new_delimiter);
-        var max_center_y_top = (center_y + new_delimiter);
-        var middle_left_x_top = (center_x - new_delimiter * 0.8);
-        var middle_right_x_top = (center_x + new_delimiter * 0.8);
-        var middle_left_y_top = (center_y - new_delimiter * 0.2);
-        var middle_right_y_top = (center_y + new_delimiter * 0.2);
+        
+        var min_center_x_base = (center_x - new_delimiter);
+        var max_center_x_base = (center_x + new_delimiter);
+        var min_center_y_base = (center_y - new_delimiter);
+        var max_center_y_base = (center_y + new_delimiter);
+        var middle_left_x_base = (center_x - new_delimiter * 0.8);
+        var middle_right_x_base = (center_x + new_delimiter * 0.8);
+        var middle_left_y_base = (center_y - new_delimiter * 0.2);
+        var middle_right_y_base = (center_y + new_delimiter * 0.2);
         
         this.position_buffer = [
             min_center_x_top, min_center_y_top, top_height,
@@ -349,18 +342,16 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
 
 
 
-
-
 function Column(first_max_height, second_max_height, third_max_height, center_x, center_y, delimiter) {
-    first_base_column_one = new BaseColumnOne(first_max_height, MIN_HEIGHT, center_x, center_y, delimiter);
+    first_base_column_one = new BaseColumnOne(third_max_height + MIN_HEIGHT, second_max_height + MIN_HEIGHT + HEIGHT_BASE_COLUMN_TWO, center_x, center_y, delimiter);
     first_base_column_one.initBuffers();
-    first_base_column_two = new BaseColumnTwo(first_max_height + MIN_HEIGHT, center_x, center_y, delimiter);
+    first_base_column_two = new BaseColumnTwo(second_max_height + MIN_HEIGHT, center_x, center_y, delimiter);
     first_base_column_two.initBuffers();
-    second_base_column_one = new BaseColumnOne(second_max_height, first_max_height + MIN_HEIGHT + HEIGHT_BASE_COLUMN_TWO, center_x, center_y, DELIMITER_DIFF + delimiter);
+    second_base_column_one = new BaseColumnOne(second_max_height + MIN_HEIGHT, first_max_height + MIN_HEIGHT + HEIGHT_BASE_COLUMN_TWO, center_x, center_y, DELIMITER_DIFF + delimiter);
     second_base_column_one.initBuffers();
-    second_base_column_two = new BaseColumnTwo(second_max_height + MIN_HEIGHT, center_x, center_y, DELIMITER_DIFF + delimiter);
+    second_base_column_two = new BaseColumnTwo(first_max_height + MIN_HEIGHT, center_x, center_y, DELIMITER_DIFF + delimiter);
     second_base_column_two.initBuffers();
-    third_base_column_one = new BaseColumnOne(third_max_height, second_max_height + MIN_HEIGHT + HEIGHT_BASE_COLUMN_TWO, center_x, center_y, (2 * DELIMITER_DIFF) + delimiter);
+    third_base_column_one = new BaseColumnOne(first_max_height + MIN_HEIGHT, MIN_HEIGHT, center_x, center_y, (2 * DELIMITER_DIFF) + delimiter);
     third_base_column_one.initBuffers();
     
     this.setupShaders = function(){
