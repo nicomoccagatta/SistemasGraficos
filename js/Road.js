@@ -1,8 +1,12 @@
-const MIDDLE_HEIGHT_SEPARATION = 1.5//0.2;
-const MAX_HEIGHT_SEPARATION = 3;//0.35;
-const INTERN_LOW_BORDER = 2;//0.8;
-const INTERN_HIGH_BORDER = 1;//0.7;
-const HALF_WIDTH = 4;
+const MIDDLE_HEIGHT_SEPARATION = 0.6;
+const MAX_HEIGHT_SEPARATION = 0.85;
+const INTERN_LOW_BORDER = 1.3;
+const INTERN_HIGH_BORDER = 1;
+const HALF_WIDTH = 5;
+const FIRST_PLAIN_ROAD_BEGIN = -30;
+const FIRST_PLAIN_ROAD_END = -10;
+const SECOND_PLAIN_ROAD_BEGIN = 10;
+const SECOND_PLAIN_ROAD_END = 30;
 
 //Height seria ph1 segun el enunciado.
 function PlainRoad(height, center_x, from, to) {
@@ -10,11 +14,7 @@ function PlainRoad(height, center_x, from, to) {
     this.webgl_normal_buffer = null;
     this.webgl_color_buffer = null;
     this.webgl_index_buffer = null;
-    
-    // Se generan los vertices para la esfera, calculando los datos para una esfera de radio 1
-    // Y tambien la información de las normales y coordenadas de textura para cada vertice de la esfera
-    // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de indices 
-    // a todos los triangulos de la esfera
+
     this.initBuffers = function() {
         var middle_height = height + MIDDLE_HEIGHT_SEPARATION;
         var max_height = height + MAX_HEIGHT_SEPARATION;
@@ -237,12 +237,7 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
         this.position_buffer.push(y);
         this.position_buffer.push(z);
     }
-    
-    
-    // Se generan los vertices para la esfera, calculando los datos para una esfera de radio 1
-    // Y tambien la informacion de las normales y coordenadas de textura para cada vertice de la esfera
-    // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de indices 
-    // a todos los triangulos de la esfera
+
     this.initBuffers = function() {
         var y = from;
         var z = base_height;
@@ -428,7 +423,6 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
         gl.vertexAttribPointer(shaderProgramColoredObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
-
         gl.uniformMatrix4fv(shaderProgramColoredObject.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
         mat3.fromMat4(normalMatrix, modelMatrix);
@@ -447,11 +441,11 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
 
 
 function Road(base_height, max_height, center_x) {
-    plain_road_one = new PlainRoad(base_height, center_x, -10, -5);//PlainRoad(height, center_x, from, to);
+    plain_road_one = new PlainRoad(base_height, center_x, FIRST_PLAIN_ROAD_BEGIN, FIRST_PLAIN_ROAD_END);//PlainRoad(height, center_x, from, to);
     plain_road_one.initBuffers();
-    curved_road = new CurvedRoad(base_height, max_height, center_x, -5, 10)//CurvedRoad(base_height, max_height, center_x, from, to);
+    curved_road = new CurvedRoad(base_height, max_height, center_x, FIRST_PLAIN_ROAD_END, SECOND_PLAIN_ROAD_BEGIN)//CurvedRoad(base_height, max_height, center_x, from, to);
     curved_road.initBuffers();
-    plain_road_two = new PlainRoad(base_height, center_x, 10, 15);
+    plain_road_two = new PlainRoad(base_height, center_x, SECOND_PLAIN_ROAD_BEGIN, SECOND_PLAIN_ROAD_END);
     plain_road_two.initBuffers();
     
     this.setupShaders = function(){

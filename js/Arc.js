@@ -14,9 +14,9 @@ function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_a
         normal_buf.push(y);
         normal_buf.push(z);
 
-        color_buf.push(1.0)
-        color_buf.push(0.0)
-        color_buf.push(0.0)
+        color_buf.push(1.0);
+        color_buf.push(0.0);
+        color_buf.push(0.0);
         
         position_buf.push(x);
         position_buf.push(y);
@@ -146,7 +146,6 @@ function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_a
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
         gl.vertexAttribPointer(shaderProgramColoredObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
-
 
         gl.uniformMatrix4fv(shaderProgramColoredObject.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();

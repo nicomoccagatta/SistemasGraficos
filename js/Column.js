@@ -21,7 +21,7 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
         var min_center_y = (center_y - delimiter);
         var max_center_y = (center_y + delimiter);
         var base_height = min_height;
-        var top_height = max_height;// + base_height);
+        var top_height = max_height;
         var middle_left_x = (center_x - delimiter * 0.8);
         var middle_right_x = (center_x + delimiter * 0.8);
         var middle_left_y = (center_y - delimiter * 0.2);
@@ -164,7 +164,6 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
         gl.vertexAttribPointer(shaderProgramColoredObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
-
 
         gl.uniformMatrix4fv(shaderProgramColoredObject.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();

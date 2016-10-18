@@ -1,24 +1,19 @@
+const CYLINDER_COLOR = 2.0;
+
 function Cylinder(number_of_sides, floor, ceiling, radius) {
     this.webgl_position_buffer = null;
     this.webgl_normal_buffer = null;
     this.webgl_color_buffer = null;
     this.webgl_index_buffer = null;
     
-    const COLOR = 2.0;
-    
-    // Se generan los vertices para la esfera, calculando los datos para una esfera de radio 1
-    // Y tambien la informacion de las normales y coordenadas de textura para cada vertice de la esfera
-    // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de indices 
-    // a todos los triangulos de la esfera
-    
     this.fillBuffers = function(normal_buf, position_buf, color_buf, x, y, z) {
         normal_buf.push(x);
         normal_buf.push(y);
         normal_buf.push(z);
 
-        color_buf.push(COLOR)
-        color_buf.push(COLOR)
-        color_buf.push(COLOR)
+        color_buf.push(CYLINDER_COLOR);
+        color_buf.push(CYLINDER_COLOR);
+        color_buf.push(CYLINDER_COLOR);
         
         position_buf.push(x);
         position_buf.push(y);
@@ -123,7 +118,6 @@ function Cylinder(number_of_sides, floor, ceiling, radius) {
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
         gl.vertexAttribPointer(shaderProgramColoredObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
-
 
         gl.uniformMatrix4fv(shaderProgramColoredObject.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
