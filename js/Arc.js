@@ -1,5 +1,6 @@
 const MAX_HEIGHT_MIDDLE_ARC_SEPARATION = 2;
 const MIN_HEIGHT_MIDDLE_ARC_SEPARATION = 1.5;
+const NUMBER_OF_SIDES = 100;
 const RADIUS_CYLINDER_ARC = 1;
 
 function Arc(base_height, top_height, center_x, from, to, min_angle, max_angle) {
@@ -55,8 +56,8 @@ function Arc(base_height, top_height, center_x, from, to, min_angle, max_angle) 
             var previous_step_y = from_aux + (radius * Math.cos((angle - 1) * 2 * Math.PI / 360));
             var previous_step_z = max_height + (height * Math.sin((angle - 1) * 2 * Math.PI / 360));
 
-            for (var i = 0; i <= 360; i++) {
-                var alpha = i * 2 * Math.PI / 360;
+            for (var i = 0; i <= NUMBER_OF_SIDES; i++) {
+                var alpha = i * 2 * Math.PI / NUMBER_OF_SIDES;
                 var sinAlpha = Math.sin(alpha);
                 var cosAlpha = Math.cos(alpha);
                 var x = center_x + (RADIUS_CYLINDER_ARC * cosAlpha);
@@ -77,9 +78,9 @@ function Arc(base_height, top_height, center_x, from, to, min_angle, max_angle) 
             }
         }
         
-        for (var i = 0; i < 361 * (max_angle_aux - min_angle) * 2; i++) {
+        for (var i = 0; i < (NUMBER_OF_SIDES + 1) * (max_angle_aux - min_angle) * 2; i++) {
             this.index_buffer.push(i);
-            if (i <= 360) {
+            if (i <= NUMBER_OF_SIDES) {
                 this.index_buffer_upper_lid.push(i);
                 this.index_buffer_lower_lid.push(i);
             }
