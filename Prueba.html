@@ -11,6 +11,7 @@
 <script type="text/javascript" src="js/Cylinder.js"></script>
 <script type="text/javascript" src="js/Road.js"></script>
 <script type="text/javascript" src="js/Arc.js"></script>
+<script type="text/javascript" src="js/Bridge.js"></script>
 
 <script id="shader-fs-colored-obj" type="x-shader/x-fragment">
     precision mediump float;
@@ -523,7 +524,7 @@
         initShaders();
         initVariables();
         
-        deimos = new Road(0, 2, 0);//Arc(0, 10, 0, -10, 10, 180, 360);//Road(0, 2, 0);//Cylinder(64, 0, 10, 2);//Column(10, 20, 27, 0, 0, DELIMITER);
+        deimos = new Bridge(0, 2, 0, 3, -10, 10);//Arc(0, 10, 0, -10, 10, 180, 360);//Road(0, 2, 0);//Cylinder(64, 0, 10, 2);//Column(10, 20, 27, 0, 0, DELIMITER);
         //deimos.initBuffers(); // ¡¡¡IMPORTANTE!!! Para probar Road o Column, comentar esta linea
 
         /*deimos = new ColoredSphere(64, 64);

@@ -1,13 +1,26 @@
 const MAX_HEIGHT_MIDDLE_ARC_SEPARATION = 2;
 const MIN_HEIGHT_MIDDLE_ARC_SEPARATION = 1.5;
 const NUMBER_OF_SIDES = 100;
-const RADIUS_CYLINDER_ARC = 1;
+const RADIUS_CYLINDER_ARC = 0.3;
 
-function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_angle) {
+function Arc(distance_to_floor, top_height, center_x, from, to, beginning_angle, ending_angle) {
     this.webgl_position_buffer = null;
     this.webgl_normal_buffer = null;
     this.webgl_color_buffer = null;
     this.webgl_index_buffer = null;
+    
+    this.position_buffer = [];
+        this.normal_buffer = [];
+        this.color_buffer = [];
+        this.index_buffer = [];
+        this.position_buffer_upper_lid = [];
+        this.normal_buffer_upper_lid = [];
+        this.color_buffer_upper_lid = [];
+        this.index_buffer_upper_lid = [];
+        this.position_buffer_lower_lid = [];
+        this.normal_buffer_lower_lid = [];
+        this.color_buffer_lower_lid = [];
+        this.index_buffer_lower_lid = [];
 
     this.fillBuffers = function(normal_buf, position_buf, color_buf, x, y, z) {
         normal_buf.push(x);
@@ -24,19 +37,8 @@ function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_a
     }
     
     this.initBuffers = function() {
-        this.position_buffer = [];
-        this.normal_buffer = [];
-        this.color_buffer = [];
-        this.index_buffer = [];
-        this.position_buffer_upper_lid = [];
-        this.normal_buffer_upper_lid = [];
-        this.color_buffer_upper_lid = [];
-        this.index_buffer_upper_lid = [];
-        this.position_buffer_lower_lid = [];
-        this.normal_buffer_lower_lid = [];
-        this.color_buffer_lower_lid = [];
-        this.index_buffer_lower_lid = [];
-
+        var min_angle = beginning_angle + 180;
+        var max_angle = ending_angle + 180;
         var max_height = top_height - MAX_HEIGHT_MIDDLE_ARC_SEPARATION;
         var height = max_height + RADIUS_CYLINDER_ARC - distance_to_floor;
         var radius = (to - from) / 2;

@@ -1,7 +1,6 @@
 const HEIGHT_BASE_COLUMN_TWO = 0.5;
 const MIN_HEIGHT = -10; //TODO tal vez haya que cambiarlo
-const DELIMITER = 1;
-const DELIMITER_DIFF = 0.5;
+const DELIMITER_DIFF = 0.4;
 
 //El delimitador es para saber que tan grande es esa parte de la columna.
 function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
@@ -342,15 +341,15 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
 
 
 function Column(first_max_height, second_max_height, third_max_height, center_x, center_y, delimiter) {
-    first_base_column_one = new BaseColumnOne(third_max_height + MIN_HEIGHT, second_max_height + MIN_HEIGHT + HEIGHT_BASE_COLUMN_TWO, center_x, center_y, delimiter);
+    var first_base_column_one = new BaseColumnOne(third_max_height + MIN_HEIGHT, second_max_height + MIN_HEIGHT + HEIGHT_BASE_COLUMN_TWO, center_x, center_y, delimiter);
     first_base_column_one.initBuffers();
-    first_base_column_two = new BaseColumnTwo(second_max_height + MIN_HEIGHT, center_x, center_y, delimiter);
+    var first_base_column_two = new BaseColumnTwo(second_max_height + MIN_HEIGHT, center_x, center_y, delimiter);
     first_base_column_two.initBuffers();
-    second_base_column_one = new BaseColumnOne(second_max_height + MIN_HEIGHT, first_max_height + MIN_HEIGHT + HEIGHT_BASE_COLUMN_TWO, center_x, center_y, DELIMITER_DIFF + delimiter);
+    var second_base_column_one = new BaseColumnOne(second_max_height + MIN_HEIGHT, first_max_height + MIN_HEIGHT + HEIGHT_BASE_COLUMN_TWO, center_x, center_y, DELIMITER_DIFF + delimiter);
     second_base_column_one.initBuffers();
-    second_base_column_two = new BaseColumnTwo(first_max_height + MIN_HEIGHT, center_x, center_y, DELIMITER_DIFF + delimiter);
+    var second_base_column_two = new BaseColumnTwo(first_max_height + MIN_HEIGHT, center_x, center_y, DELIMITER_DIFF + delimiter);
     second_base_column_two.initBuffers();
-    third_base_column_one = new BaseColumnOne(first_max_height + MIN_HEIGHT, MIN_HEIGHT, center_x, center_y, (2 * DELIMITER_DIFF) + delimiter);
+    var third_base_column_one = new BaseColumnOne(first_max_height + MIN_HEIGHT, MIN_HEIGHT, center_x, center_y, (2 * DELIMITER_DIFF) + delimiter);
     third_base_column_one.initBuffers();
     
     this.setupShaders = function(){
