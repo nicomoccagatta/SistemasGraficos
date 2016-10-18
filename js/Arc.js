@@ -1,6 +1,5 @@
 const MAX_HEIGHT_MIDDLE_ARC_SEPARATION = 2;
 const MIN_HEIGHT_MIDDLE_ARC_SEPARATION = 1.5;
-const NUMBER_OF_SIDES = 100;
 const RADIUS_CYLINDER_ARC = 1;
 
 function Arc(base_height, top_height, center_x, from, to, min_angle, max_angle) {
@@ -8,12 +7,7 @@ function Arc(base_height, top_height, center_x, from, to, min_angle, max_angle) 
     this.webgl_normal_buffer = null;
     this.webgl_color_buffer = null;
     this.webgl_index_buffer = null;
-    
-    // Se generan los vertices para la esfera, calculando los datos para una esfera de radio 1
-    // Y tambien la informacion de las normales y coordenadas de textura para cada vertice de la esfera
-    // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de indices 
-    // a todos los triangulos de la esfera
-    
+
     this.fillBuffers = function(normal_buf, position_buf, color_buf, x, y, z) {
         normal_buf.push(x);
         normal_buf.push(y);
@@ -41,58 +35,51 @@ function Arc(base_height, top_height, center_x, from, to, min_angle, max_angle) 
         this.normal_buffer_lower_lid = [];
         this.color_buffer_lower_lid = [];
         this.index_buffer_lower_lid = [];
-        
-        
-        
-        
-        
-        
-        /*var y = from;
-        var z = base_height;
-        var x = center_x; 
-        this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z);*/
-        
-        
-        var height = top_height - MAX_HEIGHT_MIDDLE_ARC_SEPARATION;
-        
+
+        var max_height = top_height - MAX_HEIGHT_MIDDLE_ARC_SEPARATION;
+        var height = max_height - MIN_HEIGHT_MIDDLE_ARC_SEPARATION;
         var radius = (to - from) / 2;
-        for (var angle = min_angle; angle <= max_angle; angle++) {
-            
-            var theta = angle * 2 *  Math.PI / 360;
+        var from_aux = from + radius;
+        var max_angle_aux = max_angle;
+        
+        if (max_angle < min_angle) {
+            max_angle_aux += 360;
+        }
+        
+        for (var angle = (min_angle + 1); angle <= max_angle_aux; angle++) {
+            var theta = (angle * 2 * Math.PI) / 360;
             var sinTheta = Math.sin(theta);
             var cosTheta = Math.cos(theta);
-            var this_step_y = from + radius + (radius * cosTheta);
-            var this_step_z = height + (radius * sinTheta);
-            var previous_step_y = from + radius + (radius * Math.cos((angle - 1) * 2 *  Math.PI / 360));
-            var previous_step_z = height + (radius * Math.sin((angle - 1) * 2 *  Math.PI / 360));
-        
-        
+            var this_step_y = from_aux + (radius * cosTheta);
+            var this_step_z = max_height + (height * sinTheta);
+            var previous_step_y = from_aux + (radius * Math.cos((angle - 1) * 2 * Math.PI / 360));
+            var previous_step_z = max_height + (height * Math.sin((angle - 1) * 2 * Math.PI / 360));
 
-            for (var i = 0; i <= NUMBER_OF_SIDES; i++) {
-                var alpha = i * 2 *  Math.PI / NUMBER_OF_SIDES;
+            for (var i = 0; i <= 360; i++) {
+                var alpha = i * 2 * Math.PI / 360;
                 var sinAlpha = Math.sin(alpha);
                 var cosAlpha = Math.cos(alpha);
-                var x = center_x;
-                var y = this_step_y + (RADIUS_CYLINDER_ARC * cosAlpha); 
+                var x = center_x + (RADIUS_CYLINDER_ARC * cosAlpha);
+                var y = previous_step_y;
+                var z = previous_step_z + (RADIUS_CYLINDER_ARC * sinAlpha);
                 
-                var z = this_step_z + (RADIUS_CYLINDER_ARC * sinAlpha);
                 this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z);
-                if (angle == min_angle) {
+                if (angle == (min_angle + 1)) {
                     this.fillBuffers(this.normal_buffer_upper_lid, this.position_buffer_upper_lid, this.color_buffer_upper_lid, x, y, z);
                 }
                 
-                y = previous_step_y + (RADIUS_CYLINDER_ARC * cosAlpha);
-                z = previous_step_z + (RADIUS_CYLINDER_ARC * sinAlpha);
+                y = this_step_y;
+                z = this_step_z + (RADIUS_CYLINDER_ARC * sinAlpha);
                 this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z);
-                if (angle == max_angle) {
+                if (angle == max_angle_aux) {
                     this.fillBuffers(this.normal_buffer_lower_lid, this.position_buffer_lower_lid, this.color_buffer_lower_lid, x, y, z);
                 }
             }
         }
         
-        for (var i = 0; i < (NUMBER_OF_SIDES + 1 ) * (max_angle - min_angle) * 2; i++) {
+        for (var i = 0; i < 361 * (max_angle_aux - min_angle) * 2; i++) {
             this.index_buffer.push(i);
-            if (i <= NUMBER_OF_SIDES) {
+            if (i <= 360) {
                 this.index_buffer_upper_lid.push(i);
                 this.index_buffer_lower_lid.push(i);
             }
