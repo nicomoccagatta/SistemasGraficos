@@ -21,57 +21,57 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
         var max_center_y = (center_y + delimiter);
         var base_height = min_height;
         var top_height = max_height;
-        var middle_left_x = (center_x - delimiter * 0.8);
-        var middle_right_x = (center_x + delimiter * 0.8);
-        var middle_left_y = (center_y - delimiter * 0.2);
-        var middle_right_y = (center_y + delimiter * 0.2);
+        var middle_left_x = (center_x - delimiter * 0.2);
+        var middle_right_x = (center_x + delimiter * 0.2);
+        var middle_left_y = (center_y - delimiter * 0.8);
+        var middle_right_y = (center_y + delimiter * 0.8);
         
         this.position_buffer = [
             // Base de arriba
-            min_center_x, middle_right_y, top_height,
-            min_center_x, max_center_y, top_height,
-            max_center_x, middle_right_y, top_height,
-            max_center_x, max_center_y, top_height,
-            max_center_x, middle_right_y, top_height,
-            middle_right_x, middle_right_y, top_height,
-            middle_left_x, middle_right_y, top_height,
-            middle_right_x, middle_left_y, top_height,
-            middle_left_x, middle_left_y, top_height,
-            min_center_x, middle_left_y, top_height,
-            min_center_x, middle_left_y, top_height,
-            min_center_x, middle_left_y, top_height,
-            min_center_x, min_center_y, top_height,
-            max_center_x, middle_left_y, top_height,
+            middle_right_x, min_center_y, top_height,
             max_center_x, min_center_y, top_height,
+            middle_right_x, max_center_y, top_height,
+            max_center_x, max_center_y, top_height,
+            middle_right_x, max_center_y, top_height,
+            middle_right_x, middle_right_y, top_height,
+            middle_right_x, middle_left_y, top_height,
+            middle_left_x, middle_right_y, top_height,
+            middle_left_x, middle_left_y, top_height,
+            middle_left_x, min_center_y, top_height,
+            middle_left_x, min_center_y, top_height,
+            middle_left_x, min_center_y, top_height,
+            min_center_x, min_center_y, top_height,
+            middle_left_x, max_center_y, top_height,
+            min_center_x, max_center_y, top_height,
         
             min_center_x, min_center_y, top_height,
             
             min_center_x, min_center_y, top_height,
             min_center_x, min_center_y, base_height,
-            min_center_x, middle_left_y, top_height,
-            min_center_x, middle_left_y, base_height,
+            middle_left_x, min_center_y, top_height,
+            middle_left_x, min_center_y, base_height,
             middle_left_x, middle_left_y, top_height,
             middle_left_x, middle_left_y, base_height,
-            middle_left_x, middle_right_y, top_height,
-            middle_left_x, middle_right_y, base_height,
-            min_center_x, middle_right_y, top_height,
-            min_center_x, middle_right_y, base_height,
-            min_center_x, max_center_y, top_height,
-            min_center_x, max_center_y, base_height,
+            middle_right_x, middle_left_y, top_height,
+            middle_right_x, middle_left_y, base_height,
+            middle_right_x, min_center_y, top_height,
+            middle_right_x, min_center_y, base_height,
+            max_center_x, min_center_y, top_height,
+            max_center_x, min_center_y, base_height,
             
             max_center_x, max_center_y, top_height,
             max_center_x, max_center_y, base_height,
             
-            max_center_x, middle_right_y, top_height,
-            max_center_x, middle_right_y, base_height,
+            middle_right_x, max_center_y, top_height,
+            middle_right_x, max_center_y, base_height,
             middle_right_x, middle_right_y, top_height,
             middle_right_x, middle_right_y, base_height,
-            middle_right_x, middle_left_y, top_height,
-            middle_right_x, middle_left_y, base_height,
-            max_center_x, middle_left_y, top_height,
-            max_center_x, middle_left_y, base_height,
-            max_center_x, min_center_y, top_height,
-            max_center_x, min_center_y, base_height,
+            middle_left_x, middle_right_y, top_height,
+            middle_left_x, middle_right_y, base_height,
+            middle_left_x, max_center_y, top_height,
+            middle_left_x, max_center_y, base_height,
+            min_center_x, max_center_y, top_height,
+            min_center_x, max_center_y, base_height,
             
             min_center_x, min_center_y, top_height,
             min_center_x, min_center_y, base_height,
@@ -79,16 +79,16 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
             min_center_x, min_center_y, base_height,
             
             // Base de abajo
-            max_center_x, min_center_y, base_height,
-            min_center_x, middle_left_y, base_height,
-            max_center_x, middle_left_y, base_height,
-            middle_left_x, middle_left_y, base_height,
-            middle_right_x, middle_left_y, base_height,
-            middle_left_x, middle_right_y, base_height,
-            middle_right_x, middle_right_y, base_height,
-            min_center_x, middle_right_y, base_height,
-            max_center_x, middle_right_y, base_height,
             min_center_x, max_center_y, base_height,
+            middle_left_x, min_center_y, base_height,
+            middle_left_x, max_center_y, base_height,
+            middle_left_x, middle_left_y, base_height,
+            middle_left_x, middle_right_y, base_height,
+            middle_right_x, middle_left_y, base_height,
+            middle_right_x, middle_right_y, base_height,
+            middle_right_x, min_center_y, base_height,
+            middle_right_x, max_center_y, base_height,
+            max_center_x, min_center_y, base_height,
             max_center_x, max_center_y, base_height
         ];
         
@@ -202,10 +202,10 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
         var max_center_x_top = (center_x + delimiter);
         var min_center_y_top = (center_y - delimiter);
         var max_center_y_top = (center_y + delimiter);
-        var middle_left_x_top = (center_x - delimiter * 0.8);
-        var middle_right_x_top = (center_x + delimiter * 0.8);
-        var middle_left_y_top = (center_y - delimiter * 0.2);
-        var middle_right_y_top = (center_y + delimiter * 0.2);
+        var middle_left_x_top = (center_x - delimiter * 0.2);
+        var middle_right_x_top = (center_x + delimiter * 0.2);
+        var middle_left_y_top = (center_y - delimiter * 0.8);
+        var middle_right_y_top = (center_y + delimiter * 0.8);
         
         var new_delimiter = delimiter + DELIMITER_DIFF;
         
@@ -213,38 +213,38 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
         var max_center_x_base = (center_x + new_delimiter);
         var min_center_y_base = (center_y - new_delimiter);
         var max_center_y_base = (center_y + new_delimiter);
-        var middle_left_x_base = (center_x - new_delimiter * 0.8);
-        var middle_right_x_base = (center_x + new_delimiter * 0.8);
-        var middle_left_y_base = (center_y - new_delimiter * 0.2);
-        var middle_right_y_base = (center_y + new_delimiter * 0.2);
+        var middle_left_x_base = (center_x - new_delimiter * 0.2);
+        var middle_right_x_base = (center_x + new_delimiter * 0.2);
+        var middle_left_y_base = (center_y - new_delimiter * 0.8);
+        var middle_right_y_base = (center_y + new_delimiter * 0.8);
         
         this.position_buffer = [
             min_center_x_top, min_center_y_top, top_height,
             min_center_x_base, min_center_y_base, base_height,
-            min_center_x_top, middle_left_y_top, top_height,
-            min_center_x_base, middle_left_y_base, base_height,
+            middle_left_x_top, min_center_y_top, top_height,
+            middle_left_x_base, min_center_y_base, base_height,
             middle_left_x_top, middle_left_y_top, top_height,
             middle_left_x_base, middle_left_y_base, base_height,
-            middle_left_x_top, middle_right_y_top, top_height,
-            middle_left_x_base, middle_right_y_base, base_height,
-            min_center_x_top, middle_right_y_top, top_height,
-            min_center_x_base, middle_right_y_base, base_height,
-            min_center_x_top, max_center_y_top, top_height,
-            min_center_x_base, max_center_y_base, base_height,
+            middle_right_x_top, middle_left_y_top, top_height,
+            middle_right_x_base, middle_left_y_base, base_height,
+            middle_right_x_top, min_center_y_top, top_height,
+            middle_right_x_base, min_center_y_base, base_height,
+            max_center_x_top, min_center_y_top, top_height,
+            max_center_x_base, min_center_y_base, base_height,
             
             max_center_x_top, max_center_y_top, top_height,
             max_center_x_base, max_center_y_base, base_height,
             
-            max_center_x_top, middle_right_y_top, top_height,
-            max_center_x_base, middle_right_y_base, base_height,
+            middle_right_x_top, max_center_y_top, top_height,
+            middle_right_x_base, max_center_y_base, base_height,
             middle_right_x_top, middle_right_y_top, top_height,
             middle_right_x_base, middle_right_y_base, base_height,
-            middle_right_x_top, middle_left_y_top, top_height,
-            middle_right_x_base, middle_left_y_base, base_height,
-            max_center_x_top, middle_left_y_top, top_height,
-            max_center_x_base, middle_left_y_base, base_height,
-            max_center_x_top, min_center_y_top, top_height,
-            max_center_x_base, min_center_y_base, base_height,
+            middle_left_x_top, middle_right_y_top, top_height,
+            middle_left_x_base, middle_right_y_base, base_height,
+            middle_left_x_top, max_center_y_top, top_height,
+            middle_left_x_base, max_center_y_base, base_height,
+            min_center_x_top, max_center_y_top, top_height,
+            min_center_x_base, max_center_y_base, base_height,
             
             min_center_x_top, min_center_y_top, top_height,
             min_center_x_base, min_center_y_base, base_height

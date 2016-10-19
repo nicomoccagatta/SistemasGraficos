@@ -48,17 +48,17 @@
 
     void main(void) {
     
-        // Transformamos al vÃ©rtice al espacio de la cÃ¡mara
+        // Transformamos al vertice al espacio de la camara
         vec4 pos_camera_view = uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
         
-        // Transformamos al vÃ©rtice al espacio de la proyecciÃ³n
+        // Transformamos al vertice al espacio de la proyeccion
         gl_Position = uPMatrix * pos_camera_view;
         
         // Coordenada de textura sin modifiaciones
         vVertexColor = aVertexColor;
                             
         ////////////////////////////////////////////
-        // Calculos de la iluminaciÃ³n
+        // Calculos de la iluminacion
         vec3 light_dir =  uLightPosition - vec3( pos_camera_view );
         normalize(light_dir);
         if (!uUseLighting) 
@@ -111,17 +111,17 @@
 
     void main(void) {
 	
-		// Transformamos al vÃ©rtice al espacio de la cÃ¡mara
+		// Transformamos al vertice al espacio de la camara
 		vec4 pos_camera_view = uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
 		
-		// Transformamos al vÃ©rtice al espacio de la proyecciÃ³n
+		// Transformamos al vertice al espacio de la proyeccion
         gl_Position = uPMatrix * pos_camera_view;
 		
 		// Coordenada de textura sin modifiaciones
         vTextureCoord = aTextureCoord;
 							
 		////////////////////////////////////////////
-		// Calculos de la iluminaciÃ³n
+		// Calculos de la iluminacion
 		vec3 light_dir =  uLightPosition - vec3( pos_camera_view );
 		normalize(light_dir);
         if (!uUseLighting) 
@@ -369,14 +369,14 @@
 
     function drawScene() {
 	
-		// Se configura el vierport dentro de Ã¡rea Â¨canvasÂ¨. en este caso se utiliza toda 
-		// el Ã¡rea disponible
+		// Se configura el vierport dentro de area canvas. En este caso se utiliza toda 
+		// el area disponible
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 		
 		// Se habilita el color de borrado para la pantalla (Color Buffer) y otros buffers
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-		// Se configura la matriz de proyecciÃ³n
+		// Se configura la matriz de proyeccion
         mat4.perspective(pMatrix, 3.14/12.0, gl.viewportWidth / gl.viewportHeight, 0.1, 1000.0);
 
 
@@ -384,7 +384,7 @@
         //
         // Dibujamos a Deimos
 
-        // Configuramos la iluminaciÃ³n 
+        // Configuramos la iluminacion 
         //deimos.setupShaders();
 
         // function(lightPosition, ambientColor, diffuseColor)
@@ -397,7 +397,7 @@
         mat4.identity(translate_deimos);
         mat4.translate(translate_deimos, translate_deimos, [10, 0, 0 ]);
 
-        // Matriz de rotaciÃ³n del eje sobre el plano de la eclÃ­ptica a 23 grados
+        // Matriz de rotacion del eje sobre el plano de la ecliptica a 23 grados
         var axis_inclination_matrix = mat4.create();
         mat4.identity(axis_inclination_matrix);
         mat4.rotate(axis_inclination_matrix, axis_inclination_matrix, -0.4014, [0, 0, 1]);
@@ -440,8 +440,8 @@
         var model_matrix_phobos = mat4.create();
         mat4.identity(model_matrix_phobos);
 
-        // TraslaciÃ³n de Deimos respecto de Marte
-        // Es la traslaciÃ³n que lo pone en Ã³rbita
+        // Traslacion de Deimos respecto de Marte
+        // Es la traslacion que lo pone en orbita
         var phobos_transalte_from_deimos_matrix = mat4.create();
         mat4.identity(phobos_transalte_from_deimos_matrix);
         mat4.translate(phobos_transalte_from_deimos_matrix, phobos_transalte_from_deimos_matrix, [25, 0,0]);
@@ -468,7 +468,7 @@
         //     
         // Dibujamos a Marte
         
-        // Configuramos la iluminaciÃ³n 
+        // Configuramos la iluminacion 
         deimos.setupShaders();
         deimos.setupLighting(vec3.fromValues(-100.0, 0.0, -60.0), vec3.fromValues(0.3, 0.3, 0.3), vec3.fromValues(0.05, 0.05, 0.05))
         
@@ -524,7 +524,7 @@
         initShaders();
         initVariables();
         
-        deimos = new Bridge(8, 3, 9, 8, 5, 7, 0, 2, 0, 2, -50, 50); //Bridge(ph1, ph2, ph3, th1, th2, th3, s1, max_height, center_x, number_of_columns, from, to)
+        deimos = new Bridge(8, 3, 9, 8, 5, 7, 0, 2, 0, 4, -50, 50); //Bridge(ph1, ph2, ph3, th1, th2, th3, s1, max_height, center_x, number_of_columns, from, to)
         //Arc(0, 10, 0, -10, 10, 180, 360);//Road(0, 2, 0);//Cylinder(64, 0, 10, 2);//Column(10, 20, 27, 0, 0, DELIMITER);
         //deimos.initBuffers(); // ���IMPORTANTE!!! Para probar Road o Column, comentar esta linea
 
