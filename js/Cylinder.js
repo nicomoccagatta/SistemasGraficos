@@ -1,6 +1,7 @@
 const CYLINDER_COLOR = 2.0;
+const CYLINDER_RADIUS = 0.1;
 
-function Cylinder(number_of_sides, floor, ceiling, radius) {
+function Cylinder(number_of_sides, center_x, center_y, floor, ceiling, radius) {
     this.webgl_position_buffer = null;
     this.webgl_normal_buffer = null;
     this.webgl_color_buffer = null;
@@ -38,8 +39,8 @@ function Cylinder(number_of_sides, floor, ceiling, radius) {
             var theta = i * 2 *  Math.PI / number_of_sides;
             var sinTheta = Math.sin(theta);
             var cosTheta = Math.cos(theta);
-            var x = radius * cosTheta;
-            var y = radius * sinTheta;
+            var x = center_x + (radius * cosTheta);
+            var y = center_y + (radius * sinTheta);
             
             var z = ceiling;
             this.fillBuffers(this.normal_buffer_upper_lid, this.position_buffer_upper_lid, this.color_buffer_upper_lid, x, y, z);
