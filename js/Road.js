@@ -3,10 +3,10 @@ const MAX_HEIGHT_SEPARATION = 0.85;
 const INTERN_LOW_BORDER = 1.3;
 const INTERN_HIGH_BORDER = 1;
 const HALF_WIDTH = 5;
-const FIRST_PLAIN_ROAD_BEGIN = -30;
-const FIRST_PLAIN_ROAD_END = -10;
-const SECOND_PLAIN_ROAD_BEGIN = 10;
-const SECOND_PLAIN_ROAD_END = 30;
+const FIRST_PLAIN_ROAD_BEGIN = -80;
+const FIRST_PLAIN_ROAD_END = -50;
+const SECOND_PLAIN_ROAD_BEGIN = 50;
+const SECOND_PLAIN_ROAD_END = 80;
 
 //Height seria ph1 segun el enunciado.
 function PlainRoad(height, center_x, from, to) {

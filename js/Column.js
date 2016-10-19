@@ -1,5 +1,5 @@
 const HEIGHT_BASE_COLUMN_TWO = 0.5;
-const MIN_HEIGHT = -10; //TODO tal vez haya que cambiarlo
+const MIN_HEIGHT = 0; //TODO tal vez haya que cambiarlo
 const DELIMITER_DIFF = 0.4;
 
 //El delimitador es para saber que tan grande es esa parte de la columna.
