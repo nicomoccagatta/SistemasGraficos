@@ -34,7 +34,7 @@ function Bridge(ph1, ph2, ph3, th1, th2, th3, s1, center_x, number_of_columns, f
         ph3 = new_ph;
     }
     
-    var road = new Road(ph1, ph1 + ph2, center_x);
+    var road = new Road(ph1, ph1 + ph2, center_x, from, to);
     var columns = [];
     var arcs = [];
     var tensors = [];

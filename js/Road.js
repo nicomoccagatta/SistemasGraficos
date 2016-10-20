@@ -4,8 +4,8 @@ const INTERN_LOW_BORDER = 1.3;
 const INTERN_HIGH_BORDER = 1;
 const HALF_WIDTH = 5;
 const FIRST_PLAIN_ROAD_BEGIN = -80;
-const FIRST_PLAIN_ROAD_END = -50;
-const SECOND_PLAIN_ROAD_BEGIN = 50;
+//const FIRST_PLAIN_ROAD_END = -50;
+//const SECOND_PLAIN_ROAD_BEGIN = 50;
 const SECOND_PLAIN_ROAD_END = 80;
 
 //Height seria ph1 segun el enunciado.
@@ -446,12 +446,12 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
 
 
 
-function Road(base_height, max_height, center_x) {
-    var plain_road_one = new PlainRoad(base_height, center_x, FIRST_PLAIN_ROAD_BEGIN, FIRST_PLAIN_ROAD_END);//PlainRoad(height, center_x, from, to);
+function Road(base_height, max_height, center_x, from, to) {
+    var plain_road_one = new PlainRoad(base_height, center_x, FIRST_PLAIN_ROAD_BEGIN, from);//PlainRoad(height, center_x, from, to);
     plain_road_one.initBuffers();
-    var curved_road = new CurvedRoad(base_height, max_height, center_x, FIRST_PLAIN_ROAD_END, SECOND_PLAIN_ROAD_BEGIN)//CurvedRoad(base_height, max_height, center_x, from, to);
+    var curved_road = new CurvedRoad(base_height, max_height, center_x, from, to)//CurvedRoad(base_height, max_height, center_x, from, to);
     curved_road.initBuffers();
-    var plain_road_two = new PlainRoad(base_height, center_x, SECOND_PLAIN_ROAD_BEGIN, SECOND_PLAIN_ROAD_END);
+    var plain_road_two = new PlainRoad(base_height, center_x, to, SECOND_PLAIN_ROAD_END);
     plain_road_two.initBuffers();
     
     this.setupShaders = function(){
