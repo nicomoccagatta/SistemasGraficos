@@ -7,18 +7,19 @@ function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_a
     this.webgl_color_buffer = null;
     this.webgl_index_buffer = null;
     
+    this.heights_along_arc = [[]];
     this.position_buffer = [];
-        this.normal_buffer = [];
-        this.color_buffer = [];
-        this.index_buffer = [];
-        this.position_buffer_upper_lid = [];
-        this.normal_buffer_upper_lid = [];
-        this.color_buffer_upper_lid = [];
-        this.index_buffer_upper_lid = [];
-        this.position_buffer_lower_lid = [];
-        this.normal_buffer_lower_lid = [];
-        this.color_buffer_lower_lid = [];
-        this.index_buffer_lower_lid = [];
+    this.normal_buffer = [];
+    this.color_buffer = [];
+    this.index_buffer = [];
+    this.position_buffer_upper_lid = [];
+    this.normal_buffer_upper_lid = [];
+    this.color_buffer_upper_lid = [];
+    this.index_buffer_upper_lid = [];
+    this.position_buffer_lower_lid = [];
+    this.normal_buffer_lower_lid = [];
+    this.color_buffer_lower_lid = [];
+    this.index_buffer_lower_lid = [];
 
     this.fillBuffers = function(normal_buf, position_buf, color_buf, x, y, z) {
         normal_buf.push(x);
@@ -53,6 +54,7 @@ function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_a
             var this_step_z = max_height + (height * sinTheta);
             var previous_step_y = from_aux + (radius * Math.cos((angle - 1) * 2 * Math.PI / 360));
             var previous_step_z = max_height + (height * Math.sin((angle - 1) * 2 * Math.PI / 360));
+            this.heights_along_arc.push([this_step_y, this_step_z]);
 
             for (var i = 0; i <= NUMBER_OF_SIDES; i++) {
                 var alpha = i * 2 * Math.PI / NUMBER_OF_SIDES;
@@ -165,5 +167,9 @@ function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_a
         this.prepareDraw(modelMatrix, this.normal_buffer, this.color_buffer, this.position_buffer, this.index_buffer);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
+    }
+    
+    this.getHeightsAlongArc = function() {
+        return this.heights_along_arc;
     }
 }

@@ -38,6 +38,8 @@ function Bridge(ph1, ph2, ph3, th1, th2, th3, s1, center_x, number_of_columns, f
     var columns = [];
     var arcs = [];
     var tensors = [];
+    var heights_along_road = road.getHeightsAlongRoad();
+    var heights_along_arcs = [[]];
     var arc_bridge_length = (to - from) - (2 * DISTANCE_FROM_BEGINNING_CURVED_ROAD);
     var position_first_column = from + DISTANCE_FROM_BEGINNING_CURVED_ROAD;
     var position_last_column = from + arc_bridge_length + DISTANCE_FROM_BEGINNING_CURVED_ROAD;
@@ -58,6 +60,15 @@ function Bridge(ph1, ph2, ph3, th1, th2, th3, s1, center_x, number_of_columns, f
     var number_of_extreme_tensors = ((DISTANCE_FROM_BEGINNING_CURVED_ROAD - DELIMITER - (CYLINDER_RADIUS * 2)) / 2) / s1;
     
     //Cylinder(number_of_sides, center_x, center_y, floor, ceiling, radius)
+    var min_height_tensor, max_height_tensor, tensor_position_y;
+    
+    this.findHeightFromPosition = function(position, heights) {
+        for (var i = 0; i < heights.length; i++) {
+            if (heights[i][0] >= position) {
+                return heights[i][1];
+            }
+        }
+    }
     
     for (var i = 0; i < number_of_columns; i++) {
         var this_step_center_y = position_first_column + i * distance_between_columns;
@@ -71,15 +82,19 @@ function Bridge(ph1, ph2, ph3, th1, th2, th3, s1, center_x, number_of_columns, f
             var left_arc = new Arc(min_height_border_arc, third_height_col, left_center_x, previous_step_center_y, this_step_center_y, 270, 360);
             left_arc.initBuffers();
             arcs.push(left_arc);
+            heights_along_arcs = left_arc.getHeightsAlongArc();
             var right_arc = new Arc(min_height_border_arc, third_height_col, right_center_x, previous_step_center_y, this_step_center_y, 270, 360);
             right_arc.initBuffers();
             arcs.push(right_arc);
             
             for (var j = 1; j < number_of_extreme_tensors; j++) {
-                var left_tensor = new Cylinder(NUMBER_OF_SIDES, left_center_x, this_step_center_y - (j * s1), 0, 5, CYLINDER_RADIUS);
+                tensor_position_y = this_step_center_y - (j * s1);
+                min_height_tensor = this.findHeightFromPosition(tensor_position_y, heights_along_road);
+                max_height_tensor = this.findHeightFromPosition(tensor_position_y, heights_along_arcs);
+                var left_tensor = new Cylinder(NUMBER_OF_SIDES, left_center_x, tensor_position_y, min_height_tensor, max_height_tensor, CYLINDER_RADIUS);
                 left_tensor.initBuffers();
                 tensors.push(left_tensor);
-                var right_tensor = new Cylinder(NUMBER_OF_SIDES, right_center_x, this_step_center_y - (j * s1), 0, 5, CYLINDER_RADIUS);
+                var right_tensor = new Cylinder(NUMBER_OF_SIDES, right_center_x, tensor_position_y, min_height_tensor, max_height_tensor, CYLINDER_RADIUS);
                 right_tensor.initBuffers();
                 tensors.push(right_tensor);
             }
@@ -90,15 +105,19 @@ function Bridge(ph1, ph2, ph3, th1, th2, th3, s1, center_x, number_of_columns, f
             var left_arc = new Arc(min_height_center_arc, third_height_col, left_center_x, this_step_center_y, next_step_center_y, 180, 360);
             left_arc.initBuffers();
             arcs.push(left_arc);
+            heights_along_arcs = left_arc.getHeightsAlongArc();
             var right_arc = new Arc(min_height_center_arc, third_height_col, right_center_x, this_step_center_y, next_step_center_y, 180, 360);
             right_arc.initBuffers();
             //Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_angle);
             arcs.push(right_arc);
             for (var j = 1; j < number_of_center_tensors; j++) {
-                var left_tensor = new Cylinder(NUMBER_OF_SIDES, left_center_x, this_step_center_y + (j * s1), 0, 5, CYLINDER_RADIUS);
+                tensor_position_y = this_step_center_y + (j * s1);
+                min_height_tensor = this.findHeightFromPosition(tensor_position_y, heights_along_road);
+                max_height_tensor = this.findHeightFromPosition(tensor_position_y, heights_along_arcs);
+                var left_tensor = new Cylinder(NUMBER_OF_SIDES, left_center_x, tensor_position_y, min_height_tensor, max_height_tensor, CYLINDER_RADIUS);
                 left_tensor.initBuffers();
                 tensors.push(left_tensor);
-                var right_tensor = new Cylinder(NUMBER_OF_SIDES, right_center_x, this_step_center_y + (j * s1), 0, 5, CYLINDER_RADIUS);
+                var right_tensor = new Cylinder(NUMBER_OF_SIDES, right_center_x, tensor_position_y, min_height_tensor, max_height_tensor, CYLINDER_RADIUS);
                 right_tensor.initBuffers();
                 tensors.push(right_tensor);
             }
@@ -109,15 +128,19 @@ function Bridge(ph1, ph2, ph3, th1, th2, th3, s1, center_x, number_of_columns, f
             var left_arc = new Arc(min_height_border_arc, third_height_col, left_center_x, this_step_center_y, next_step_center_y, 180, 270);
             left_arc.initBuffers();
             arcs.push(left_arc);
+            heights_along_arcs = left_arc.getHeightsAlongArc();
             var right_arc = new Arc(min_height_border_arc, third_height_col, right_center_x, this_step_center_y, next_step_center_y, 180, 270);
             right_arc.initBuffers();
             arcs.push(right_arc);
             
             for (var j = 1; j < number_of_extreme_tensors; j++) {
-                var left_tensor = new Cylinder(NUMBER_OF_SIDES, left_center_x, position_last_column + (j * s1), 0, 5, CYLINDER_RADIUS);
+                tensor_position_y = position_last_column + (j * s1);
+                min_height_tensor = this.findHeightFromPosition(tensor_position_y, heights_along_road);
+                max_height_tensor = this.findHeightFromPosition(tensor_position_y, heights_along_arcs);
+                var left_tensor = new Cylinder(NUMBER_OF_SIDES, left_center_x, tensor_position_y, min_height_tensor, max_height_tensor, CYLINDER_RADIUS);
                 left_tensor.initBuffers();
                 tensors.push(left_tensor);
-                var right_tensor = new Cylinder(NUMBER_OF_SIDES, right_center_x, position_last_column + (j * s1), 0, 5, CYLINDER_RADIUS);
+                var right_tensor = new Cylinder(NUMBER_OF_SIDES, right_center_x, tensor_position_y, min_height_tensor, max_height_tensor, CYLINDER_RADIUS);
                 right_tensor.initBuffers();
                 tensors.push(right_tensor);
             }

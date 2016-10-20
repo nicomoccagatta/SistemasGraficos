@@ -206,6 +206,7 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
     this.normal_buffer = [];
     this.color_buffer = [];
     this.index_buffer = [];
+    this.heights_along_road = [[]];
 
     this.webgl_position_buffer = null;
     this.webgl_normal_buffer = null;
@@ -254,6 +255,7 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
             var cosTheta = Math.cos(theta);
             var this_step_y = from + radius + (radius * sinTheta);
             var this_step_z = base_height + (height * cosTheta);
+            this.heights_along_road.push([this_step_y, this_step_z + MAX_HEIGHT_SEPARATION / 2]);
             var previous_step_y = from + radius + (radius * Math.sin((angle - 1) * 2 *  Math.PI / 360));
             var previous_step_z = base_height + (height * Math.cos((angle - 1) * 2 *  Math.PI / 360));
             
@@ -363,6 +365,10 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
         }
     }
     
+    this.getHeightsAlongRoad = function() {
+        return this.heights_along_road;
+    }
+    
     this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
         // Creacion e Inicializacion de los buffers a nivel de OpenGL
         this.webgl_normal_buffer = gl.createBuffer();
@@ -464,5 +470,9 @@ function Road(base_height, max_height, center_x) {
         plain_road_one.draw(modelMatrix);
         curved_road.draw(modelMatrix);
         plain_road_two.draw(modelMatrix);
+    }
+    
+    this.getHeightsAlongRoad = function() {
+        return curved_road.getHeightsAlongRoad();
     }
 }
