@@ -18,22 +18,16 @@ const DISTANCE_FROM_BEGINNING_CURVED_ROAD = 25;
 const DISTANCE_FROM_PH2 = 2;
 
 
-function Bridge(ph1, ph2, ph3, th1, th2, th3, s1, center_x, number_of_columns, from, to) {
-    var ph_sum = ph1 + ph2 + ph3;
-    var th_sum = th1 + th2 + th3;
-    if (ph_sum < th_sum) {
-        var new_th = ph_sum / 3;
-        th1 = new_th;
-        th2 = new_th;
-        th3 = new_th;
-    }
-    if (ph_sum > th_sum) {
-        var new_ph = th_sum / 3;
-        ph1 = new_ph;
-        ph2 = new_ph;
-        ph3 = new_ph;
+function Bridge(ph1, ph2, ph3, /*th1, th2, th3,*/ s1, center_x, number_of_columns, from, to) {
+    this.findHeightFromPosition = function(position, heights) {
+        for (var i = 0; i < heights.length; i++) {
+            if (heights[i][0] >= position) {
+                return heights[i][1];
+            }
+        }
     }
     
+    var ph_sum = ph1 + ph2 + ph3;
     var road = new Road(ph1, ph1 + ph2, center_x, from, to);
     var columns = [];
     var arcs = [];
@@ -47,6 +41,9 @@ function Bridge(ph1, ph2, ph3, th1, th2, th3, s1, center_x, number_of_columns, f
     var distance_between_columns = dintance_between_first_and_last_column / (number_of_columns - 1);
     var first_and_last_arc_length = dintance_between_first_and_last_column;
     var last_column = (number_of_columns - 1);
+    var th1 = this.findHeightFromPosition(position_first_column, heights_along_road);
+    var th2 = (ph_sum - th1) / 2;
+    var th3 = th2;
     var first_height_col = th1;
     var second_height_col = th1 + th2;
     var third_height_col = th1 + th2 + th3;
@@ -54,21 +51,9 @@ function Bridge(ph1, ph2, ph3, th1, th2, th3, s1, center_x, number_of_columns, f
     var min_height_center_arc = min_height_border_arc + DISTANCE_FROM_PH2;
     var left_center_x = center_x + CENTER_X_BORDER;
     var right_center_x = center_x - CENTER_X_BORDER;
-    
-    
     var number_of_center_tensors = (distance_between_columns - (DELIMITER * 2) - (CYLINDER_RADIUS * 2)) / s1;
     var number_of_extreme_tensors = ((DISTANCE_FROM_BEGINNING_CURVED_ROAD - DELIMITER - (CYLINDER_RADIUS * 2)) / 2) / s1;
-    
-    //Cylinder(number_of_sides, center_x, center_y, floor, ceiling, radius)
     var min_height_tensor, max_height_tensor, tensor_position_y;
-    
-    this.findHeightFromPosition = function(position, heights) {
-        for (var i = 0; i < heights.length; i++) {
-            if (heights[i][0] >= position) {
-                return heights[i][1];
-            }
-        }
-    }
     
     for (var i = 0; i < number_of_columns; i++) {
         var this_step_center_y = position_first_column + i * distance_between_columns;
@@ -108,7 +93,6 @@ function Bridge(ph1, ph2, ph3, th1, th2, th3, s1, center_x, number_of_columns, f
             heights_along_arcs = left_arc.getHeightsAlongArc();
             var right_arc = new Arc(min_height_center_arc, third_height_col, right_center_x, this_step_center_y, next_step_center_y, 180, 360);
             right_arc.initBuffers();
-            //Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_angle);
             arcs.push(right_arc);
             for (var j = 1; j < number_of_center_tensors; j++) {
                 tensor_position_y = this_step_center_y + (j * s1);
