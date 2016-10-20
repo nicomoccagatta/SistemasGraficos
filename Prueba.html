@@ -485,8 +485,8 @@
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight); 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);    
         mat4.lookAt(CameraMatrix,cameraPosition,target,[0.0,0.0,1.0]);
-        console.log("cameraPosition: ",cameraPosition);
-        console.log("target: ",target);
+        /*console.log("cameraPosition: ",cameraPosition);
+        console.log("target: ",target);*/
         mat4.perspective(pMatrix,degToRad(70), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0);
     }
 
@@ -526,7 +526,7 @@
         
         deimos = new Bridge(8, 3, 9, 8, 5, 7, 1.5, 0, 4, -50, 50); //Bridge(ph1, ph2, ph3, th1, th2, th3, s1, center_x, number_of_columns, from, to)
         //Arc(0, 10, 0, -10, 10, 180, 360);//Road(0, 2, 0);//Cylinder(64, 0, 0, 0, 10, 2);//Column(10, 20, 27, 0, 0, DELIMITER);
-        //deimos.initBuffers(); // ¡¡¡IMPORTANTE!!! Para probar Road o Column, comentar esta linea
+        //deimos.initBuffers(); // \A1\A1\A1IMPORTANTE!!! Para probar Road o Column, comentar esta linea
 
         /*deimos = new ColoredSphere(64, 64);
         deimos.initBuffers();

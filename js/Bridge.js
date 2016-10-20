@@ -6,7 +6,6 @@ function addJavascript(jsname, pos) {
     th.appendChild(s);
 }
 
-
 addJavascript("Arc.js", "head");
 addJavascript("Column.js", "head");
 addJavascript("Cylinder.js", "head");
@@ -51,7 +50,8 @@ function Bridge(ph1, ph2, ph3, th1, th2, th3, s1, center_x, number_of_columns, f
     var third_height_col = th1 + th2 + th3;
     var min_height_border_arc = ph1 + ph2 + MAX_HEIGHT_SEPARATION;
     var min_height_center_arc = min_height_border_arc + DISTANCE_FROM_PH2;
-    
+    var left_center_x = center_x + CENTER_X_BORDER;
+    var right_center_x = center_x - CENTER_X_BORDER;
     
     
     var number_of_center_tensors = (distance_between_columns - (DELIMITER * 2) - (CYLINDER_RADIUS * 2)) / s1;
@@ -61,26 +61,25 @@ function Bridge(ph1, ph2, ph3, th1, th2, th3, s1, center_x, number_of_columns, f
     
     for (var i = 0; i < number_of_columns; i++) {
         var this_step_center_y = position_first_column + i * distance_between_columns;
-        var left_column = new Column(first_height_col, second_height_col, third_height_col, center_x + CENTER_X_BORDER, this_step_center_y, DELIMITER);
-        var right_column = new Column(first_height_col, second_height_col, third_height_col, center_x - CENTER_X_BORDER, this_step_center_y, DELIMITER);
+        var left_column = new Column(first_height_col, second_height_col, third_height_col, left_center_x, this_step_center_y, DELIMITER);
+        var right_column = new Column(first_height_col, second_height_col, third_height_col, right_center_x, this_step_center_y, DELIMITER);
         columns.push(left_column);
         columns.push(right_column);
         
         if (i == 0) {
             var previous_step_center_y = position_first_column - DISTANCE_FROM_BEGINNING_CURVED_ROAD;
-            var left_arc = new Arc(min_height_border_arc, third_height_col, center_x + CENTER_X_BORDER, previous_step_center_y, this_step_center_y, 270, 360);
+            var left_arc = new Arc(min_height_border_arc, third_height_col, left_center_x, previous_step_center_y, this_step_center_y, 270, 360);
             left_arc.initBuffers();
             arcs.push(left_arc);
-            var right_arc = new Arc(min_height_border_arc, third_height_col, center_x - CENTER_X_BORDER, previous_step_center_y, this_step_center_y, 270, 360);
+            var right_arc = new Arc(min_height_border_arc, third_height_col, right_center_x, previous_step_center_y, this_step_center_y, 270, 360);
             right_arc.initBuffers();
             arcs.push(right_arc);
             
-            
             for (var j = 1; j < number_of_extreme_tensors; j++) {
-                var left_tensor = new Cylinder(NUMBER_OF_SIDES, center_x + CENTER_X_BORDER, this_step_center_y - (j * s1), 0, 5, CYLINDER_RADIUS);
+                var left_tensor = new Cylinder(NUMBER_OF_SIDES, left_center_x, this_step_center_y - (j * s1), 0, 5, CYLINDER_RADIUS);
                 left_tensor.initBuffers();
                 tensors.push(left_tensor);
-                var right_tensor = new Cylinder(NUMBER_OF_SIDES, center_x - CENTER_X_BORDER, this_step_center_y - (j * s1), 0, 5, CYLINDER_RADIUS);
+                var right_tensor = new Cylinder(NUMBER_OF_SIDES, right_center_x, this_step_center_y - (j * s1), 0, 5, CYLINDER_RADIUS);
                 right_tensor.initBuffers();
                 tensors.push(right_tensor);
             }
@@ -88,21 +87,18 @@ function Bridge(ph1, ph2, ph3, th1, th2, th3, s1, center_x, number_of_columns, f
         
         if (i < last_column) {
             var next_step_center_y = position_first_column + (i + 1) * distance_between_columns;
-            var left_arc = new Arc(min_height_center_arc, third_height_col, center_x + CENTER_X_BORDER, this_step_center_y, next_step_center_y, 180, 360);
+            var left_arc = new Arc(min_height_center_arc, third_height_col, left_center_x, this_step_center_y, next_step_center_y, 180, 360);
             left_arc.initBuffers();
             arcs.push(left_arc);
-            var right_arc = new Arc(min_height_center_arc, third_height_col, center_x - CENTER_X_BORDER, this_step_center_y, next_step_center_y, 180, 360);
+            var right_arc = new Arc(min_height_center_arc, third_height_col, right_center_x, this_step_center_y, next_step_center_y, 180, 360);
             right_arc.initBuffers();
             //Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_angle);
             arcs.push(right_arc);
-        }
-        
-        if ((i != 0) && (i <= last_column)) {
             for (var j = 1; j < number_of_center_tensors; j++) {
-                var left_tensor = new Cylinder(NUMBER_OF_SIDES, center_x + CENTER_X_BORDER, this_step_center_y - (j * s1), 0, 5, CYLINDER_RADIUS);
+                var left_tensor = new Cylinder(NUMBER_OF_SIDES, left_center_x, this_step_center_y + (j * s1), 0, 5, CYLINDER_RADIUS);
                 left_tensor.initBuffers();
                 tensors.push(left_tensor);
-                var right_tensor = new Cylinder(NUMBER_OF_SIDES, center_x - CENTER_X_BORDER, this_step_center_y - (j * s1), 0, 5, CYLINDER_RADIUS);
+                var right_tensor = new Cylinder(NUMBER_OF_SIDES, right_center_x, this_step_center_y + (j * s1), 0, 5, CYLINDER_RADIUS);
                 right_tensor.initBuffers();
                 tensors.push(right_tensor);
             }
@@ -110,60 +106,60 @@ function Bridge(ph1, ph2, ph3, th1, th2, th3, s1, center_x, number_of_columns, f
         
         if (i == last_column) {
             var next_step_center_y = position_last_column + DISTANCE_FROM_BEGINNING_CURVED_ROAD;
-            var left_arc = new Arc(min_height_border_arc, third_height_col, center_x + CENTER_X_BORDER, this_step_center_y, next_step_center_y, 180, 270);
+            var left_arc = new Arc(min_height_border_arc, third_height_col, left_center_x, this_step_center_y, next_step_center_y, 180, 270);
             left_arc.initBuffers();
             arcs.push(left_arc);
-            var right_arc = new Arc(min_height_border_arc, third_height_col, center_x - CENTER_X_BORDER, this_step_center_y, next_step_center_y, 180, 270);
+            var right_arc = new Arc(min_height_border_arc, third_height_col, right_center_x, this_step_center_y, next_step_center_y, 180, 270);
             right_arc.initBuffers();
             arcs.push(right_arc);
             
             for (var j = 1; j < number_of_extreme_tensors; j++) {
-                var left_tensor = new Cylinder(NUMBER_OF_SIDES, center_x + CENTER_X_BORDER, position_last_column + (j * s1), 0, 5, CYLINDER_RADIUS);
+                var left_tensor = new Cylinder(NUMBER_OF_SIDES, left_center_x, position_last_column + (j * s1), 0, 5, CYLINDER_RADIUS);
                 left_tensor.initBuffers();
                 tensors.push(left_tensor);
-                var right_tensor = new Cylinder(NUMBER_OF_SIDES, center_x - CENTER_X_BORDER, position_last_column + (j * s1), 0, 5, CYLINDER_RADIUS);
+                var right_tensor = new Cylinder(NUMBER_OF_SIDES, right_center_x, position_last_column + (j * s1), 0, 5, CYLINDER_RADIUS);
                 right_tensor.initBuffers();
                 tensors.push(right_tensor);
             }
         }
     }
 
-    this.setupShaders = function(){
+    this.setupGroupShaders = function(group) {
+        for (var i = 0; i < group.length; i++) {
+            group[i].setupShaders();
+        }
+    }
+
+    this.setupShaders = function() {
         road.setupShaders();
-        for (var i = 0; i < columns.length; i++) {
-            columns[i].setupShaders();
-        }
-        for (var i = 0; i < arcs.length; i++) {
-            arcs[i].setupShaders();
-        }
-        for (var i = 0; i < tensors.length; i++) {
-            tensors[i].setupShaders();
+        this.setupGroupShaders(columns);
+        this.setupGroupShaders(arcs);
+        this.setupGroupShaders(tensors);
+    }
+
+    this.setupGroupLighting = function(group, lightPosition, ambientColor, diffuseColor) {
+        for (var i = 0; i < group.length; i++) {
+            group[i].setupLighting(lightPosition, ambientColor, diffuseColor);
         }
     }
 
-    this.setupLighting = function(lightPosition, ambientColor, diffuseColor){
+    this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
         road.setupLighting(lightPosition, ambientColor, diffuseColor);
-        for (var i = 0; i < columns.length; i++) {
-            columns[i].setupLighting(lightPosition, ambientColor, diffuseColor);
-        }
-        for (var i = 0; i < arcs.length; i++) {
-            arcs[i].setupLighting(lightPosition, ambientColor, diffuseColor);
-        }
-        for (var i = 0; i < tensors.length; i++) {
-            tensors[i].setupLighting(lightPosition, ambientColor, diffuseColor);
+        this.setupGroupLighting(columns, lightPosition, ambientColor, diffuseColor);
+        this.setupGroupLighting(arcs, lightPosition, ambientColor, diffuseColor);
+        this.setupGroupLighting(tensors, lightPosition, ambientColor, diffuseColor);
+    }
+
+    this.drawGroup = function(group, modelMatrix) {
+        for (var i = 0; i < group.length; i++) {
+            group[i].draw(modelMatrix);
         }
     }
 
-    this.draw = function(modelMatrix){ 
+    this.draw = function(modelMatrix) { 
         road.draw(modelMatrix);
-        for (var i = 0; i < columns.length; i++) {
-            columns[i].draw(modelMatrix);
-        }
-        for (var i = 0; i < arcs.length; i++) {
-            arcs[i].draw(modelMatrix);
-        }
-        for (var i = 0; i < tensors.length; i++) {
-            tensors[i].draw(modelMatrix);
-        }
+        this.drawGroup(columns, modelMatrix);
+        this.drawGroup(arcs, modelMatrix);
+        this.drawGroup(tensors, modelMatrix);
     }
 }
