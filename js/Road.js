@@ -4,8 +4,6 @@ const INTERN_LOW_BORDER = 1.3;
 const INTERN_HIGH_BORDER = 1;
 const HALF_WIDTH = 5;
 const FIRST_PLAIN_ROAD_BEGIN = -80;
-//const FIRST_PLAIN_ROAD_END = -50;
-//const SECOND_PLAIN_ROAD_BEGIN = 50;
 const SECOND_PLAIN_ROAD_END = 80;
 
 //Height seria ph1 segun el enunciado.
@@ -123,7 +121,6 @@ function PlainRoad(height, center_x, from, to) {
     }
     
     this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
-        // Creacion e Inicializacion de los buffers a nivel de OpenGL
         this.webgl_normal_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
@@ -149,16 +146,12 @@ function PlainRoad(height, center_x, from, to) {
         this.webgl_index_buffer.numItems = index_buffer.length;
     }
 
-    this.setupShaders = function(){
+    this.setupShaders = function() {
         gl.useProgram(shaderProgramColoredObject);
     }
 
-    this.setupLighting = function(lightPosition, ambientColor, diffuseColor){
-        ////////////////////////////////////////////////////
-        // Configuracion de la luz
-        // Se inicializan las variables asociadas con la Iluminacion
-        var lighting;
-        lighting = true;
+    this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
+        var lighting = true;
         gl.uniform1i(shaderProgramColoredObject.useLightingUniform, lighting);       
 
         gl.uniform3fv(shaderProgramColoredObject.lightingDirectionUniform, lightPosition);
@@ -166,13 +159,12 @@ function PlainRoad(height, center_x, from, to) {
         gl.uniform3fv(shaderProgramColoredObject.directionalColorUniform, diffuseColor);
     }
     
-    this.prepareDraw = function(modelMatrix, normal_buffer, color_buffer, position_buffer, index_buffer){
+    this.prepareDraw = function(modelMatrix, normal_buffer, color_buffer, position_buffer, index_buffer) {
         this.createBuffer(normal_buffer, color_buffer, position_buffer, index_buffer);
         
         gl.uniformMatrix4fv(shaderProgramColoredObject.pMatrixUniform, false, pMatrix);
         gl.uniformMatrix4fv(shaderProgramColoredObject.ViewMatrixUniform, false, CameraMatrix); 
 
-        // Se configuran los buffers que alimentaran el pipeline
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
         gl.vertexAttribPointer(shaderProgramColoredObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -182,7 +174,6 @@ function PlainRoad(height, center_x, from, to) {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
         gl.vertexAttribPointer(shaderProgramColoredObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
-
         gl.uniformMatrix4fv(shaderProgramColoredObject.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
         mat3.fromMat4(normalMatrix, modelMatrix);
@@ -191,7 +182,7 @@ function PlainRoad(height, center_x, from, to) {
         gl.uniformMatrix3fv(shaderProgramColoredObject.nMatrixUniform, false, normalMatrix);
     }
 
-    this.draw = function(modelMatrix){ 
+    this.draw = function(modelMatrix) { 
         this.prepareDraw(modelMatrix, this.normal_buffer, this.color_buffer, this.position_buffer, this.index_buffer);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
@@ -200,7 +191,6 @@ function PlainRoad(height, center_x, from, to) {
 
 
 
-//El delimitador es para saber que tan grande es esa parte de la columna.
 function CurvedRoad(base_height, max_height, center_x, from, to) {
     this.position_buffer = [];
     this.normal_buffer = [];
@@ -224,7 +214,6 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
     var intern_high_right_x = (extreme_right_x + INTERN_HIGH_BORDER);
     var intern_high_left_x = (extreme_left_x - INTERN_HIGH_BORDER);
     
-
     this.fillBuffers = function(x, y, z) {
         this.normal_buffer.push(x);
         this.normal_buffer.push(y);
@@ -370,7 +359,6 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
     }
     
     this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
-        // Creacion e Inicializacion de los buffers a nivel de OpenGL
         this.webgl_normal_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
@@ -400,12 +388,8 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
         gl.useProgram(shaderProgramColoredObject);
     }
 
-    this.setupLighting = function(lightPosition, ambientColor, diffuseColor){
-        ////////////////////////////////////////////////////
-        // Configuracion de la luz
-        // Se inicializan las variables asociadas con la Iluminacion
-        var lighting;
-        lighting = true;
+    this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
+        var lighting = true;
         gl.uniform1i(shaderProgramColoredObject.useLightingUniform, lighting);       
 
         gl.uniform3fv(shaderProgramColoredObject.lightingDirectionUniform, lightPosition);
@@ -419,7 +403,6 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
         gl.uniformMatrix4fv(shaderProgramColoredObject.pMatrixUniform, false, pMatrix);
         gl.uniformMatrix4fv(shaderProgramColoredObject.ViewMatrixUniform, false, CameraMatrix); 
 
-        // Se configuran los buffers que alimentaran el pipeline
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
         gl.vertexAttribPointer(shaderProgramColoredObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -437,7 +420,7 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
         gl.uniformMatrix3fv(shaderProgramColoredObject.nMatrixUniform, false, normalMatrix);
     }
 
-    this.draw = function(modelMatrix){ 
+    this.draw = function(modelMatrix) { 
         this.prepareDraw(modelMatrix, this.normal_buffer, this.color_buffer, this.position_buffer, this.index_buffer);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
@@ -447,26 +430,26 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
 
 
 function Road(base_height, max_height, center_x, from, to) {
-    var plain_road_one = new PlainRoad(base_height, center_x, FIRST_PLAIN_ROAD_BEGIN, from);//PlainRoad(height, center_x, from, to);
+    var plain_road_one = new PlainRoad(base_height, center_x, FIRST_PLAIN_ROAD_BEGIN, from);
     plain_road_one.initBuffers();
-    var curved_road = new CurvedRoad(base_height, max_height, center_x, from, to)//CurvedRoad(base_height, max_height, center_x, from, to);
+    var curved_road = new CurvedRoad(base_height, max_height, center_x, from, to);
     curved_road.initBuffers();
     var plain_road_two = new PlainRoad(base_height, center_x, to, SECOND_PLAIN_ROAD_END);
     plain_road_two.initBuffers();
     
-    this.setupShaders = function(){
+    this.setupShaders = function() {
         plain_road_one.setupShaders();
         curved_road.setupShaders();
         plain_road_two.setupShaders();
     }
 
-    this.setupLighting = function(lightPosition, ambientColor, diffuseColor){
+    this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
         plain_road_one.setupLighting(lightPosition, ambientColor, diffuseColor);
         curved_road.setupLighting(lightPosition, ambientColor, diffuseColor);
         plain_road_two.setupLighting(lightPosition, ambientColor, diffuseColor);
     }
 
-    this.draw = function(modelMatrix){ 
+    this.draw = function(modelMatrix) { 
         plain_road_one.draw(modelMatrix);
         curved_road.draw(modelMatrix);
         plain_road_two.draw(modelMatrix);

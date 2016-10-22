@@ -88,7 +88,6 @@ function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_a
     }
     
     this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
-        // Creacion e Inicializacion de los buffers a nivel de OpenGL
         this.webgl_normal_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
@@ -119,11 +118,7 @@ function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_a
     }
 
     this.setupLighting = function(lightPosition, ambientColor, diffuseColor){
-        ////////////////////////////////////////////////////
-        // Configuracion de la luz
-        // Se inicializan las variables asociadas con la Iluminacion
-        var lighting;
-        lighting = true;
+        var lighting = true;
         gl.uniform1i(shaderProgramColoredObject.useLightingUniform, lighting);       
 
         gl.uniform3fv(shaderProgramColoredObject.lightingDirectionUniform, lightPosition);
@@ -137,7 +132,6 @@ function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_a
         gl.uniformMatrix4fv(shaderProgramColoredObject.pMatrixUniform, false, pMatrix);
         gl.uniformMatrix4fv(shaderProgramColoredObject.ViewMatrixUniform, false, CameraMatrix); 
 
-        // Se configuran los buffers que alimentaran el pipeline
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
         gl.vertexAttribPointer(shaderProgramColoredObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 

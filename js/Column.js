@@ -1,5 +1,5 @@
 const HEIGHT_BASE_COLUMN_TWO = 0.5;
-const MIN_HEIGHT = 0; //TODO tal vez haya que cambiarlo
+const MIN_HEIGHT = 0;
 const DELIMITER_DIFF = 0.4;
 
 //El delimitador es para saber que tan grande es esa parte de la columna.
@@ -105,7 +105,6 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
     }
     
     this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
-        // Creacion e Inicializacion de los buffers a nivel de OpenGL
         this.webgl_normal_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
@@ -131,16 +130,12 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
         this.webgl_index_buffer.numItems = index_buffer.length;
     }
 
-    this.setupShaders = function(){
+    this.setupShaders = function() {
         gl.useProgram(shaderProgramColoredObject);
     }
 
-    this.setupLighting = function(lightPosition, ambientColor, diffuseColor){
-        ////////////////////////////////////////////////////
-        // Configuracion de la luz
-        // Se inicializan las variables asociadas con la Iluminacion
-        var lighting;
-        lighting = true;
+    this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
+        var lighting = true;
         gl.uniform1i(shaderProgramColoredObject.useLightingUniform, lighting);       
 
         gl.uniform3fv(shaderProgramColoredObject.lightingDirectionUniform, lightPosition);
@@ -148,13 +143,12 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
         gl.uniform3fv(shaderProgramColoredObject.directionalColorUniform, diffuseColor);
     }
     
-    this.prepareDraw = function(modelMatrix, normal_buffer, color_buffer, position_buffer, index_buffer){
+    this.prepareDraw = function(modelMatrix, normal_buffer, color_buffer, position_buffer, index_buffer) {
         this.createBuffer(normal_buffer, color_buffer, position_buffer, index_buffer);
         
         gl.uniformMatrix4fv(shaderProgramColoredObject.pMatrixUniform, false, pMatrix);
         gl.uniformMatrix4fv(shaderProgramColoredObject.ViewMatrixUniform, false, CameraMatrix); 
 
-        // Se configuran los buffers que alimentaran el pipeline
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
         gl.vertexAttribPointer(shaderProgramColoredObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -172,13 +166,12 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
         gl.uniformMatrix3fv(shaderProgramColoredObject.nMatrixUniform, false, normalMatrix);
     }
 
-    this.draw = function(modelMatrix){ 
+    this.draw = function(modelMatrix) { 
         this.prepareDraw(modelMatrix, this.normal_buffer, this.color_buffer, this.position_buffer, this.index_buffer);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
     }
 }
-
 
 
 
@@ -263,7 +256,6 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
     }
     
     this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
-        // Creacion e Inicializacion de los buffers a nivel de OpenGL
         this.webgl_normal_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
@@ -289,16 +281,12 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
         this.webgl_index_buffer.numItems = index_buffer.length;
     }
 
-    this.setupShaders = function(){
+    this.setupShaders = function() {
         gl.useProgram(shaderProgramColoredObject);
     }
 
-    this.setupLighting = function(lightPosition, ambientColor, diffuseColor){
-        ////////////////////////////////////////////////////
-        // Configuracion de la luz
-        // Se inicializan las variables asociadas con la Iluminacion
-        var lighting;
-        lighting = true;
+    this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
+        var lighting = true;
         gl.uniform1i(shaderProgramColoredObject.useLightingUniform, lighting);       
 
         gl.uniform3fv(shaderProgramColoredObject.lightingDirectionUniform, lightPosition);
@@ -306,13 +294,12 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
         gl.uniform3fv(shaderProgramColoredObject.directionalColorUniform, diffuseColor);
     }
     
-    this.prepareDraw = function(modelMatrix, normal_buffer, color_buffer, position_buffer, index_buffer){
+    this.prepareDraw = function(modelMatrix, normal_buffer, color_buffer, position_buffer, index_buffer) {
         this.createBuffer(normal_buffer, color_buffer, position_buffer, index_buffer);
         
         gl.uniformMatrix4fv(shaderProgramColoredObject.pMatrixUniform, false, pMatrix);
         gl.uniformMatrix4fv(shaderProgramColoredObject.ViewMatrixUniform, false, CameraMatrix); 
 
-        // Se configuran los buffers que alimentaran el pipeline
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
         gl.vertexAttribPointer(shaderProgramColoredObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -322,7 +309,6 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
         gl.vertexAttribPointer(shaderProgramColoredObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
-
         gl.uniformMatrix4fv(shaderProgramColoredObject.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
         mat3.fromMat4(normalMatrix, modelMatrix);
@@ -331,7 +317,7 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
         gl.uniformMatrix3fv(shaderProgramColoredObject.nMatrixUniform, false, normalMatrix);
     }
 
-    this.draw = function(modelMatrix){ 
+    this.draw = function(modelMatrix) { 
         this.prepareDraw(modelMatrix, this.normal_buffer, this.color_buffer, this.position_buffer, this.index_buffer);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
@@ -352,7 +338,7 @@ function Column(first_max_height, second_max_height, third_max_height, center_x,
     var third_base_column_one = new BaseColumnOne(first_max_height + MIN_HEIGHT, MIN_HEIGHT, center_x, center_y, (2 * DELIMITER_DIFF) + delimiter);
     third_base_column_one.initBuffers();
     
-    this.setupShaders = function(){
+    this.setupShaders = function() {
         first_base_column_one.setupShaders();
         first_base_column_two.setupShaders();
         second_base_column_one.setupShaders();
@@ -360,7 +346,7 @@ function Column(first_max_height, second_max_height, third_max_height, center_x,
         third_base_column_one.setupShaders();
     }
 
-    this.setupLighting = function(lightPosition, ambientColor, diffuseColor){
+    this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
         first_base_column_one.setupLighting(lightPosition, ambientColor, diffuseColor);
         first_base_column_two.setupLighting(lightPosition, ambientColor, diffuseColor);
         second_base_column_one.setupLighting(lightPosition, ambientColor, diffuseColor);
@@ -368,7 +354,7 @@ function Column(first_max_height, second_max_height, third_max_height, center_x,
         third_base_column_one.setupLighting(lightPosition, ambientColor, diffuseColor);
     }
 
-    this.draw = function(modelMatrix){ 
+    this.draw = function(modelMatrix) { 
         first_base_column_one.draw(modelMatrix);
         first_base_column_two.draw(modelMatrix);
         second_base_column_one.draw(modelMatrix);

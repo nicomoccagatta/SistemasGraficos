@@ -159,7 +159,6 @@
         }
     }
 
-
     function getShader(gl, id) {
         var shaderScript = document.getElementById(id);
         if (!shaderScript) {
@@ -195,10 +194,8 @@
         return shader;
     }
 
-
     var shaderProgramTexturedObject;
     var shaderProgramColoredObject;
-
 
        function initShaders() {
 
@@ -342,13 +339,8 @@
         return degrees * Math.PI / 180;
     }
 
-   
-   
     //////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////
-
 
     var cameraPosition = vec3.create();
     var target = vec3.create();
@@ -365,8 +357,6 @@
         phiAngle = Math.atan(initPosToTranslate[1]/initPosToTranslate[0]);  //para las rotaciones en el plano xy
         cameraPosition = [radius*Math.cos(phiAngle)*Math.sin(thetaAngle),radius*Math.sin(phiAngle)*Math.sin(thetaAngle),radius*Math.cos(thetaAngle)];
     }
-    
-    
 
     function drawScene() {
 	
@@ -411,8 +401,6 @@
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight); 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);    
         mat4.lookAt(CameraMatrix,cameraPosition,target,[0.0,0.0,1.0]);
-        /*console.log("cameraPosition: ",cameraPosition);
-        console.log("target: ",target);*/
         mat4.perspective(pMatrix,degToRad(70), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0);
     }
 
@@ -424,16 +412,10 @@
         mat4.identity(newRotationMatrix);
         mat4.rotate(newRotationMatrix, newRotationMatrix, 0.025, [0, 1, 0]);
 		mat4.multiply(newRotationMatrix, deimosRotationMatrix, deimosRotationMatrix);
-
         deimosRotationAnglemars += 0.0045;
-        phobosRotationAngledeimos += 0.0005;
-        
         deimos = deimos.updateBridge(app);
-        
         drawScene();
     }
-
-
 
     function webGLStart() {
         var canvas = document.getElementById("clase03-vertex shader");
@@ -483,7 +465,7 @@
             <canvas id="clase03-vertex shader" onmousemove="onMouseMove(event)" onmousedown="onMouseDown(event)" onmouseup="onMouseUp(event)" 
                     style="border: none;" width="1280" height="720">
             Your browser does not support the HTML5 canvas element.
-            </scanvas>
+            </canvas>
             
     </center>
  </body>

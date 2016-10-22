@@ -61,7 +61,6 @@ function Cylinder(number_of_sides, center_x, center_y, floor, ceiling, radius) {
     }
     
     this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
-        // Creacion e Inicializacion de los buffers a nivel de OpenGL
         this.webgl_normal_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
@@ -87,16 +86,12 @@ function Cylinder(number_of_sides, center_x, center_y, floor, ceiling, radius) {
         this.webgl_index_buffer.numItems = index_buffer.length;
     }
 
-    this.setupShaders = function(){
+    this.setupShaders = function() {
         gl.useProgram(shaderProgramColoredObject);
     }
 
-    this.setupLighting = function(lightPosition, ambientColor, diffuseColor){
-        ////////////////////////////////////////////////////
-        // Configuracion de la luz
-        // Se inicializan las variables asociadas con la Iluminacion
-        var lighting;
-        lighting = true;
+    this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
+        var lighting = true;
         gl.uniform1i(shaderProgramColoredObject.useLightingUniform, lighting);       
 
         gl.uniform3fv(shaderProgramColoredObject.lightingDirectionUniform, lightPosition);
@@ -104,13 +99,12 @@ function Cylinder(number_of_sides, center_x, center_y, floor, ceiling, radius) {
         gl.uniform3fv(shaderProgramColoredObject.directionalColorUniform, diffuseColor);
     }
     
-    this.prepareDraw = function(modelMatrix, normal_buffer, color_buffer, position_buffer, index_buffer){
+    this.prepareDraw = function(modelMatrix, normal_buffer, color_buffer, position_buffer, index_buffer) {
         this.createBuffer(normal_buffer, color_buffer, position_buffer, index_buffer);
         
         gl.uniformMatrix4fv(shaderProgramColoredObject.pMatrixUniform, false, pMatrix);
         gl.uniformMatrix4fv(shaderProgramColoredObject.ViewMatrixUniform, false, CameraMatrix); 
 
-        // Se configuran los buffers que alimentaran el pipeline
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
         gl.vertexAttribPointer(shaderProgramColoredObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -128,7 +122,7 @@ function Cylinder(number_of_sides, center_x, center_y, floor, ceiling, radius) {
         gl.uniformMatrix3fv(shaderProgramColoredObject.nMatrixUniform, false, normalMatrix);
     }
 
-    this.draw = function(modelMatrix){ 
+    this.draw = function(modelMatrix) { 
         this.prepareDraw(modelMatrix, this.normal_buffer_upper_lid, this.color_buffer_upper_lid, this.position_buffer_upper_lid, this.index_buffer_upper_lid);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_FAN, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
