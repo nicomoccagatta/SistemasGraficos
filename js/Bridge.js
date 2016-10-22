@@ -15,10 +15,10 @@ addJavascript("Road.js", "head");
 const DELIMITER = INTERN_HIGH_BORDER - DELIMITER_DIFF - RADIUS_CYLINDER_ARC;
 const CENTER_X_BORDER = HALF_WIDTH - RADIUS_CYLINDER_ARC;
 const DISTANCE_FROM_BEGINNING_CURVED_ROAD = 25;
-const DISTANCE_FROM_PH2 = 2;
+const DISTANCE_FROM_PH2 = 3;
 
 
-function Bridge(ph1, ph2, ph3, /*th1, th2, th3,*/ s1, center_x, number_of_columns, from, to) {
+function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
     this.findHeightFromPosition = function(position, heights) {
         for (var i = 0; i < heights.length; i++) {
             if (heights[i][0] >= position) {
@@ -27,7 +27,6 @@ function Bridge(ph1, ph2, ph3, /*th1, th2, th3,*/ s1, center_x, number_of_column
         }
     }
     
-    var ph_sum = ph1 + ph2 + ph3;
     var road = new Road(ph1, ph1 + ph2, center_x, from, to);
     var columns = [];
     var arcs = [];
@@ -42,19 +41,19 @@ function Bridge(ph1, ph2, ph3, /*th1, th2, th3,*/ s1, center_x, number_of_column
     var first_and_last_arc_length = dintance_between_first_and_last_column;
     var last_column = (number_of_columns - 1);
     var th1 = this.findHeightFromPosition(position_first_column, heights_along_road);
-    var th2 = (ph_sum - th1) / 2;
-    var th3 = th2;
+    var th2 = (ph1 + ph2 + ph3 - th1) / 2;
     var first_height_col = th1;
-    var second_height_col = th1 + th2;
-    var third_height_col = th1 + th2 + th3;
-    var min_height_border_arc = ph1 + ph2 + MAX_HEIGHT_SEPARATION;
-    var min_height_center_arc = min_height_border_arc + DISTANCE_FROM_PH2;
+    var second_height_col = first_height_col + th2;
+    var third_height_col = second_height_col + th2;
+    var min_height_border_arc = this.findHeightFromPosition(position_first_column - (DISTANCE_FROM_BEGINNING_CURVED_ROAD / 2), heights_along_road) + MAX_HEIGHT_SEPARATION + CYLINDER_RADIUS;
+    var min_height_center_arc = ph1 + ph2 + DISTANCE_FROM_PH2;
     var left_center_x = center_x + CENTER_X_BORDER;
     var right_center_x = center_x - CENTER_X_BORDER;
     var number_of_center_tensors = (distance_between_columns - (DELIMITER * 2) - (CYLINDER_RADIUS * 2)) / s1;
     var number_of_extreme_tensors = ((DISTANCE_FROM_BEGINNING_CURVED_ROAD - DELIMITER - (CYLINDER_RADIUS * 2)) / 2) / s1;
     var min_height_tensor, max_height_tensor, tensor_position_y;
     
+
     for (var i = 0; i < number_of_columns; i++) {
         var this_step_center_y = position_first_column + i * distance_between_columns;
         var left_column = new Column(first_height_col, second_height_col, third_height_col, left_center_x, this_step_center_y, DELIMITER);
@@ -168,5 +167,10 @@ function Bridge(ph1, ph2, ph3, /*th1, th2, th3,*/ s1, center_x, number_of_column
         this.drawGroup(columns, modelMatrix);
         this.drawGroup(arcs, modelMatrix);
         this.drawGroup(tensors, modelMatrix);
+    }
+    
+    this.updateBridge = function(app) {
+        delete this;
+        return new Bridge(app.ph1, app.ph2, app.ph3, app.s1, app.pos, app.cols, -70, 70);
     }
 }
