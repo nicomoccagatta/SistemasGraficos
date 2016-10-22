@@ -10,6 +10,7 @@ addJavascript("Arc.js", "head");
 addJavascript("Column.js", "head");
 addJavascript("Cylinder.js", "head");
 addJavascript("Road.js", "head");
+addJavascript("River.js", "head");
 
 
 const DELIMITER = INTERN_HIGH_BORDER - DELIMITER_DIFF - RADIUS_CYLINDER_ARC;
@@ -27,6 +28,8 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
         }
     }
     
+    var river = new River();
+    river.initBuffers();
     var road = new Road(ph1, ph1 + ph2, center_x, from, to);
     var columns = [];
     var arcs = [];
@@ -137,6 +140,7 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
     }
 
     this.setupShaders = function() {
+        river.setupShaders();
         road.setupShaders();
         this.setupGroupShaders(columns);
         this.setupGroupShaders(arcs);
@@ -150,6 +154,7 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
     }
 
     this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
+        river.setupLighting(lightPosition, ambientColor, diffuseColor);
         road.setupLighting(lightPosition, ambientColor, diffuseColor);
         this.setupGroupLighting(columns, lightPosition, ambientColor, diffuseColor);
         this.setupGroupLighting(arcs, lightPosition, ambientColor, diffuseColor);
@@ -162,7 +167,8 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
         }
     }
 
-    this.draw = function(modelMatrix) { 
+    this.draw = function(modelMatrix) {
+        river.draw(modelMatrix);
         road.draw(modelMatrix);
         this.drawGroup(columns, modelMatrix);
         this.drawGroup(arcs, modelMatrix);

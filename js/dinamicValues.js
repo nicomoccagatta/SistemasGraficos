@@ -29,7 +29,7 @@ function GUI () {
         f2.add(app, 'ph3', 5.0, 20.0).name("ph3").step(0.1);
         f2.add(app, 's1', 1.0, 10.0).name("s1").step(0.1);
         f2.add(app, 'cols', 2.0, 4.0).name("Cantidad columnas").step(1);
-        f2.add(app, 'pos', -20.0, 20.0).name("Posici&oacuten del r&iacuteo").step(0.1);
+        f2.add(app, 'pos', -20.0, 20.0).name("Posici&oacuten del puente").step(0.1);
 
         //f2.add(app, 'modo',["random","secuencial"]).name("modo");
 
