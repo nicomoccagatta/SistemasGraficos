@@ -1,17 +1,3 @@
-function addJavascript(jsname, pos) {
-    var th = document.getElementsByTagName(pos)[0];
-    var s = document.createElement("script");
-    s.setAttribute("type", "text/javascript");
-    s.setAttribute("src", jsname);
-    th.appendChild(s);
-}
-
-addJavascript("Arc.js", "head");
-addJavascript("Column.js", "head");
-addJavascript("Cylinder.js", "head");
-addJavascript("Road.js", "head");
-addJavascript("River.js", "head");
-
 const DELIMITER = INTERN_HIGH_BORDER - DELIMITER_DIFF - RADIUS_CYLINDER_ARC;
 const CENTER_X_BORDER = HALF_WIDTH - RADIUS_CYLINDER_ARC;
 const DISTANCE_FROM_BEGINNING_CURVED_ROAD = 25;

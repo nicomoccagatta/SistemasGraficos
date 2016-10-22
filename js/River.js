@@ -1,5 +1,7 @@
-const LEFT_BORDER_MAP = -80;
-const RIGHT_BORDER_MAP = 80;
+const LEFT_BORDER_MAP = -100;
+const BOTTOM_BORDER_MAP = -80;
+const RIGHT_BORDER_MAP = 100;
+const TOP_BORDER_MAP = 80;
 const RIVER_HEIGHT = 1;
 
 function River() {
@@ -10,10 +12,10 @@ function River() {
 
     this.initBuffers = function() {
         this.position_buffer = [
-            LEFT_BORDER_MAP, LEFT_BORDER_MAP, RIVER_HEIGHT,
-            RIGHT_BORDER_MAP, LEFT_BORDER_MAP, RIVER_HEIGHT,
-            LEFT_BORDER_MAP, RIGHT_BORDER_MAP, RIVER_HEIGHT,
-            RIGHT_BORDER_MAP, RIGHT_BORDER_MAP, RIVER_HEIGHT
+            LEFT_BORDER_MAP, BOTTOM_BORDER_MAP, RIVER_HEIGHT,
+            RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, RIVER_HEIGHT,
+            LEFT_BORDER_MAP, TOP_BORDER_MAP, RIVER_HEIGHT,
+            RIGHT_BORDER_MAP, TOP_BORDER_MAP, RIVER_HEIGHT
         ];
         
         this.normal_buffer = this.position_buffer;
