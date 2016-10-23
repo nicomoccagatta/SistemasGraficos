@@ -12,6 +12,7 @@
 <script type="text/javascript" src="js/Road.js"></script>
 <script type="text/javascript" src="js/River.js"></script>
 <script type="text/javascript" src="js/Arc.js"></script>
+<script type="text/javascript" src="js/Field.js"></script>
 <script type="text/javascript" src="js/Bridge.js"></script>
 
 <script id="shader-fs-colored-obj" type="x-shader/x-fragment">
@@ -139,9 +140,6 @@
     }
 </script>
 
-
-<script src="js/shapes/ColoredSphere.js"></script>
-<script src="js/shapes/TexturedSphere.js"></script>
 
 <script type="text/javascript">
 
@@ -306,16 +304,6 @@
     var lastMouseX = null;
     var lastMouseY = null;
 
-    var deimos = null;
-    var mars = null;
-    var phobos = null;
-
-    var deimosRotationMatrix = mat4.create();
-    mat4.identity(deimosRotationMatrix);
-
-    var deimosRotationAnglemars = 0.0;
-    var phobosRotationAngledeimos = 0.0;
-
     function mvPushMatrix() {
         var copy = mat4.create();
         mat4.set(mvMatrix, copy);
@@ -344,18 +332,17 @@
 
     var cameraPosition = vec3.create();
     var target = vec3.create();
-    var cameraMode = 1; //uno es default orbital
+    var cameraMode = 1;
     var phiAngle;
     var thetaAngle;
+    var radius;
     
-    function initVariables () {        /////////////////////////////////////////////////////    
+    function initVariables () {
         target = [0,0,0];
-        var initPosToTranslate = vec3.create();
-        vec3.set(initPosToTranslate,10.0,10.0,4.0);
-        var radius = vec3.squaredLength(initPosToTranslate);
-        thetaAngle = Math.acos(initPosToTranslate[2]/radius);   //para las rotaciones en zy e zx
-        phiAngle = Math.atan(initPosToTranslate[1]/initPosToTranslate[0]);  //para las rotaciones en el plano xy
-        cameraPosition = [radius*Math.cos(phiAngle)*Math.sin(thetaAngle),radius*Math.sin(phiAngle)*Math.sin(thetaAngle),radius*Math.cos(thetaAngle)];
+        cameraPosition = [480,400,240];
+        radius = vec3.squaredLength(cameraPosition);
+        thetaAngle = Math.acos(cameraPosition[2]/radius);   //para las rotaciones en zy e zx
+        phiAngle = Math.atan(cameraPosition[1]/cameraPosition[0]);  //para las rotaciones en el plano xy
     }
 
     function drawScene() {
@@ -371,28 +358,22 @@
         mat4.perspective(pMatrix, 3.14/12.0, gl.viewportWidth / gl.viewportHeight, 0.1, 1000.0);
 
 
-        ///////////////////////////////////////////////////////
-        //
-        // Dibujamos a Deimos
-
-        // Configuramos la iluminacion 
-        //deimos.setupShaders();
-
-        // function(lightPosition, ambientColor, diffuseColor)
-        //deimos.setupLighting(vec3.fromValues(-100.0, 0.0, -60.0), vec3.fromValues(0.5, 0.5, 0.5), vec3.fromValues(0.05, 0.05, 0.05))
-        
-        // Matriz de modelado
-        var model_matrix_deimos = mat4.create();
-        mat4.identity(model_matrix_deimos);
+        // Matrices de modelado
+        var model_matrix_bridge = mat4.create();
+        mat4.identity(model_matrix_bridge);
+        var model_matrix_field = mat4.create();
+        mat4.identity(model_matrix_field);
         
         ////////////////////////////////////////////////////////
         //     
-        // Dibujamos a Marte
-        
-        // Configuramos la iluminacion 
-        deimos.setupShaders();
-        deimos.setupLighting(vec3.fromValues(-100.0, 0.0, -60.0), vec3.fromValues(0.3, 0.3, 0.3), vec3.fromValues(0.05, 0.05, 0.05));
-        deimos.draw(model_matrix_deimos);
+        // Configuramos la iluminacion y dibujamos
+        bridge.setupShaders();
+        bridge.setupLighting(vec3.fromValues(-100.0, 0.0, -60.0), vec3.fromValues(0.3, 0.3, 0.3), vec3.fromValues(0.05, 0.05, 0.05));
+        bridge.draw(model_matrix_bridge);
+
+        field.setupShaders();
+        field.setupLighting(vec3.fromValues(-100.0, 0.0, -60.0), vec3.fromValues(0.3, 0.3, 0.3), vec3.fromValues(0.05, 0.05, 0.05));
+        field.draw(model_matrix_field);
         //
         ////////////////////////////////////////////////////////
     }
@@ -408,12 +389,7 @@
         requestAnimFrame(tick); 
         handleKeyPresses();
         updateCamera();
-		var newRotationMatrix = mat4.create();
-        mat4.identity(newRotationMatrix);
-        mat4.rotate(newRotationMatrix, newRotationMatrix, 0.025, [0, 1, 0]);
-		mat4.multiply(newRotationMatrix, deimosRotationMatrix, deimosRotationMatrix);
-        deimosRotationAnglemars += 0.0045;
-        deimos = deimos.updateBridge(app);
+        bridge = bridge.updateBridge(app);
         drawScene();
     }
 
@@ -435,9 +411,12 @@
         initShaders();
         initVariables();
 
-        deimos = new Bridge(app.ph1, app.ph2, app.ph3, app.s1, app.pos, app.cols, -70, 70); //Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to)
-        //Arc(0, 10, 0, -10, 10, 180, 360);//Road(0, 2, 0);//Cylinder(64, 0, 0, 0, 10, 2);//Column(10, 20, 27, 0, 0, DELIMITER);
-        //deimos.initBuffers(); // IMPORTANTE Para probar Road, Column o Bridge, comentar esta linea
+        bridge = new Bridge(app.ph1, app.ph2, app.ph3, app.s1, app.pos, app.cols, -70, 70); //Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to)
+        // Arc(0, 10, 0, -10, 10, 180, 360);//Road(0, 2, 0);//Cylinder(64, 0, 0, 0, 10, 2);//Column(10, 20, 27, 0, 0, DELIMITER);
+        // IMPORTANTE Para probar Road, Column o Bridge, comentar esta linea
+
+        field = new Field(-160.0,160.0,160.0,0.0,5.0);
+        field.initBuffers();
         
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.enable(gl.DEPTH_TEST);
@@ -461,7 +440,7 @@
 
     <center>
             <h1>Sistemas Gr&aacute;ficos - 66.71</h1>
-            <h2>Framework Trabajo Pr&aacute;ctico 2016</h2>
+            <h2>Trabajo Pr&aacute;ctico 2016</h2>
             <canvas id="clase03-vertex shader" onmousemove="onMouseMove(event)" onmousedown="onMouseDown(event)" onmouseup="onMouseUp(event)" 
                     style="border: none;" width="1280" height="720">
             Your browser does not support the HTML5 canvas element.
