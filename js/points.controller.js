@@ -1,8 +1,9 @@
 var width = 250,
     height = 200;
 
-var points = d3.range(1, 5).map(function(i) {
-  return [i * width / 5, 50 + Math.random() * (height - 100)];
+var points = d3.range(0, 6).map(function(i) {
+  var random = Math.random() - 0.5; //random = [-0.5,0.5]
+  return [width / 2 + random * width / 2 , height - i * height / 5];
 });
 
 var dragged = null,
@@ -33,6 +34,9 @@ d3.select(window)
 svg.node().focus();
 
 function redraw() {
+  points.sort(function(a, b){return a[1]-b[1]});
+  points[0][1] = 0;
+  points[points.length-1][1] = height;
   svg.select("path").attr("d", line);
 
   var circle = svg.selectAll("circle")
