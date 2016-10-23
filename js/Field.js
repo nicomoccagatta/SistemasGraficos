@@ -79,7 +79,7 @@ function Field(from, to, diameter, min_height, max_height) {
         r = 0.3;
         g = 0.15;
         b = 0.1;
-        for (var angle = 180.0; angle <= 361.0; angle++) {
+        for (var angle = 180; angle < 362; angle++) {
             var theta = angle * Math.PI / 180.0;
             var height = max_height - min_height;
 
@@ -88,14 +88,13 @@ function Field(from, to, diameter, min_height, max_height) {
 
             var x = -100;
             var y = 0.0 - (radius * cosTheta);
-            var z = max_height + ( height * sinTheta);
+            var z = max_height + (height * sinTheta);
                 
             this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z, r, g, b);
             
             x += delta;
             this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z, r, g, b);
         }
-        console.log(this.position_buffer.length);
         for (var i = 0; i < 363; i++) {
             this.index_buffer.push(i);
         }

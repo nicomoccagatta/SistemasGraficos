@@ -1,7 +1,7 @@
 const LEFT_BORDER_MAP = -100;
-const BOTTOM_BORDER_MAP = -80;
+const BOTTOM_BORDER_MAP = -160;
 const RIGHT_BORDER_MAP = 100;
-const TOP_BORDER_MAP = 80;
+const TOP_BORDER_MAP = 160;
 const RIVER_HEIGHT = 1;
 
 function River() {
