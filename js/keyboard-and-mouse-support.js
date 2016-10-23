@@ -22,7 +22,7 @@ function handleKeyPresses(){
 		vec3.multiply(normalizedCamera, target, [1,1,0]);	//Obtengo la dirección X-Y
 		vec3.normalize(normalizedCamera,normalizedCamera);
 		vec3.cross(normalizedCamera, normalizedCamera, [0,0,1]);	//Le hago esa rotación mágica de la que hable arriba
-		vec3.scale(normalizedCamera,normalizedCamera,0.3);	//Le modifico la velocidad
+		vec3.scale(normalizedCamera,normalizedCamera,3.0);	//Le modifico la velocidad
 		//Tecla A
 		if (currentlyPressedKeys[65]){
 			vec3.sub(cameraPosition,cameraPosition, normalizedCamera);			
@@ -37,7 +37,7 @@ function handleKeyPresses(){
 		var normalizedCamera= vec3.create();
 		vec3.multiply(normalizedCamera, target, [1,1,0]);	//Obtengo la dirección X-Y
 		vec3.normalize(normalizedCamera,normalizedCamera);
-		vec3.scale(normalizedCamera,normalizedCamera,0.3);	//Le modifico la velocidad
+		vec3.scale(normalizedCamera,normalizedCamera,3.0);	//Le modifico la velocidad
 		//Tecla S
 		if (currentlyPressedKeys[83] && thetaAngle >= degToRad(1)){
 			vec3.sub(cameraPosition,cameraPosition, normalizedCamera);
@@ -53,12 +53,11 @@ function handleKeyPresses(){
 	if (currentlyPressedKeys[49] && cameraMode != 1) {
 		cameraMode = 1;
 		target = [0,0,0];
-		var initPosToTranslate = vec3.create();
-		vec3.set(initPosToTranslate,10.0,10.0,4.0);
-		var radius = vec3.squaredLength(initPosToTranslate);
-		thetaAngle = Math.acos(initPosToTranslate[2]/radius);	//para las rotaciones en zy e zx
-		phiAngle = Math.atan(initPosToTranslate[1]/initPosToTranslate[0]);	//para las rotaciones en el plano xy
-		cameraPosition = [radius*Math.cos(phiAngle)*Math.sin(thetaAngle),radius*Math.sin(phiAngle)*Math.sin(thetaAngle),radius*Math.cos(thetaAngle)];
+		cameraPosition = [480,400,240];
+		radius = vec3.squaredLength(cameraPosition);
+		thetaAngle = Math.acos(cameraPosition[2]/radius);	//para las rotaciones en zy e zx
+		phiAngle = Math.atan(cameraPosition[1]/cameraPosition[0]);	//para las rotaciones en el plano xy
+		//cameraPosition = [radius*Math.cos(phiAngle)*Math.sin(thetaAngle),radius*Math.sin(phiAngle)*Math.sin(thetaAngle),radius*Math.cos(thetaAngle)];
 		return;
 	}
 	
@@ -73,7 +72,7 @@ function handleKeyPresses(){
 		vec3.set(target,Math.cos(phiAngle)*Math.sin(thetaAngle),Math.sin(phiAngle)*Math.sin(thetaAngle),-Math.cos(thetaAngle));
 		vec3.normalize(target,target);
 		vec3.scale(target,target,100);
-		cameraPosition = [-20,-20,5];		
+		cameraPosition = [0,-80,15];		
 		return;
 	}
 }
@@ -112,7 +111,6 @@ function onMouseMove(event) {
 		var y;
 		var testX;
 		var testY;
-		var testLimit = thetaAngle;
 		if(event.clientX) {
 			x = event.clientX;
 			y = event.clientY;
@@ -123,15 +121,14 @@ function onMouseMove(event) {
 		testX = -(x - clickX)*150;
 		testY = (y - clickY)*75;
 		phiAngle += degToRad(testX)/widthOfCanvas;
-		testLimit += degToRad(-testY)/heightOfCanvas;
+		thetaAngle += degToRad(-testY)/heightOfCanvas;
 
-		thetaAngle = testLimit;
 		clickX = x;
 		clickY = y;
 		if(cameraMode == 1){
 			vec3.set(normalizedCamera,Math.cos(phiAngle)*Math.sin(thetaAngle),Math.sin(phiAngle)*Math.sin(thetaAngle),Math.cos(thetaAngle));
 			vec3.normalize(normalizedCamera,normalizedCamera);
-			vec3.scale(cameraPosition,normalizedCamera,vec3.len(cameraPosition));			
+			vec3.scale(cameraPosition,normalizedCamera,vec3.len(cameraPosition));
 		}
 		
 		if (cameraMode == 2){
