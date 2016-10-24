@@ -100,7 +100,8 @@ function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, poi
 
         var formatted_points = [];
         for (var i=0; i<points.length; i++) {
-            formatted_points[i] = [1.0 - points[i][1]/height_viewport , 1.0 - points[i][0]/width_viewport];
+            //formatted_points[i] = [1.0 - points[i][1]/height_viewport , 1.0 - points[i][0]/width_viewport];
+            formatted_points[i] = [points[i][1]/height_viewport , points[i][0]/width_viewport];
            // console.log("Formatted Points ["+i+"]: " + formatted_points[i][0] + "," + formatted_points[i][1]+"....");
         }
 
