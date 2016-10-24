@@ -416,7 +416,8 @@
         // Arc(0, 10, 0, -10, 10, 180, 360);//Road(0, 2, 0);//Cylinder(64, 0, 0, 0, 10, 2);//Column(10, 20, 27, 0, 0, DELIMITER);
         // IMPORTANTE Para probar Road, Column o Bridge, comentar esta linea
 
-        field = new Field(-160.0,160.0,160.0,0.0,5.0);
+        // Field(from_x, to_x, from_y, to_y, delta, diameter, min_height, max_height, points)
+        field = new Field(-100,100,-160.0,160.0,100.0,0.0,5.0,points);
         field.initBuffers();
         
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -447,7 +448,7 @@ body {
 form {
   position: absolute;
   background-color: lightgrey;
-  bottom: -300px;
+  bottom: -200px;
   left: 1000px;
 }
 
@@ -484,8 +485,6 @@ circle {
 <script src="js/dinamicValues.js"></script>
 
     <center>
-            <h1>Sistemas Gr&aacute;ficos - 66.71</h1>
-            <h2>Trabajo Pr&aacute;ctico 2016</h2>
             <canvas id="TP Sistemas Graficos" onmousemove="onMouseMove(event)" onmousedown="onMouseDown(event)" onmouseup="onMouseUp(event)" 
                     style="border: none;" width="1280" height="720">
             Your browser does not support the HTML5 canvas element.
