@@ -1,4 +1,7 @@
-function Field(from, to, diameter, min_height, max_height) {
+const width_viewport = 250.0;
+const height_viewport = 200.0;
+
+function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, points) {
     this.webgl_position_buffer = null;
     this.webgl_normal_buffer = null;
     this.webgl_color_buffer = null;
@@ -19,6 +22,8 @@ function Field(from, to, diameter, min_height, max_height) {
     this.color_buffer_lower_land = [];
     this.index_buffer_lower_land = [];
 
+    this.mapped_points = [];
+
     this.fillBuffers = function(normal_buf, position_buf, color_buf, x, y, z,r,g,b) {
         normal_buf.push(x);
         normal_buf.push(y);
@@ -32,107 +37,159 @@ function Field(from, to, diameter, min_height, max_height) {
         position_buf.push(y);
         position_buf.push(z);
     }
+
+    this.Base0 = function(u) {
+        return 0.5*(1-u)*(1-u);
+    }
     
+    this.Base1 = function(u) {
+        return -u*u+u+0.5;
+    }
+    
+    this.Base2 = function(u) {
+        return 0.5*u*u;
+    }
+
+    this.get_center_xy = function(num_section,u) {
+        // repeat the first and last items
+        var points_aux = mapped_points[0];
+        points_aux += mapped_points;
+        points_aux += mapped_points[mapped_points.length-1];
+
+        var aux =
+        this.Base0(u) * points_aux[0+num_section] +      // b0*p0
+        this.Base1(u) * points_aux[1+num_section] +      // b1*p1
+        this.Base2(u) * points_aux[2+num_section];       // b2*p2
+
+        return aux;
+    }
+
     this.initBuffers = function() {
-        var width = to - from;
-        var center_y = width / 2.0 + from;
-        var bodersize = (width - diameter) / 2.0;
+        var long_x = to_x - from_x;
+        var long_y = to_y - from_y;
         var radius = diameter / 2.0;
         
-        //BEGGINNING UPPER LAND
-        ///////////////////////////////////
-        var r = 0.1;
-        var g = 1.0;
-        var b = 0.1;
+        var max_center_y = to_y - radius;
+        var min_center_y = from_y + radius;
+        var delta_y = max_center_y - min_center_y;
 
-        var delta = 200.0;
-        // x deberia ir de -100 a 100
+        var max_x = to_x;
+        var min_x = from_x;
+        var delta_x = max_x - min_x;
 
-        var x = -100.0;
-        var y = to;
-        var z = max_height;
-        this.fillBuffers(this.normal_buffer_upper_land, this.position_buffer_upper_land, this.color_buffer_upper_land, x, y, z, r, g, b);
-        this.index_buffer_upper_land.push(0);
+        var formatted_points = [points[1]/height_viewport,points[0]/width_viewport];
+        this.mapped_points = [min_x + formatted_points[0] * delta_x, min_center_y + formatted_points[1] * delta_y ];
 
-        x += delta;
-        this.fillBuffers(this.normal_buffer_upper_land, this.position_buffer_upper_land, this.color_buffer_upper_land, x, y, z, r, g, b);
-        this.index_buffer_upper_land.push(1);
+        var quant_sections = points.length + 2;
 
-        x -= delta;
-        y = to - bodersize;
-        this.fillBuffers(this.normal_buffer_upper_land, this.position_buffer_upper_land, this.color_buffer_upper_land, x, y, z, r, g, b);
-        this.index_buffer_upper_land.push(2);
+        for (var num_section = 0; i < quant_sections; i++) {
+            for (var dif_u = 0.0; dif_u < 0.8 ; dif_u += 0.20) {
 
-        x += delta;
-        this.fillBuffers(this.normal_buffer_upper_land, this.position_buffer_upper_land, this.color_buffer_upper_land, x, y, z, r, g, b);
-        this.index_buffer_upper_land.push(3);
-
-        //END UPPER LAND
-        ///////////////////////////////////
+                var aux_center_arc = this.get_center_xy(num_section, dif_u);
+                var next_center_arc = this.get_center_xy(num_section, dif_u+0.20);
 
 
+                var top_arc_y = aux_center_arc[1] + radius;
+                var bottom_arc_y = aux_center_arc[1] - radius;
+
+                //////////////////////////////
+                // BEGINNING ARC OF THE FIELD
+                //////////////////////////////
+
+                r = 0.3;
+                g = 0.15;
+                b = 0.1;
+                for (var angle = 180; angle < 362; angle++) {
+                    var theta = angle * Math.PI / 180.0;
+                    var height = max_height - min_height;
+
+                    var cosTheta = Math.cos(theta);
+                    var sinTheta = Math.sin(theta);
+
+                    var x = aux_center_arc[0];
+                    var y = aux_center_arc[1] - (radius * cosTheta);
+                    var z = max_height + (height * sinTheta);
+                        
+                    this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z, r, g, b);
+                    
+                    x = next_center_arc[0];
+                    this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z, r, g, b);
+                }
 
 
-        // BEGINNING ARC OF THE FIELD
-        //////////////////////////////
+                for (var i = 0; i < 363; i++) {
+                    this.index_buffer.push(i);
+                }
 
-        r = 0.3;
-        g = 0.15;
-        b = 0.1;
-        for (var angle = 180; angle < 362; angle++) {
-            var theta = angle * Math.PI / 180.0;
-            var height = max_height - min_height;
+                ///////////////////////////
+                // END ARC OF THE FIELD
+                ///////////////////////////
 
-            var cosTheta = Math.cos(theta);
-            var sinTheta = Math.sin(theta);
 
-            var x = -100;
-            var y = 0.0 - (radius * cosTheta);
-            var z = max_height + (height * sinTheta);
-                
-            this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z, r, g, b);
-            
-            x += delta;
-            this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z, r, g, b);
+                //////////////////////////////////
+                //BEGGINNING UPPER LAND
+                ///////////////////////////////////
+                var r = 0.1;
+                var g = 1.0;
+                var b = 0.1;
+
+                var x = aux_center_arc[0];
+                var y = to_y;
+                var z = max_height;
+                this.fillBuffers(this.normal_buffer_upper_land, this.position_buffer_upper_land, this.color_buffer_upper_land, x, y, z, r, g, b);
+                this.index_buffer_upper_land.push(0);
+
+                x = next_center_arc[0];
+                this.fillBuffers(this.normal_buffer_upper_land, this.position_buffer_upper_land, this.color_buffer_upper_land, x, y, z, r, g, b);
+                this.index_buffer_upper_land.push(1);
+
+                x = aux_center_arc[0];
+                y = top_arc_y;
+                this.fillBuffers(this.normal_buffer_upper_land, this.position_buffer_upper_land, this.color_buffer_upper_land, x, y, z, r, g, b);
+                this.index_buffer_upper_land.push(2);
+
+                x = next_center_arc[0];
+                this.fillBuffers(this.normal_buffer_upper_land, this.position_buffer_upper_land, this.color_buffer_upper_land, x, y, z, r, g, b);
+                this.index_buffer_upper_land.push(3);
+
+                ///////////////////////////////////
+                //END UPPER LAND
+                ///////////////////////////////////
+
+                ///////////////////////////////////
+                // BEGGINING LOWER LAND
+                ///////////////////////////////////
+
+                r = 0.1;
+                g = 1.0;
+                b = 0.1;
+
+                x = aux_center_arc[0];
+                y = bottom_arc_y;
+                z = max_height;
+                this.fillBuffers(this.normal_buffer_lower_land, this.position_buffer_lower_land, this.color_buffer_lower_land, x, y, z, r, g, b);
+                this.index_buffer_lower_land.push(0);
+
+
+                x = next_center_arc[0];
+                this.fillBuffers(this.normal_buffer_lower_land, this.position_buffer_lower_land, this.color_buffer_lower_land, x, y, z, r, g, b);
+                this.index_buffer_lower_land.push(1);
+
+                x = aux_center_arc[0];
+                y = from_y;
+                this.fillBuffers(this.normal_buffer_lower_land, this.position_buffer_lower_land, this.color_buffer_lower_land, x, y, z, r, g, b);
+                this.index_buffer_lower_land.push(2);
+
+                x = next_center_arc[0];
+                this.fillBuffers(this.normal_buffer_lower_land, this.position_buffer_lower_land, this.color_buffer_lower_land, x, y, z, r, g, b);
+                this.index_buffer_lower_land.push(3);
+
+                ///////////////////////////////////
+                // END LOWER LAND
+                ///////////////////////////////////
+            }
         }
-        for (var i = 0; i < 363; i++) {
-            this.index_buffer.push(i);
-        }
 
-        // END ARC OF THE FIELD
-        ///////////////////////////
-
-
-
-        // BEGGINING LOWER LAND
-        ///////////////////////////////////
-
-        r = 0.1;
-        g = 1.0;
-        b = 0.1;
-
-        x = -100.0;
-        y = from + bodersize;
-        z = max_height;
-        this.fillBuffers(this.normal_buffer_lower_land, this.position_buffer_lower_land, this.color_buffer_lower_land, x, y, z, r, g, b);
-        this.index_buffer_lower_land.push(0);
-
-
-        x += delta;
-        this.fillBuffers(this.normal_buffer_lower_land, this.position_buffer_lower_land, this.color_buffer_lower_land, x, y, z, r, g, b);
-        this.index_buffer_lower_land.push(1);
-
-        x -= delta;
-        y = from;
-        this.fillBuffers(this.normal_buffer_lower_land, this.position_buffer_lower_land, this.color_buffer_lower_land, x, y, z, r, g, b);
-        this.index_buffer_lower_land.push(2);
-
-        x += delta;
-        this.fillBuffers(this.normal_buffer_lower_land, this.position_buffer_lower_land, this.color_buffer_lower_land, x, y, z, r, g, b);
-        this.index_buffer_lower_land.push(3);
-
-        // END LOWER LAND
-        ///////////////////////////////////
     }
     
     this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
