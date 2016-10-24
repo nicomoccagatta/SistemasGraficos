@@ -35,6 +35,8 @@ function Cylinder(number_of_sides, center_x, center_y, floor, ceiling, radius) {
         this.color_buffer_lower_lid = [];
         this.index_buffer_lower_lid = [];
 
+        this.fillBuffers(this.normal_buffer_upper_lid, this.position_buffer_upper_lid, this.color_buffer_upper_lid, center_x, center_y, ceiling);
+        this.fillBuffers(this.normal_buffer_lower_lid, this.position_buffer_lower_lid, this.color_buffer_lower_lid, center_x, center_y, floor);
         for (var i = 0; i <= number_of_sides; i++) {
             var theta = i * 2 *  Math.PI / number_of_sides;
             var sinTheta = Math.sin(theta);
