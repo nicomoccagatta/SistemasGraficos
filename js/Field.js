@@ -52,9 +52,9 @@ function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, poi
 
     this.get_center_xy = function(num_section,u) {
         // repeat the first and last items
-        var points_aux = mapped_points[0];
-        points_aux += mapped_points;
-        points_aux += mapped_points[mapped_points.length-1];
+        var points_aux = this.mapped_points[0];
+        points_aux += this.mapped_points;
+        points_aux += this.mapped_points[this.mapped_points.length-1];
 
         var aux =
         this.Base0(u) * points_aux[0+num_section] +      // b0*p0
@@ -72,18 +72,39 @@ function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, poi
         var max_center_y = to_y - radius;
         var min_center_y = from_y + radius;
         var delta_y = max_center_y - min_center_y;
+        console.log("Y va de :"+min_center_y+", a: "+max_center_y+".");
 
         var max_x = to_x;
         var min_x = from_x;
         var delta_x = max_x - min_x;
+        console.log("X va de :"+min_x+", a: "+max_x+".");
 
-        var formatted_points = [points[1]/height_viewport,points[0]/width_viewport];
-        this.mapped_points = [min_x + formatted_points[0] * delta_x, min_center_y + formatted_points[1] * delta_y ];
+        for (var i=0; i < points.length; i++) {
+            console.log("Points ["+i+"]: " + points[i][1] + "," + points[i][0]+"....");
+        }
+
+        var formatted_points = [];
+        for (var i=0; i<points.length; i++) {
+            formatted_points[i] = [1.0 - points[i][1]/height_viewport , 1.0 - points[i][0]/width_viewport];
+            console.log("Formatted Points ["+i+"]: " + formatted_points[i][0] + "," + formatted_points[i][1]+"....");
+        }
+
+
+        for (var i=0; i<formatted_points.length; i++) {
+            this.mapped_points[i] = [min_x + formatted_points[i][0] * delta_x , min_center_y + formatted_points[i][1] * delta_y];
+            console.log("Mapped Points ["+i+"]: " + this.mapped_points[i][0] + "," + this.mapped_points[i][1]+"....");
+        }
+
+        this.mapped_points.sort(function(a, b){return a[0]-b[0]});
+        for (var i=0; i<this.mapped_points.length; i++) {
+            console.log("SORTED: Mapped Points ["+i+"]: " + this.mapped_points[i][0] + "," + this.mapped_points[i][1]+"....");
+        }
 
         var quant_sections = points.length + 2;
 
+        var index_index_buffer = 0;
         for (var num_section = 0; i < quant_sections; i++) {
-            for (var dif_u = 0.0; dif_u < 0.8 ; dif_u += 0.20) {
+            for (var dif_u = 0.0; dif_u <= 0.8 ; dif_u += 0.20) {
 
                 var aux_center_arc = this.get_center_xy(num_section, dif_u);
                 var next_center_arc = this.get_center_xy(num_section, dif_u+0.20);
@@ -118,7 +139,8 @@ function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, poi
 
 
                 for (var i = 0; i < 363; i++) {
-                    this.index_buffer.push(i);
+                    this.index_buffer.push(index_index_buffer);
+                    index_index_buffer++;
                 }
 
                 ///////////////////////////
