@@ -342,4 +342,9 @@ function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, poi
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
     }
+
+    this.updateField = function(points) {
+        delete this;
+        return new Field(-100,100,-160.0,160.0,100.0,0.0,5.0,points);
+    }
 }

@@ -390,6 +390,8 @@
         handleKeyPresses();
         updateCamera();
         bridge = bridge.updateBridge(app);
+        field = field.updateField(points);
+        field.initBuffers();
         //console.log(points);
         drawScene();
     }
