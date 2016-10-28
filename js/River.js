@@ -2,9 +2,9 @@ const LEFT_BORDER_MAP = -100;
 const BOTTOM_BORDER_MAP = -160;
 const RIGHT_BORDER_MAP = 100;
 const TOP_BORDER_MAP = 160;
-const RIVER_HEIGHT = 1;
+const RIVER_HEIGHT = -2;
 
-function River() {
+function River(ph1) {
     this.webgl_position_buffer = null;
     this.webgl_normal_buffer = null;
     this.webgl_color_buffer = null;
@@ -12,10 +12,10 @@ function River() {
 
     this.initBuffers = function() {
         this.position_buffer = [
-            LEFT_BORDER_MAP, BOTTOM_BORDER_MAP, RIVER_HEIGHT,
-            RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, RIVER_HEIGHT,
-            LEFT_BORDER_MAP, TOP_BORDER_MAP, RIVER_HEIGHT,
-            RIGHT_BORDER_MAP, TOP_BORDER_MAP, RIVER_HEIGHT
+            LEFT_BORDER_MAP, BOTTOM_BORDER_MAP, ph1 + RIVER_HEIGHT,
+            RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, ph1 + RIVER_HEIGHT,
+            LEFT_BORDER_MAP, TOP_BORDER_MAP, ph1 + RIVER_HEIGHT,
+            RIGHT_BORDER_MAP, TOP_BORDER_MAP, ph1 + RIVER_HEIGHT
         ];
         
         this.normal_buffer = this.position_buffer;

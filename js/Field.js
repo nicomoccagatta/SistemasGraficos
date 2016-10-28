@@ -1,5 +1,7 @@
 const width_viewport = 250.0;
 const height_viewport = 200.0;
+const FIELD_HEIGHT = 0.0;
+const FIELD_DIAMETER = 100.0;
 
 function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, points) {
     this.webgl_position_buffer = null;
@@ -345,6 +347,6 @@ function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, poi
 
     this.updateField = function(points) {
         delete this;
-        return new Field(-100,100,-160.0,160.0,100.0,0.0,5.0,points);
+        return new Field(LEFT_BORDER_MAP, RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, TOP_BORDER_MAP, FIELD_DIAMETER, FIELD_HEIGHT, app.ph1, points);
     }
 }

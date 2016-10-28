@@ -12,7 +12,7 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
         }
     }
     
-    var river = new River();
+    var river = new River(ph1);
     river.initBuffers();
     var road = new Road(ph1, ph1 + ph2, center_x, from, to);
     var columns = [];

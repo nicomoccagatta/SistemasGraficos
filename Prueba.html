@@ -419,7 +419,7 @@
         // IMPORTANTE Para probar Road, Column o Bridge, comentar esta linea
 
         // Field(from_x, to_x, from_y, to_y, delta, diameter, min_height, max_height, points)
-        field = new Field(-100,100,-160.0,160.0,100.0,0.0,5.0,points);
+        field = new Field(LEFT_BORDER_MAP, RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, TOP_BORDER_MAP, FIELD_DIAMETER, FIELD_HEIGHT, app.ph1, points);
         field.initBuffers();
         
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
