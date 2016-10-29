@@ -389,13 +389,10 @@
         requestAnimFrame(tick); 
         handleKeyPresses();
         updateCamera();
-        
         field = field.updateField(points);
         field.initBuffers();
         from_and_to = field.getYPositionFromX(points, app.pos);
-        
         bridge = bridge.updateBridge(app, from_and_to);
-        
         //console.log(points);
         drawScene();
     }
@@ -417,8 +414,7 @@
         initGL(canvas);
         initShaders();
         initVariables();
-        
-        
+
         // Field(from_x, to_x, from_y, to_y, delta, diameter, min_height, max_height, points)
         field = new Field(LEFT_BORDER_MAP, RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, TOP_BORDER_MAP, FIELD_DIAMETER, FIELD_HEIGHT, app.ph1, points);
         field.initBuffers();
@@ -426,9 +422,7 @@
 
         bridge = new Bridge(app.ph1, app.ph2, app.ph3, app.s1, app.pos, app.cols, from_and_to[0], from_and_to[1]); //Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to)
         // Arc(0, 10, 0, -10, 10, 180, 360);//Road(0, 2, 0);//Cylinder(64, 0, 0, 0, 10, 2);//Column(10, 20, 27, 0, 0, DELIMITER);
-        // IMPORTANTE Para probar Road, Column o Bridge, comentar esta linea
 
-        
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.enable(gl.DEPTH_TEST);
 

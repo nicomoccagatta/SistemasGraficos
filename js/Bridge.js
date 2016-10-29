@@ -20,8 +20,6 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
     this.params[3] = s1;
     this.params[4] = center_x;
     this.params[5] = number_of_columns;
-    /*this.params[6] = from;
-    this.params[7] = to;*/
     
     var river = new River(ph1);
     river.initBuffers();
@@ -173,8 +171,6 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
         if (this.hasChanged(app)) {
             delete this;
             this.updateParameters(app);
-            console.log("From: ", from_and_to[0]);
-            console.log("To: ", from_and_to[1]);
             return new Bridge(app.ph1, app.ph2, app.ph3, app.s1, app.pos, app.cols, from_and_to[0], from_and_to[1]);
         }
         return this;

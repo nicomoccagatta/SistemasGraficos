@@ -354,23 +354,19 @@ function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, poi
         return new Field(LEFT_BORDER_MAP, RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, TOP_BORDER_MAP, FIELD_DIAMETER, FIELD_HEIGHT, app.ph1, points);
     }
     
-    
-    
-    
-    
     this.getYPositionFromX = function(points, center_x) {
         var min = [], max = [], y_pos = [];
         for (var num_section = 0; num_section < points.length; num_section++) {
-                min = this.get_center_xy(num_section, 0);
-                max = this.get_center_xy(num_section, 1);
+            for (var i = 0.0; i < 1.0; i = i + 0.1) {
+                min = this.get_center_xy(num_section, i);
+                max = this.get_center_xy(num_section, i + 0.1);
                 if ((min[0] <= center_x) && (max[0] >= center_x)) {
-                    var center_aux = max[0] - min[0];
-                    y_pos[0] = center_aux - this.diameter / 2;
-                    y_pos[1] = center_aux + this.diameter / 2;
+                    var center_aux = max[1] - this.diameter / 2;
+                    y_pos[0] = center_aux;
+                    y_pos[1] = center_aux + this.diameter;
                     return y_pos;
                 }
+            }
         }
     }
-    
-    
 }
