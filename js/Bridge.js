@@ -12,6 +12,17 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
         }
     }
     
+    this.params = [];
+    this.app_aux = [];
+    this.params[0] = ph1;
+    this.params[1] = ph2;
+    this.params[2] = ph3;
+    this.params[3] = s1;
+    this.params[4] = center_x;
+    this.params[5] = number_of_columns;
+    /*this.params[6] = from;
+    this.params[7] = to;*/
+    
     var river = new River(ph1);
     river.initBuffers();
     var road = new Road(ph1, ph1 + ph2, center_x, from, to);
@@ -158,8 +169,42 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
         this.drawGroup(tensors, modelMatrix);
     }
     
-    this.updateBridge = function(app) {
-        delete this;
-        return new Bridge(app.ph1, app.ph2, app.ph3, app.s1, app.pos, app.cols, -70, 70);
+    this.updateBridge = function(app, from_and_to) {
+        if (this.hasChanged(app)) {
+            delete this;
+            this.updateParameters(app);
+            console.log("From: ", from_and_to[0]);
+            console.log("To: ", from_and_to[1]);
+            return new Bridge(app.ph1, app.ph2, app.ph3, app.s1, app.pos, app.cols, from_and_to[0], from_and_to[1]);
+        }
+        return this;
+    }
+    
+    this.updateParameters = function(app) {
+        this.params[0] = app.ph1;
+        this.params[1] = app.ph2;
+        this.params[2] = app.ph3;
+        this.params[3] = app.s1;
+        this.params[4] = app.pos;
+        this.params[5] = app.cols;
+    }
+    
+    this.toArray = function(app) {
+        this.app_aux[0] = app.ph1;
+        this.app_aux[1] = app.ph2;
+        this.app_aux[2] = app.ph3;
+        this.app_aux[3] = app.s1;
+        this.app_aux[4] = app.pos;
+        this.app_aux[5] = app.cols;
+    }
+    
+    this.hasChanged = function(app) {
+        this.toArray(app);
+        for (var i = 0; i < this.params.length; i ++) {
+            if (this.params[i] != this.app_aux[i]) {
+                return true;
+            }
+        }
+        return false;
     }
 }

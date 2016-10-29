@@ -4,6 +4,10 @@ const FIELD_HEIGHT = 0.0;
 const FIELD_DIAMETER = 100.0;
 
 function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, points) {
+    this.diameter = diameter;
+    
+    
+    
     this.webgl_position_buffer = null;
     this.webgl_normal_buffer = null;
     this.webgl_color_buffer = null;
@@ -74,9 +78,9 @@ function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, poi
         this.Base1(u) * points_aux[1+num_section][1] +      // b1*p1
         this.Base2(u) * points_aux[2+num_section][1];       // b2*p2
 
-        console.log("seccion: "+num_section);
+        /*console.log("seccion: "+num_section);
         console.log("u: "+u);
-        console.log("centro: "+ aux[0]+","+aux[1]+".");
+        console.log("centro: "+ aux[0]+","+aux[1]+".");*/
         return aux;
     }
 
@@ -114,9 +118,9 @@ function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, poi
         }
 
         this.mapped_points.sort(function(a, b){return a[0]-b[0]});
-        for (var i=0; i<this.mapped_points.length; i++) {
+        /*for (var i=0; i<this.mapped_points.length; i++) {
             console.log("SORTED: Mapped Points ["+i+"]: " + this.mapped_points[i][0] + "," + this.mapped_points[i][1]+"....");
-        }
+        }*/
 
         var quant_sections = points.length;
         var index_index_buffer = 0;
@@ -349,4 +353,24 @@ function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, poi
         delete this;
         return new Field(LEFT_BORDER_MAP, RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, TOP_BORDER_MAP, FIELD_DIAMETER, FIELD_HEIGHT, app.ph1, points);
     }
+    
+    
+    
+    
+    
+    this.getYPositionFromX = function(points, center_x) {
+        var min = [], max = [], y_pos = [];
+        for (var num_section = 0; num_section < points.length; num_section++) {
+                min = this.get_center_xy(num_section, 0);
+                max = this.get_center_xy(num_section, 1);
+                if ((min[0] <= center_x) && (max[0] >= center_x)) {
+                    var center_aux = max[0] - min[0];
+                    y_pos[0] = center_aux - this.diameter / 2;
+                    y_pos[1] = center_aux + this.diameter / 2;
+                    return y_pos;
+                }
+        }
+    }
+    
+    
 }
