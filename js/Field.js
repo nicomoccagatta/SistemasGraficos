@@ -5,9 +5,7 @@ const FIELD_DIAMETER = 100.0;
 
 function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, points) {
     this.diameter = diameter;
-    
-    
-    
+        
     this.webgl_position_buffer = null;
     this.webgl_normal_buffer = null;
     this.webgl_color_buffer = null;
@@ -29,6 +27,7 @@ function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, poi
     this.index_buffer_lower_land = [];
 
     this.mapped_points = [];
+    this.points_aux = [];
 
     this.fillBuffers = function(normal_buf, position_buf, color_buf, x, y, z,r,g,b) {
         normal_buf.push(x);
@@ -70,17 +69,14 @@ function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, poi
 
         var aux = [];
         aux[0] =
-        this.Base0(u) * points_aux[0+num_section][0] +      // b0*p0
-        this.Base1(u) * points_aux[1+num_section][0] +      // b1*p1
-        this.Base2(u) * points_aux[2+num_section][0];       // b2*p2
+        this.Base0(u) * points_aux[0+num_section][0] +      // b0x*p0x
+        this.Base1(u) * points_aux[1+num_section][0] +      // b1x*p1x
+        this.Base2(u) * points_aux[2+num_section][0];       // b2x*p2x
         aux[1] =
-        this.Base0(u) * points_aux[0+num_section][1] +      // b0*p0
-        this.Base1(u) * points_aux[1+num_section][1] +      // b1*p1
-        this.Base2(u) * points_aux[2+num_section][1];       // b2*p2
+        this.Base0(u) * points_aux[0+num_section][1] +      // b0y*p0y
+        this.Base1(u) * points_aux[1+num_section][1] +      // b1y*p1y
+        this.Base2(u) * points_aux[2+num_section][1];       // b2y*p2y
 
-        /*console.log("seccion: "+num_section);
-        console.log("u: "+u);
-        console.log("centro: "+ aux[0]+","+aux[1]+".");*/
         return aux;
     }
 
@@ -93,34 +89,21 @@ function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, poi
         var min_center_y = from_y + radius;
         var delta_y = max_center_y - min_center_y;
 
-        //console.log("Y va de :"+min_center_y+", a: "+max_center_y+".");
-
         var max_x = to_x;
         var min_x = from_x;
         var delta_x = max_x - min_x;
-        //console.log("X va de :"+min_x+", a: "+max_x+".");
-
-        for (var i=0; i < points.length; i++) {
-            //console.log("Points ["+i+"]: " + points[i][1] + "," + points[i][0]+"....");
-        }
 
         var formatted_points = [];
         for (var i=0; i<points.length; i++) {
-            //formatted_points[i] = [1.0 - points[i][1]/height_viewport , 1.0 - points[i][0]/width_viewport];
             formatted_points[i] = [points[i][1]/height_viewport , points[i][0]/width_viewport];
-           // console.log("Formatted Points ["+i+"]: " + formatted_points[i][0] + "," + formatted_points[i][1]+"....");
         }
 
 
         for (var i=0; i<formatted_points.length; i++) {
             this.mapped_points[i] = [min_x + formatted_points[i][0] * delta_x , min_center_y + formatted_points[i][1] * delta_y];
-           // console.log("Mapped Points ["+i+"]: " + this.mapped_points[i][0] + "," + this.mapped_points[i][1]+"....");
         }
 
         this.mapped_points.sort(function(a, b){return a[0]-b[0]});
-        /*for (var i=0; i<this.mapped_points.length; i++) {
-            console.log("SORTED: Mapped Points ["+i+"]: " + this.mapped_points[i][0] + "," + this.mapped_points[i][1]+"....");
-        }*/
 
         var quant_sections = points.length;
         var index_index_buffer = 0;
@@ -167,26 +150,13 @@ function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, poi
                     x = next_center_arc[0];
                     y = next_center_arc[1] - (radius * cosTheta);
                     this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z, r, g, b);
-                    //PARTENUEVA
-                    this.index_buffer.push(index_index_buffer);
-                    index_index_buffer++;
-                    ///////
-                }
-                    //PARTENUEVA
-                    index_index_buffer--;
-                    this.index_buffer.push(index_index_buffer);
-                    this.index_buffer.push(index_index_buffer - 362);
-                    index_index_buffer++;
-                    ///////
-
-/*
-                for (var i = 0; i < 363; i++) {
                     this.index_buffer.push(index_index_buffer);
                     index_index_buffer++;
                 }
-                    this.index_buffer.push(index_index_buffer-1);
-
-*/
+                index_index_buffer--;
+                this.index_buffer.push(index_index_buffer);
+                this.index_buffer.push(index_index_buffer - 362);
+                index_index_buffer++;
 
                 ///////////////////////////
                 // END ARC OF THE FIELD
@@ -351,7 +321,18 @@ function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, poi
 
     this.updateField = function(points) {
         delete this;
-        return new Field(LEFT_BORDER_MAP, RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, TOP_BORDER_MAP, FIELD_DIAMETER, FIELD_HEIGHT, app.ph1, points);
+        field = new Field(LEFT_BORDER_MAP, RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, TOP_BORDER_MAP, FIELD_DIAMETER, FIELD_HEIGHT, app.ph1, points); 
+        field.initBuffers();
+    }
+
+    function arraysEqual(arr1, arr2) {
+        if(arr1.length !== arr2.length)
+            return false;
+        for(var i = arr1.length; i--;) {
+            if(arr1[i] !== arr2[i])
+                return false;
+        }
+        return true;
     }
     
     this.getYPositionFromX = function(points, center_x) {
