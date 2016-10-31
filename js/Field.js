@@ -324,16 +324,6 @@ function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, poi
         field = new Field(LEFT_BORDER_MAP, RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, TOP_BORDER_MAP, FIELD_DIAMETER, FIELD_HEIGHT, app.ph1, points); 
         field.initBuffers();
     }
-
-    function arraysEqual(arr1, arr2) {
-        if(arr1.length !== arr2.length)
-            return false;
-        for(var i = arr1.length; i--;) {
-            if(arr1[i] !== arr2[i])
-                return false;
-        }
-        return true;
-    }
     
     this.getYPositionFromX = function(points, center_x) {
         var min = [], max = [], y_pos = [];
