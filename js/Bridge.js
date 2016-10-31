@@ -20,6 +20,8 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
     this.params[3] = s1;
     this.params[4] = center_x;
     this.params[5] = number_of_columns;
+    this.params[6] = from_and_to[0];
+    this.params[7] = from_and_to[1];
     
     var river = new River(ph1);
     river.initBuffers();
@@ -168,34 +170,38 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
     }
     
     this.updateBridge = function(app, from_and_to) {
-        if (this.hasChanged(app)) {
+        if (this.hasChanged(app,from_and_to)) {
             delete this;
-            this.updateParameters(app);
+            this.updateParameters(app,from_and_to);
             return new Bridge(app.ph1, app.ph2, app.ph3, app.s1, app.pos, app.cols, from_and_to[0], from_and_to[1]);
         }
         return this;
     }
     
-    this.updateParameters = function(app) {
+    this.updateParameters = function(app,from_and_to) {
         this.params[0] = app.ph1;
         this.params[1] = app.ph2;
         this.params[2] = app.ph3;
         this.params[3] = app.s1;
         this.params[4] = app.pos;
         this.params[5] = app.cols;
+        this.params[6] = from_and_to[0];
+        this.params[7] = from_and_to[1];
     }
     
-    this.toArray = function(app) {
+    this.toArray = function(app,from_and_to) {
         this.app_aux[0] = app.ph1;
         this.app_aux[1] = app.ph2;
         this.app_aux[2] = app.ph3;
         this.app_aux[3] = app.s1;
         this.app_aux[4] = app.pos;
         this.app_aux[5] = app.cols;
+        this.app_aux[6] = from_and_to[0];
+        this.app_aux[7] = from_and_to[1];
     }
     
-    this.hasChanged = function(app) {
-        this.toArray(app);
+    this.hasChanged = function(app,from_and_to) {
+        this.toArray(app,from_and_to);
         for (var i = 0; i < this.params.length; i ++) {
             if (this.params[i] != this.app_aux[i]) {
                 return true;
