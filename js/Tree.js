@@ -80,16 +80,20 @@ function Tree(points) {
         var index_index_buffer = 0;
         var index_index_next_position_buffer = 0;
 
-        r = 0.0;
-        g = 1.0;
-        b = 0.0;
+        var r = 0.0;
+        var g = 1.0;
+        var b = 0.0;
+
+        var x = 0.0;
+        var y = 0.0;
+        var z = 0.0;
 
         for(var angle = 0.0; angle <= (360.0 - deltaAngle); angle+=deltaAngle) {
             for(var num_section = 0; num_section < quant_sections; num_section++) {
                 for(var dif_u = 0.0; dif_u <= 0.9 ; dif_u += 0.1) {
 
                     var aux_current_curve_point = this.get_Rz(num_section, dif_u);
-                    
+
                     var theta = angle * Math.PI / 180.0;
                     var next_theta = (angle+deltaAngle) * Math.PI / 180.0;
 
@@ -99,9 +103,9 @@ function Tree(points) {
                     var sinTheta = Math.sin(theta);
                     var next_sinTheta = Math.sin(next_theta);
 
-                    var x = aux_current_curve_point[0] * cosTheta;
-                    var y = aux_current_curve_point[0] * sinTheta;
-                    var z = aux_current_curve_point[1];
+                    x = aux_current_curve_point[0] * cosTheta;
+                    y = aux_current_curve_point[0] * sinTheta;
+                    z = aux_current_curve_point[1];
                     this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z, r, g, b);
                     this.index_buffer.push(index_index_buffer);
                     index_index_buffer++;
@@ -110,9 +114,9 @@ function Tree(points) {
                         index_index_next_position_buffer = index_index_buffer;
                     }
 
-                    var x = aux_current_curve_point[0] * next_cosTheta;
-                    var y = aux_current_curve_point[0] * next_sinTheta;
-                    var z = aux_current_curve_point[1];                    
+                    x = aux_current_curve_point[0] * next_cosTheta;
+                    y = aux_current_curve_point[0] * next_sinTheta;
+                    z = aux_current_curve_point[1];                    
                     this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z, r, g, b);
                     this.index_buffer.push(index_index_buffer);
                     index_index_buffer++;
@@ -124,7 +128,6 @@ function Tree(points) {
             index_index_buffer++;
         }
 
-
         ///////////////////////////
         // END BODY OF THE TREE
         ///////////////////////////
@@ -132,24 +135,30 @@ function Tree(points) {
 
         //////////////////////////////////
         //BEGGINNING TREE BASE
-        ///////////////////////////////////
-        var r = 0.1;
-        var g = 1.0;
-        var b = 0.1;
+        //////////////////////////////////
 
-        var x = 0;
-        var y = 0;
-        //var z = max_height;
-        this.fillBuffers(this.normal_buffer_tree_base, this.position_buffer_tree_base, this.color_buffer_tree_base, x, y, z, r, g, b);
-        this.index_buffer_tree_base.push(0000000);
+        r = 0.2;
+        g = 0.1;
+        b = 0.0;
 
-        this.fillBuffers(this.normal_buffer_tree_base, this.position_buffer_tree_base, this.color_buffer_tree_base, x, y, z, r, g, b);
-        this.index_buffer_tree_base.push(0000000);
+        var index_index_tree_base_buffer = 0;
 
-        this.fillBuffers(this.normal_buffer_tree_base, this.position_buffer_tree_base, this.color_buffer_tree_base, x, y, z, r, g, b);
-        this.index_buffer_tree_base.push(0000000);
+        for(var angle = 0.0; angle <= 360.0; angle+=deltaAngle) {
+            var theta = angle * Math.PI / 180.0;
 
-        this.fillBuffers(this.normal_buffer_tree_base, this.position_buffer_tree_base, this.color_buffer_tree_base, x, y, z, r, g, b);
+            x = Math.cos(theta);
+            y = Math.sin(theta);
+            z = 0;
+
+            this.fillBuffers(this.normal_buffer_tree_base, this.position_buffer_tree_base, this.color_buffer_tree_base, x, y, z, r, g, b);
+            this.index_buffer_tree_base.push(index_index_tree_base_buffer);
+            index_index_tree_base_buffer++;
+
+            z = 3.0;
+            this.fillBuffers(this.normal_buffer_tree_base, this.position_buffer_tree_base, this.color_buffer_tree_base, x, y, z, r, g, b);
+            this.index_buffer_tree_base.push(index_index_tree_base_buffer);
+            index_index_tree_base_buffer++;
+        }
 
         ///////////////////////////////////
         //END TREE BASE
@@ -219,14 +228,10 @@ function Tree(points) {
     }
 
     this.draw = function(modelMatrix){
-/*      this.prepareDraw(modelMatrix, this.normal_buffer_upper_land, this.color_buffer_upper_land, this.position_buffer_upper_land, this.index_buffer_upper_land);
+        this.prepareDraw(modelMatrix, this.normal_buffer_tree_base, this.color_buffer_tree_base, this.position_buffer_tree_base, this.index_buffer_tree_base);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
-        
-        this.prepareDraw(modelMatrix, this.normal_buffer_lower_land, this.color_buffer_lower_land, this.position_buffer_lower_land, this.index_buffer_lower_land);
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
-        gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
-*/
+
         this.prepareDraw(modelMatrix, this.normal_buffer, this.color_buffer, this.position_buffer, this.index_buffer);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
