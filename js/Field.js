@@ -142,10 +142,8 @@ function Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, poi
                     var z = max_height + (height * sinTheta);
                         
                     this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z, r, g, b);
-                    //PARTENUEVA
                     this.index_buffer.push(index_index_buffer);
                     index_index_buffer++;
-                    ////////////
                     
                     x = next_center_arc[0];
                     y = next_center_arc[1] - (radius * cosTheta);
