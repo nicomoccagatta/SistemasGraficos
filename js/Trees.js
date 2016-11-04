@@ -4,6 +4,35 @@ function Trees(from_x, to_x, from_y, to_y, field, min_height) {
 	this.positions_2 = [];
 	this.positions_3 = [];
 
+    this.initBuffers = function() {
+        for(var i = 0; i < 10; i++) {
+            var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
+            var yRandomTop = numeroAleatorio(yLimits[1],to_y);
+            var yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
+
+            this.positions_1[i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomTop,0];
+            this.positions_1[10+i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomBottom,0];
+        }
+
+        for(var i = 0; i < 10; i++) {
+            var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
+            var yRandomTop = numeroAleatorio(yLimits[1],to_y);
+            var yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
+
+            this.positions_2[i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomTop,0];
+            this.positions_2[10+i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomBottom,0];
+        }
+
+        for(var i = 0; i < 10; i++) {
+            var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
+            var yRandomTop = numeroAleatorio(yLimits[1],to_y);
+            var yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
+
+            this.positions_3[i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomTop,0];
+            this.positions_3[10+i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomBottom,0];
+        }
+    }
+
     this.updateTrees = function(min_height,scale,scale2,scale3) {
 		/////////// TREE 1 ////////////
 		var puntos = [];
@@ -32,37 +61,44 @@ function Trees(from_x, to_x, from_y, to_y, field, min_height) {
 	    this.tree3 = new Tree(puntos3,min_height,scale3);
 	    this.tree3.initBuffers();
 
-    }
 
-	this.updateTrees(min_height,1,1,1);
+        //////UPDATE POSITIONS//////////////////
+        for(var i = 0; i < 10; i++) {
+            var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
+            var yRandomTop = numeroAleatorio(yLimits[1],to_y);
+            var yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
 
-    this.initBuffers = function() {
-    	for(var i = 0; i < 10; i++) {
-			var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
-	    	var yRandomTop = numeroAleatorio(yLimits[1],to_y);
-	        var yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
+            if(this.positions_1[i][1] < yLimits[1])
+                this.positions_1[i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomTop,0];
+            
+            if(this.positions_1[10+i][1] > yLimits[0])
+                this.positions_1[10+i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomBottom,0];
+        }
 
-    		this.positions_1[i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomTop,0];
-    		this.positions_1[10+i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomBottom,0];
-    	}
+        for(var i = 0; i < 10; i++) {
+            var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
+            var yRandomTop = numeroAleatorio(yLimits[1],to_y);
+            var yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
 
-    	for(var i = 0; i < 10; i++) {
-			var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
-	    	var yRandomTop = numeroAleatorio(yLimits[1],to_y);
-	        var yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
+            if(this.positions_2[i][1] < yLimits[1])
+                this.positions_2[i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomTop,0];
+            
+            if(this.positions_2[10+i][1] > yLimits[0])
+                this.positions_2[10+i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomBottom,0];
+        }
 
-    		this.positions_2[i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomTop,0];
-    		this.positions_2[10+i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomBottom,0];
-    	}
+        for(var i = 0; i < 10; i++) {
+            var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
+            var yRandomTop = numeroAleatorio(yLimits[1],to_y);
+            var yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
 
-    	for(var i = 0; i < 10; i++) {
-			var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
-	    	var yRandomTop = numeroAleatorio(yLimits[1],to_y);
-	        var yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
-
-    		this.positions_3[i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomTop,0];
-    		this.positions_3[10+i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomBottom,0];
-    	}
+            if(this.positions_3[i][1] < yLimits[1])
+                this.positions_3[i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomTop,0];
+            
+            if(this.positions_3[10+i][1] > yLimits[0])
+                this.positions_3[10+i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomBottom,0];
+        }
+        ////////////////////////////////////////
     }
 
     this.setupShaders = function(){
