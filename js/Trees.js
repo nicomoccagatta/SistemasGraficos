@@ -1,4 +1,4 @@
-function Trees(from_x, to_x, from_y, to_y, field, min_height) {
+function Trees(from_x, to_x, from_y, to_y, min_height) {
 
 	this.positions_1 = [];
 	this.positions_2 = [];
