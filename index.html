@@ -430,7 +430,7 @@
         bridge = new Bridge(app.ph1, app.ph2, app.ph3, app.s1, app.pos, app.cols, from_and_to[0], from_and_to[1]); 
         // Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to)
 
-        trees = new Trees(field,app.ph1);
+        trees = new Trees(LEFT_BORDER_MAP, RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, TOP_BORDER_MAP,field,app.ph1);
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.enable(gl.DEPTH_TEST);

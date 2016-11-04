@@ -1,4 +1,4 @@
-function Trees(field, min_height) {
+function Trees(from_x, to_x, from_y, to_y, field, min_height) {
 
 	/////////// TREE 1 ////////////
 	var puntos = [];
@@ -46,26 +46,63 @@ function Trees(field, min_height) {
     	this.tree3.setupLighting(lightPosition,ambientColor,diffuseColor);
     }
     
+	function numeroAleatorio(min, max) {
+	  return Math.round(Math.random() * (max - min) + min);
+	}
+
     this.draw = function(){
+    	////////////////// TREE 1 //////////////////////
         var model_matrix_tree = mat4.create();
         mat4.identity(model_matrix_tree);
-    	mat4.translate(model_matrix_tree,model_matrix_tree,[50,90,0]);
-        this.tree1.draw(model_matrix_tree);
 
+    	mat4.translate(model_matrix_tree,model_matrix_tree,[from_x + (to_x-from_x)/20.0 ,0,0]);
+        for(var i = 0; i < 10; i++) {
+        	var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
+
+        	var yRandomTop = numeroAleatorio(yLimits[1],to_y);
+    		mat4.translate(model_matrix_tree,model_matrix_tree,[i * (to_x-from_x)/10.0,yRandomTop,0]);
+        	this.tree1.draw(model_matrix_tree);
+        	mat4.translate(model_matrix_tree,model_matrix_tree,[0, -yRandomTop,0]);
+
+	        yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
+	    	mat4.translate(model_matrix_tree,model_matrix_tree,[0, yRandomBottom,0]);
+	        this.tree1.draw(model_matrix_tree);
+	        mat4.translate(model_matrix_tree,model_matrix_tree,[-i * (to_x-from_x)/10.0, -yRandomBottom,0]);
+    	}
+    	////////////////// TREE 1 ///////////////////////////////
+
+
+    	////////////////// TREE 2 ///////////////////////////////
         var model_matrix_tree2 = mat4.create();
         mat4.identity(model_matrix_tree2);
-    	mat4.translate(model_matrix_tree2,model_matrix_tree2,[50,110,0]);
-        this.tree2.draw(model_matrix_tree2);
 
+
+    	mat4.translate(model_matrix_tree2,model_matrix_tree2,[from_x + (to_x-from_x)/20.0,110,0]);
+        this.tree2.draw(model_matrix_tree2);
+        for(var i = 0; i < 9; i++) {
+    		mat4.translate(model_matrix_tree2,model_matrix_tree2,[(to_x-from_x)/10.0,0,0]);
+        	this.tree2.draw(model_matrix_tree2);
+    	}
+    	////////////////// TREE 2 ///////////////////////////////
+
+
+		////////////////// TREE 3 ///////////////////////////////
         var model_matrix_tree3 = mat4.create();
         mat4.identity(model_matrix_tree3);
-    	mat4.translate(model_matrix_tree3,model_matrix_tree3,[50,70,0]);
+
+
+    	mat4.translate(model_matrix_tree3,model_matrix_tree3,[from_x + (to_x-from_x)/20.0,130,0]);
         this.tree3.draw(model_matrix_tree3);
+        for(var i = 0; i < 9; i++) {
+    		mat4.translate(model_matrix_tree3,model_matrix_tree3,[(to_x-from_x)/10.0,0,0]);
+        	this.tree3.draw(model_matrix_tree3);
+    	}
+    	////////////////// TREE 3 ///////////////////////////////
     }
 
 
     this.updateTrees = function(min_height) {
         delete this;
-        trees = new Trees(field,min_height);
+        trees = new Trees(LEFT_BORDER_MAP, RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, TOP_BORDER_MAP,field,app.ph1);
     }
 }
