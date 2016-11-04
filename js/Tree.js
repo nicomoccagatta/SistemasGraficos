@@ -154,7 +154,7 @@ function Tree(points) {
             this.index_buffer_tree_base.push(index_index_tree_base_buffer);
             index_index_tree_base_buffer++;
 
-            z = 3.0;
+            z = 2.0;
             this.fillBuffers(this.normal_buffer_tree_base, this.position_buffer_tree_base, this.color_buffer_tree_base, x, y, z, r, g, b);
             this.index_buffer_tree_base.push(index_index_tree_base_buffer);
             index_index_tree_base_buffer++;
