@@ -400,7 +400,7 @@
         field.updateField(points);
         from_and_to = field.getYPositionFromX(points, app.pos);
         bridge = bridge.updateBridge(app, from_and_to);
-        trees.updateTrees(app.ph1);
+        //trees.updateTrees(app.ph1);
         drawScene();
     }
 
@@ -431,6 +431,7 @@
         // Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to)
 
         trees = new Trees(LEFT_BORDER_MAP, RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, TOP_BORDER_MAP,field,app.ph1);
+        trees.initBuffers();
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.enable(gl.DEPTH_TEST);

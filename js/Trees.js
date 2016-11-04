@@ -1,5 +1,9 @@
 function Trees(from_x, to_x, from_y, to_y, field, min_height) {
 
+	this.positions_1 = [];
+	this.positions_2 = [];
+	this.positions_3 = [];
+
 	/////////// TREE 1 ////////////
 	var puntos = [];
     var scale = 1;
@@ -34,6 +38,35 @@ function Trees(from_x, to_x, from_y, to_y, field, min_height) {
     ///////////////////////////////
 
 
+    this.initBuffers = function() {
+    	for(var i = 0; i < 10; i++) {
+			var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
+	    	var yRandomTop = numeroAleatorio(yLimits[1],to_y);
+	        var yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
+
+    		this.positions_1[i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomTop,0];
+    		this.positions_1[10+i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomBottom,0];
+    	}
+
+    	for(var i = 0; i < 10; i++) {
+			var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
+	    	var yRandomTop = numeroAleatorio(yLimits[1],to_y);
+	        var yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
+
+    		this.positions_2[i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomTop,0];
+    		this.positions_2[10+i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomBottom,0];
+    	}
+
+    	for(var i = 0; i < 10; i++) {
+			var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
+	    	var yRandomTop = numeroAleatorio(yLimits[1],to_y);
+	        var yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
+
+    		this.positions_3[i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomTop,0];
+    		this.positions_3[10+i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomBottom,0];
+    	}
+    }
+
     this.setupShaders = function(){
     	this.tree1.setupShaders();
     	this.tree2.setupShaders();
@@ -55,19 +88,14 @@ function Trees(from_x, to_x, from_y, to_y, field, min_height) {
         var model_matrix_tree = mat4.create();
         mat4.identity(model_matrix_tree);
 
-    	mat4.translate(model_matrix_tree,model_matrix_tree,[from_x + (to_x-from_x)/20.0 ,0,0]);
         for(var i = 0; i < 10; i++) {
-        	var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
-
-        	var yRandomTop = numeroAleatorio(yLimits[1],to_y);
-    		mat4.translate(model_matrix_tree,model_matrix_tree,[i * (to_x-from_x)/10.0,yRandomTop,0]);
+    		mat4.translate(model_matrix_tree,model_matrix_tree, this.positions_1[i]);
         	this.tree1.draw(model_matrix_tree);
-        	mat4.translate(model_matrix_tree,model_matrix_tree,[0, -yRandomTop,0]);
+    		mat4.translate(model_matrix_tree,model_matrix_tree, [-this.positions_1[i][0],-this.positions_1[i][1],-this.positions_1[i][2]]);
 
-	        yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
-	    	mat4.translate(model_matrix_tree,model_matrix_tree,[0, yRandomBottom,0]);
+    		mat4.translate(model_matrix_tree,model_matrix_tree, this.positions_1[10+i]);
 	        this.tree1.draw(model_matrix_tree);
-	        mat4.translate(model_matrix_tree,model_matrix_tree,[-i * (to_x-from_x)/10.0, -yRandomBottom,0]);
+    		mat4.translate(model_matrix_tree,model_matrix_tree, [-this.positions_1[10+i][0],-this.positions_1[10+i][1],-this.positions_1[10+i][2]]);
     	}
     	////////////////// TREE 1 ///////////////////////////////
 
@@ -76,12 +104,14 @@ function Trees(from_x, to_x, from_y, to_y, field, min_height) {
         var model_matrix_tree2 = mat4.create();
         mat4.identity(model_matrix_tree2);
 
-
-    	mat4.translate(model_matrix_tree2,model_matrix_tree2,[from_x + (to_x-from_x)/20.0,110,0]);
-        this.tree2.draw(model_matrix_tree2);
-        for(var i = 0; i < 9; i++) {
-    		mat4.translate(model_matrix_tree2,model_matrix_tree2,[(to_x-from_x)/10.0,0,0]);
+        for(var i = 0; i < 10; i++) {
+    		mat4.translate(model_matrix_tree2,model_matrix_tree2, this.positions_2[i]);
         	this.tree2.draw(model_matrix_tree2);
+    		mat4.translate(model_matrix_tree2,model_matrix_tree2, [-this.positions_2[i][0],-this.positions_2[i][1],-this.positions_2[i][2]]);
+
+    		mat4.translate(model_matrix_tree2,model_matrix_tree2, this.positions_2[10+i]);
+	        this.tree2.draw(model_matrix_tree2);
+    		mat4.translate(model_matrix_tree2,model_matrix_tree2, [-this.positions_2[10+i][0],-this.positions_2[10+i][1],-this.positions_2[10+i][2]]);
     	}
     	////////////////// TREE 2 ///////////////////////////////
 
@@ -90,12 +120,14 @@ function Trees(from_x, to_x, from_y, to_y, field, min_height) {
         var model_matrix_tree3 = mat4.create();
         mat4.identity(model_matrix_tree3);
 
-
-    	mat4.translate(model_matrix_tree3,model_matrix_tree3,[from_x + (to_x-from_x)/20.0,130,0]);
-        this.tree3.draw(model_matrix_tree3);
-        for(var i = 0; i < 9; i++) {
-    		mat4.translate(model_matrix_tree3,model_matrix_tree3,[(to_x-from_x)/10.0,0,0]);
+        for(var i = 0; i < 10; i++) {
+    		mat4.translate(model_matrix_tree3,model_matrix_tree3, this.positions_3[i]);
         	this.tree3.draw(model_matrix_tree3);
+    		mat4.translate(model_matrix_tree3,model_matrix_tree3, [-this.positions_3[i][0],-this.positions_3[i][1],-this.positions_3[i][2]]);
+
+    		mat4.translate(model_matrix_tree3,model_matrix_tree3, this.positions_3[10+i]);
+	        this.tree3.draw(model_matrix_tree3);
+    		mat4.translate(model_matrix_tree3,model_matrix_tree3, [-this.positions_3[10+i][0],-this.positions_3[10+i][1],-this.positions_3[10+i][2]]);
     	}
     	////////////////// TREE 3 ///////////////////////////////
     }
