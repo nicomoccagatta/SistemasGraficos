@@ -4,39 +4,37 @@ function Trees(from_x, to_x, from_y, to_y, field, min_height) {
 	this.positions_2 = [];
 	this.positions_3 = [];
 
-	/////////// TREE 1 ////////////
-	var puntos = [];
-    var scale = 1;
-    puntos[0] = [scale * 0.0 , min_height + 1.0 * scale];
-    puntos[1] = [scale * 3.0 , min_height + 2.0 * scale];
-    puntos[2] = [scale * 1.0 , min_height + 3.0 * scale];
-    puntos[3] = [scale * 3.0 , min_height + 4.0 * scale];
-    puntos[4] = [scale * 0.0 , min_height + 5.0 * scale];
-    this.tree1 = new Tree(puntos,min_height,scale);
-    this.tree1.initBuffers();
-    ///////////////////////////////
+    this.updateTrees = function(min_height,scale,scale2,scale3) {
+		/////////// TREE 1 ////////////
+		var puntos = [];
+	    puntos[0] = [scale * 0.0 , min_height + 1.0 * scale];
+	    puntos[1] = [scale * 3.0 , min_height + 2.0 * scale];
+	    puntos[2] = [scale * 1.0 , min_height + 3.0 * scale];
+	    puntos[3] = [scale * 3.0 , min_height + 4.0 * scale];
+	    puntos[4] = [scale * 0.0 , min_height + 5.0 * scale];
+		this.tree1 = new Tree(puntos,min_height,scale);
+		this.tree1.initBuffers();
 
-	/////////// TREE 2 ////////////
-	var puntos2 = [];
-	var scale2 = 1;
-    puntos2[0] = [scale2 * 0.0 , min_height + 1.0 * scale2];
-    puntos2[1] = [scale2 * 3.0 , min_height + 1.5 * scale2];
-    puntos2[2] = [scale2 * 3.0 , min_height + 3.0 * scale2];
-    puntos2[3] = [scale2 * 3.0 , min_height + 4.5 * scale2];
-    puntos2[4] = [scale2 * 0.0 , min_height + 5.0 * scale2];
-    this.tree2 = new Tree(puntos2,min_height,scale2);
-    this.tree2.initBuffers();
-    ///////////////////////////////
+		/////////// TREE 2 ////////////
+		var puntos2 = [];
+	    puntos2[0] = [scale2 * 0.0 , min_height + 1.0 * scale2];
+	    puntos2[1] = [scale2 * 3.0 , min_height + 1.5 * scale2];
+	    puntos2[2] = [scale2 * 3.0 , min_height + 3.0 * scale2];
+	    puntos2[3] = [scale2 * 3.0 , min_height + 4.5 * scale2];
+	    puntos2[4] = [scale2 * 0.0 , min_height + 5.0 * scale2];
+	    this.tree2 = new Tree(puntos2,min_height,scale2);
+	    this.tree2.initBuffers();
 
-	/////////// TREE 3 ////////////
-	var puntos3 = [];
-	var scale3 = 1;
-    puntos3[0] = [scale3 * 3.0 , min_height + 1.0 * scale3];
-    puntos3[1] = [scale3 * 0.0 , min_height + 5.0 * scale3];
-    this.tree3 = new Tree(puntos3,min_height,scale3);
-    this.tree3.initBuffers();
-    ///////////////////////////////
+		/////////// TREE 3 ////////////
+		var puntos3 = [];
+    	puntos3[0] = [scale3 * 3.0 , min_height + 1.0 * scale3];
+    	puntos3[1] = [scale3 * 0.0 , min_height + 5.0 * scale3];	    
+	    this.tree3 = new Tree(puntos3,min_height,scale3);
+	    this.tree3.initBuffers();
 
+    }
+
+	this.updateTrees(min_height,1,1,1);
 
     this.initBuffers = function() {
     	for(var i = 0; i < 10; i++) {
@@ -130,11 +128,5 @@ function Trees(from_x, to_x, from_y, to_y, field, min_height) {
     		mat4.translate(model_matrix_tree3,model_matrix_tree3, [-this.positions_3[10+i][0],-this.positions_3[10+i][1],-this.positions_3[10+i][2]]);
     	}
     	////////////////// TREE 3 ///////////////////////////////
-    }
-
-
-    this.updateTrees = function(min_height) {
-        delete this;
-        trees = new Trees(LEFT_BORDER_MAP, RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, TOP_BORDER_MAP,field,app.ph1);
     }
 }
