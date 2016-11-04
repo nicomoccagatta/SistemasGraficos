@@ -1,4 +1,4 @@
-function Tree(points) {        
+function Tree(points, min_height,scale) {        
     this.webgl_position_buffer = null;
     this.webgl_normal_buffer = null;
     this.webgl_color_buffer = null;
@@ -146,15 +146,15 @@ function Tree(points) {
         for(var angle = 0.0; angle <= 360.0; angle+=deltaAngle) {
             var theta = angle * Math.PI / 180.0;
 
-            x = Math.cos(theta);
-            y = Math.sin(theta);
-            z = 0;
+            x = Math.cos(theta) * scale;
+            y = Math.sin(theta) * scale;;
+            z = min_height;
 
             this.fillBuffers(this.normal_buffer_tree_base, this.position_buffer_tree_base, this.color_buffer_tree_base, x, y, z, r, g, b);
             this.index_buffer_tree_base.push(index_index_tree_base_buffer);
             index_index_tree_base_buffer++;
 
-            z = 2.0;
+            z = min_height+2.0 * scale;
             this.fillBuffers(this.normal_buffer_tree_base, this.position_buffer_tree_base, this.color_buffer_tree_base, x, y, z, r, g, b);
             this.index_buffer_tree_base.push(index_index_tree_base_buffer);
             index_index_tree_base_buffer++;
