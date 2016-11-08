@@ -3,6 +3,7 @@ const MAX_HEIGHT_SEPARATION = 0.85;
 const INTERN_LOW_BORDER = 1.3;
 const INTERN_HIGH_BORDER = 1;
 const HALF_WIDTH = 5;
+const ROAD_COLOR = 0.25;
 
 //Height seria ph1 segun el enunciado.
 function PlainRoad(height, center_x, from, to) {
@@ -25,6 +26,8 @@ function PlainRoad(height, center_x, from, to) {
         var intern_high_right_x = (extreme_right_x + INTERN_HIGH_BORDER);
         
         this.position_buffer = [
+            extreme_left_x, from, height,
+            extreme_left_x, from, height,
             extreme_left_x, from, height,
             intern_high_left_x, from, height,
             extreme_left_x, from, max_height,
@@ -106,14 +109,16 @@ function PlainRoad(height, center_x, from, to) {
             extreme_right_x, to, height
         ];
         
-        this.normal_buffer = this.position_buffer;
+        this.normal_buffer = [];
+        calcNormals(this.position_buffer, this.normal_buffer);
+        //this.normal_buffer = this.position_buffer;
         
         this.color_buffer = [];
         this.index_buffer = [];
         for (var i = 0; i < this.normal_buffer.length / 3; i++) {
-            this.color_buffer.push(0.5);
-            this.color_buffer.push(0.5);
-            this.color_buffer.push(0.5);
+            this.color_buffer.push(ROAD_COLOR);
+            this.color_buffer.push(ROAD_COLOR);
+            this.color_buffer.push(ROAD_COLOR);
             this.index_buffer.push(i);
         }
     }
@@ -217,9 +222,9 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
         this.normal_buffer.push(y);
         this.normal_buffer.push(z);
 
-        this.color_buffer.push(0.5)
-        this.color_buffer.push(0.5)
-        this.color_buffer.push(0.5)
+        this.color_buffer.push(ROAD_COLOR)
+        this.color_buffer.push(ROAD_COLOR)
+        this.color_buffer.push(ROAD_COLOR)
         
         this.position_buffer.push(x);
         this.position_buffer.push(y);
