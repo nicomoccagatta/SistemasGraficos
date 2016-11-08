@@ -22,9 +22,9 @@ function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_a
     this.index_buffer_lower_lid = [];
 
     this.fillBuffers = function(normal_buf, position_buf, color_buf, x, y, z) {
-        normal_buf.push(x);
+        /*normal_buf.push(x);
         normal_buf.push(y);
-        normal_buf.push(z);
+        normal_buf.push(z);*/
 
         color_buf.push(1.0);
         color_buf.push(0.0);
@@ -85,6 +85,12 @@ function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_a
                 this.index_buffer_lower_lid.push(i);
             }
         }
+        
+        
+        
+        calcNormals(this.position_buffer, this.normal_buffer);
+        calcNormals(this.position_buffer_lower_lid, this.normal_buffer_lower_lid);
+        calcNormals(this.position_buffer_upper_lid, this.normal_buffer_upper_lid);
     }
     
     this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {

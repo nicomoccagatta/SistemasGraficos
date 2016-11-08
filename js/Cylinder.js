@@ -8,9 +8,9 @@ function Cylinder(number_of_sides, center_x, center_y, floor, ceiling, radius) {
     this.webgl_index_buffer = null;
     
     this.fillBuffers = function(normal_buf, position_buf, color_buf, x, y, z) {
-        normal_buf.push(x);
+        /*normal_buf.push(x);
         normal_buf.push(y);
-        normal_buf.push(z);
+        normal_buf.push(z);*/
 
         color_buf.push(CYLINDER_COLOR);
         color_buf.push(CYLINDER_COLOR);
@@ -60,6 +60,12 @@ function Cylinder(number_of_sides, center_x, center_y, floor, ceiling, radius) {
                 this.index_buffer_lower_lid.push(i);
             }
         }
+        
+        
+        
+        calcNormals(this.position_buffer, this.normal_buffer);
+        calcNormals(this.position_buffer_lower_lid, this.normal_buffer_lower_lid);
+        calcNormals(this.position_buffer_upper_lid, this.normal_buffer_upper_lid);
     }
     
     this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {

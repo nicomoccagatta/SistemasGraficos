@@ -218,9 +218,9 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
     var intern_high_left_x = (extreme_left_x - INTERN_HIGH_BORDER);
     
     this.fillBuffers = function(x, y, z) {
-        this.normal_buffer.push(x);
+        /*this.normal_buffer.push(x);
         this.normal_buffer.push(y);
-        this.normal_buffer.push(z);
+        this.normal_buffer.push(z);*/
 
         this.color_buffer.push(ROAD_COLOR)
         this.color_buffer.push(ROAD_COLOR)
@@ -255,6 +255,7 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
             z = this_step_z;
 
             x = extreme_left_x;
+            this.fillBuffers(x, y, z);
             this.fillBuffers(x, y, z);
             
             x = extreme_right_x;
@@ -352,9 +353,12 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
             this.fillBuffers(x, y, z);
         }
 
-        for (var index = 0; index < 180 * 30 + 2; index++) {
+        for (var index = 0; index < 180 * 31 + 2; index++) {
             this.index_buffer.push(index);
         }
+        
+        
+        calcNormals(this.position_buffer, this.normal_buffer);
     }
     
     this.getHeightsAlongRoad = function() {
