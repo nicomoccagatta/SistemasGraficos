@@ -2,12 +2,226 @@ const HEIGHT_BASE_COLUMN_TWO = 0.5;
 const MIN_HEIGHT = 0;
 const DELIMITER_DIFF = 0.4;
 
+
+
+
+
+function calcNormals(source, destination) {
+    var subtract = function (a, b) {
+        var vec3 = new Array(3);
+        vec3[0] = a[0] - b[0],
+        vec3[1] = a[1] - b[1],
+        vec3[2] = a[2] - b[2];
+        return vec3;
+    }
+
+    var crossProduct = function (a, b) {
+        var vec3 = new Array(3);
+        vec3[0] = a[1] * b[2] - a[2] * b[1];
+        vec3[1] = a[2] * b[0] - a[0] * b[2];
+        vec3[2] = a[0] * b[1] - a[1] * b[0];
+        return vec3;
+    }
+
+    var normalize = function (a) {
+        var vec3 = new Array(3);
+        var len = Math.sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
+        vec3[0] = a[0] / len;
+        vec3[1] = a[1] / len;
+        vec3[2] = a[2] / len;
+        return vec3;
+    }
+    
+    
+            for (var j = 0; j < 2; j++) {
+                //destination.push(v_normal[0], v_normal[1], v_normal[2]);
+                destination.push(0, 0, 0);
+            }
+    
+    for (var i = 0; i < source.length - 6/*Math.floor(source.length / 3)*/; i += 3) {
+        //console.log(i);
+        //console.log(source.length);
+        var index = i //* 3;
+        
+        var v1 = [
+         source[index],
+         source[index + 1],
+         source[index + 2]
+        ];
+        
+        var v2 = [
+          source[index + 3],
+          source[index + 4],
+          source[index + 5]
+        ];
+        
+        var v3 = [
+          source[index + 6],
+          source[index + 7],
+          source[index + 8]
+        ];
+        
+        
+        if ((i % 2) != 0) {
+            v1 = (-v1);
+            v2 = (-v2);
+            v3 = (-v3);
+        }
+        
+        
+        
+        var u = subtract(v2, v1);
+        var v = subtract(v3, v1);
+        var v_final = crossProduct(u, v);
+        var v_normal = normalize(v_final);
+        
+        //for (var j = 0; j < 3; j++) {
+        destination.push(v_normal[0], v_normal[1], v_normal[2]);
+        //}
+        
+        
+        
+        /*if ((i + 3) >= (source.length - 6)) {
+            for (var j = 0; j < 2; j++) {
+                //destination.push(v_normal[0], v_normal[1], v_normal[2]);
+                destination.push(0, 0, 0);
+            }
+        }*/
+
+        /*if (((i + 1) != source.length / 3) && (i + 2) > Math.floor(source.length / 9)) {
+            var extra = (source.length - Math.floor(source.length / 9) * 9);
+            index += extra;
+            
+            v1 = [
+             source[index],
+             source[index + 1],
+             source[index + 2]
+            ];
+            
+            v2 = [
+              source[index + 3],
+              source[index + 4],
+              source[index + 5]
+            ];
+            
+            v3 = [
+              source[index + 6],
+              source[index + 7],
+              source[index + 8]
+            ];
+            
+            u = subtract(v2, v1);
+            v = subtract(v3, v1);
+            v_final = crossProduct(u, v);
+            v_normal = normalize(v_final);
+            
+            for (var j = 0; j < (extra / 3); j++) {
+                destination.push(v_normal[0], v_normal[1], v_normal[2]);
+            }
+        }*/
+    }
+
+    /*for (var i = 0; i < Math.floor(source.length / 9); i++) {
+        var index = i * 9;
+        
+        var v1 = [
+         source[index],
+         source[index + 1],
+         source[index + 2]
+        ];
+        
+        var v2 = [
+          source[index + 3],
+          source[index + 4],
+          source[index + 5]
+        ];
+        
+        var v3 = [
+          source[index + 6],
+          source[index + 7],
+          source[index + 8]
+        ];
+        
+        var u = subtract(v2, v1);
+        var v = subtract(v3, v1);
+        var v_final = crossProduct(u, v);
+        var v_normal = normalize(v_final);
+        
+        for (var j = 0; j < 3; j++) {
+            destination.push(v_normal[0], v_normal[1], v_normal[2]);
+        }
+        
+        
+
+        if (((i + 1) != source.length / 9) && (i + 2) > Math.floor(source.length / 9)) {
+            var extra = (source.length - Math.floor(source.length / 9) * 9);
+            index += extra;
+            
+            v1 = [
+             source[index],
+             source[index + 1],
+             source[index + 2]
+            ];
+            
+            v2 = [
+              source[index + 3],
+              source[index + 4],
+              source[index + 5]
+            ];
+            
+            v3 = [
+              source[index + 6],
+              source[index + 7],
+              source[index + 8]
+            ];
+            
+            u = subtract(v2, v1);
+            v = subtract(v3, v1);
+            v_final = crossProduct(u, v);
+            v_normal = normalize(v_final);
+            
+            for (var j = 0; j < (extra / 3); j++) {
+                destination.push(v_normal[0], v_normal[1], v_normal[2]);
+            }
+        }
+    }*/
+    
+    
+    
+    
+    
+    /*var normalize = function (a) {
+        var vec3 = new Array(3);
+        var len = Math.sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
+        vec3[0] = a[0] / len;
+        vec3[1] = a[1] / len;
+        vec3[2] = a[2] / len;
+        return vec3;
+    }
+    
+    
+    for (var i = 0; i < source.length; i += 3) {
+        var normal = [0, 0, 0];
+        var vertex_one = [source[i], source[i + 1], source[i + 2]];
+        var vertex_two = [source[(i + 3) % source.length], source[(i + 4) % source.length], source[(i + 5) % source.length]];
+        normal[0] = ((vertex_one[1] - vertex_two[1]) * (vertex_one[2] + vertex_two[2]));
+        normal[1] = ((vertex_one[2] - vertex_two[2]) * (vertex_one[0] + vertex_two[0]));
+        normal[2] = ((vertex_one[0] - vertex_two[0]) * (vertex_one[1] + vertex_two[1]));
+        normalize(normal);
+        destination.push(normal[0], normal[1], normal[2]);
+    }*/
+}
+
+
+
+
+
+
+
 //El delimitador es para saber que tan grande es esa parte de la columna.
 function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
     this.position_buffer = null;
-    this.normal_buffer = null;
-    this.color_buffer = null;
-    this.index_buffer = null;
+    this.normal_buffer = [];
 
     this.webgl_position_buffer = null;
     this.webgl_normal_buffer = null;
@@ -28,6 +242,8 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
         
         this.position_buffer = [
             // Base de arriba
+            middle_right_x, min_center_y, top_height,
+            middle_right_x, min_center_y, top_height,
             middle_right_x, min_center_y, top_height,
             max_center_x, min_center_y, top_height,
             middle_right_x, max_center_y, top_height,
@@ -73,10 +289,14 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
             min_center_x, max_center_y, top_height,
             min_center_x, max_center_y, base_height,
             
+            
+            //min_center_x, max_center_y, base_height,//agregado
+            
             min_center_x, min_center_y, top_height,
             min_center_x, min_center_y, base_height,
             
             min_center_x, min_center_y, base_height,
+            //min_center_x, min_center_y, base_height,//agregado
             
             // Base de abajo
             min_center_x, max_center_y, base_height,
@@ -92,7 +312,8 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
             max_center_x, max_center_y, base_height
         ];
         
-        this.normal_buffer = this.position_buffer;
+        calcNormals(this.position_buffer, this.normal_buffer);
+        //this.normal_buffer = this.position_buffer;
         
         this.color_buffer = [];
         this.index_buffer = [];
@@ -178,9 +399,7 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
 //El delimitador es para saber que tan grande es esa parte de la columna.
 function BaseColumnTwo(height, center_x, center_y, delimiter) {
     this.position_buffer = null;
-    this.normal_buffer = null;
-    this.color_buffer = null;
-    this.index_buffer = null;
+    this.normal_buffer = [];
 
     this.webgl_position_buffer = null;
     this.webgl_normal_buffer = null;
@@ -213,6 +432,8 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
         
         this.position_buffer = [
             min_center_x_top, min_center_y_top, top_height,
+            min_center_x_top, min_center_y_top, top_height,
+            min_center_x_top, min_center_y_top, top_height,
             min_center_x_base, min_center_y_base, base_height,
             middle_left_x_top, min_center_y_top, top_height,
             middle_left_x_base, min_center_y_base, base_height,
@@ -243,7 +464,8 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
             min_center_x_base, min_center_y_base, base_height
         ];
         
-        this.normal_buffer = this.position_buffer;
+        calcNormals(this.position_buffer, this.normal_buffer);
+        //this.normal_buffer = this.position_buffer;
         
         this.color_buffer = [];
         this.index_buffer = [];

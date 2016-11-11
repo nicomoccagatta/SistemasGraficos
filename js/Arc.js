@@ -22,9 +22,9 @@ function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_a
     this.index_buffer_lower_lid = [];
 
     this.fillBuffers = function(normal_buf, position_buf, color_buf, x, y, z) {
-        normal_buf.push(x);
+        /*normal_buf.push(x);
         normal_buf.push(y);
-        normal_buf.push(z);
+        normal_buf.push(z);*/
 
         color_buf.push(1.0);
         color_buf.push(0.0);
@@ -37,7 +37,7 @@ function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_a
     
     this.initBuffers = function() {
         var max_height = top_height - RADIUS_CYLINDER_ARC;
-        var height = max_height + RADIUS_CYLINDER_ARC - distance_to_floor;
+        var height = max_height - distance_to_floor;
         var radius = (to - from) / 2;
         var from_aux = from + radius;
         var max_angle_aux = max_angle;
@@ -55,6 +55,16 @@ function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_a
             var previous_step_y = from_aux + (radius * Math.cos((angle - 1) * 2 * Math.PI / 360));
             var previous_step_z = max_height + (height * Math.sin((angle - 1) * 2 * Math.PI / 360));
             this.heights_along_arc.push([this_step_y, this_step_z]);
+            
+            
+            
+            if (angle == max_angle_aux) {
+                this.fillBuffers(this.normal_buffer_lower_lid, this.position_buffer_lower_lid, this.color_buffer_lower_lid, center_x, this_step_y, this_step_z);
+            }
+            if (angle == (min_angle + 1)) {
+                this.fillBuffers(this.normal_buffer_upper_lid, this.position_buffer_upper_lid, this.color_buffer_upper_lid, center_x, previous_step_y, previous_step_z);
+            }
+            
 
             for (var i = 0; i <= NUMBER_OF_SIDES; i++) {
                 var alpha = i * 2 * Math.PI / NUMBER_OF_SIDES;
@@ -68,23 +78,30 @@ function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_a
                 if (angle == (min_angle + 1)) {
                     this.fillBuffers(this.normal_buffer_upper_lid, this.position_buffer_upper_lid, this.color_buffer_upper_lid, x, y, z);
                 }
-                
                 y = this_step_y;
                 z = this_step_z + (RADIUS_CYLINDER_ARC * sinAlpha);
                 this.fillBuffers(this.normal_buffer, this.position_buffer, this.color_buffer, x, y, z);
                 if (angle == max_angle_aux) {
                     this.fillBuffers(this.normal_buffer_lower_lid, this.position_buffer_lower_lid, this.color_buffer_lower_lid, x, y, z);
                 }
+                
             }
         }
         
         for (var i = 0; i < (NUMBER_OF_SIDES + 1) * (max_angle_aux - min_angle) * 2; i++) {
             this.index_buffer.push(i);
-            if (i <= NUMBER_OF_SIDES) {
+            if (i <= NUMBER_OF_SIDES + 1) {
                 this.index_buffer_upper_lid.push(i);
                 this.index_buffer_lower_lid.push(i);
             }
         }
+        
+
+        
+        
+        calcNormals(this.position_buffer, this.normal_buffer);
+        calcNormals(this.position_buffer_lower_lid, this.normal_buffer_lower_lid);
+        calcNormals(this.position_buffer_upper_lid, this.normal_buffer_upper_lid);
     }
     
     this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
