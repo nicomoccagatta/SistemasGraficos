@@ -7,8 +7,8 @@ function Trees(from_x, to_x, from_y, to_y, min_height) {
     this.initBuffers = function() {
         for(var i = 0; i < 10; i++) {
             var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
-            var yRandomTop = numeroAleatorio(yLimits[1],to_y);
-            var yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
+            var yRandomTop = randomNum(yLimits[1],to_y);
+            var yRandomBottom = randomNum(from_y,yLimits[0]);
 
             this.positions_1[i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomTop,0];
             this.positions_1[10+i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomBottom,0];
@@ -16,8 +16,8 @@ function Trees(from_x, to_x, from_y, to_y, min_height) {
 
         for(var i = 0; i < 10; i++) {
             var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
-            var yRandomTop = numeroAleatorio(yLimits[1],to_y);
-            var yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
+            var yRandomTop = randomNum(yLimits[1],to_y);
+            var yRandomBottom = randomNum(from_y,yLimits[0]);
 
             this.positions_2[i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomTop,0];
             this.positions_2[10+i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomBottom,0];
@@ -25,8 +25,8 @@ function Trees(from_x, to_x, from_y, to_y, min_height) {
 
         for(var i = 0; i < 10; i++) {
             var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
-            var yRandomTop = numeroAleatorio(yLimits[1],to_y);
-            var yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
+            var yRandomTop = randomNum(yLimits[1],to_y);
+            var yRandomBottom = randomNum(from_y,yLimits[0]);
 
             this.positions_3[i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomTop,0];
             this.positions_3[10+i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomBottom,0];
@@ -65,8 +65,8 @@ function Trees(from_x, to_x, from_y, to_y, min_height) {
         //////UPDATE POSITIONS//////////////////
         for(var i = 0; i < 10; i++) {
             var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
-            var yRandomTop = numeroAleatorio(yLimits[1],to_y);
-            var yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
+            var yRandomTop = randomNum(yLimits[1],to_y);
+            var yRandomBottom = randomNum(from_y,yLimits[0]);
 
             if(this.positions_1[i][1] < yLimits[1])
                 this.positions_1[i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomTop,0];
@@ -77,8 +77,8 @@ function Trees(from_x, to_x, from_y, to_y, min_height) {
 
         for(var i = 0; i < 10; i++) {
             var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
-            var yRandomTop = numeroAleatorio(yLimits[1],to_y);
-            var yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
+            var yRandomTop = randomNum(yLimits[1],to_y);
+            var yRandomBottom = randomNum(from_y,yLimits[0]);
 
             if(this.positions_2[i][1] < yLimits[1])
                 this.positions_2[i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomTop,0];
@@ -89,8 +89,8 @@ function Trees(from_x, to_x, from_y, to_y, min_height) {
 
         for(var i = 0; i < 10; i++) {
             var yLimits = field.getYPositionFromX(points,from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0);
-            var yRandomTop = numeroAleatorio(yLimits[1],to_y);
-            var yRandomBottom = numeroAleatorio(from_y,yLimits[0]);
+            var yRandomTop = randomNum(yLimits[1],to_y);
+            var yRandomBottom = randomNum(from_y,yLimits[0]);
 
             if(this.positions_3[i][1] < yLimits[1])
                 this.positions_3[i] = [from_x + (to_x-from_x)/20.0 + i * (to_x-from_x)/10.0,yRandomTop,0];
@@ -113,7 +113,7 @@ function Trees(from_x, to_x, from_y, to_y, min_height) {
     	this.tree3.setupLighting(lightPosition,ambientColor,diffuseColor);
     }
     
-	function numeroAleatorio(min, max) {
+	function randomNum(min, max) {
 	  return Math.round(Math.random() * (max - min) + min);
 	}
 

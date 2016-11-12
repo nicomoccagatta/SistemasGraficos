@@ -23,8 +23,6 @@
 			if (currentlyPressedKeys[65]) {
 				vec3.sub(cameraPosition,cameraPosition, normalizedCamera);
 				vec3.sub(target,target,normalizedCamera);
-				console.log("posicion camara: "+cameraPosition);
-				console.log("target: "+target);
 			}
 			//Tecla D
 			if (currentlyPressedKeys[68]) {
