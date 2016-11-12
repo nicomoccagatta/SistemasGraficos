@@ -332,24 +332,20 @@
     //////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////
 
-    var cameraPosition = vec3.create();
-    var target = vec3.create();
-    var cameraMode = 1;
-    var phiAngle;
-    var thetaAngle;
-    var radius;
-    
     function initVariables () {
+        cameraMode = 1;
         target = [0,0,0];
-        cameraPosition = [480,400,240];
-        radius = vec3.squaredLength(cameraPosition);
-        thetaAngle = Math.acos(cameraPosition[2]/radius);   //para las rotaciones en zy e zx
-        phiAngle = Math.atan(cameraPosition[1]/cameraPosition[0]);  //para las rotaciones en el plano xy
+        var initPosToTranslate = vec3.create();
+        vec3.set(initPosToTranslate,20.0,20.0,3.0);   //Aca pongo a donde quiero que vaya
+        var radius = vec3.squaredLength(initPosToTranslate);
+        thetaAngle = Math.acos(initPosToTranslate[2]/radius);   //para las rotaciones en zy e zx
+        phiAngle = Math.atan(initPosToTranslate[1]/initPosToTranslate[0]);  //para las rotaciones en el plano xy
+        cameraPosition = [radius*Math.cos(phiAngle)*Math.sin(thetaAngle),radius*Math.sin(phiAngle)*Math.sin(thetaAngle),radius*Math.cos(thetaAngle)];
     }
 
     function drawScene() {
 	
-		// Se configura el vierport dentro de area canvas. En este caso se utiliza toda 
+		// Se configura el vierport dentro de area canvas. En este caso se utiliza toda
 		// el area disponible
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 		
@@ -357,7 +353,7 @@
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 		// Se configura la matriz de proyeccion
-        mat4.perspective(pMatrix, 3.14/12.0, gl.viewportWidth / gl.viewportHeight, 0.1, 1000.0);
+        mat4.perspective(pMatrix, 3.14/12.0, gl.viewportWidth / gl.viewportHeight, 0.1, 2000.0);
 
 
         // Matrices de modelado
@@ -386,9 +382,9 @@
         ////////////////////////////////////////////////////////
     }
 
-    function updateCamera(){
-        gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight); 
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);    
+    function updateCamera() {
+        gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         mat4.lookAt(CameraMatrix,cameraPosition,target,[0.0,0.0,1.0]);
         mat4.perspective(pMatrix,degToRad(70), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0);
     }
