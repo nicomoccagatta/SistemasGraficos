@@ -357,8 +357,6 @@
         mat4.identity(model_matrix_field);
         
         ////////////////////////////////////////////////////////
-        //     
-        // Configuramos la iluminacion y dibujamos
         bridge.setupShaders();
         bridge.setupLighting(vec3.fromValues(-500.0, 0.0, -60.0), vec3.fromValues(0.3, 0.3, 0.3), vec3.fromValues(0.05, 0.05, 0.05));
         bridge.draw(model_matrix_bridge);
@@ -375,17 +373,13 @@
         ////////////////////////////////////////////////////////
 
         ////////////////////////////////////////////////////////
-        //     
-        // Dibujamos a Marte
-        
-        // Configuramos la iluminación 
         sky.setupShaders();
         sky.setupLighting(vec3.fromValues(-100.0, 0.0, -60.0), vec3.fromValues(0.3, 0.3, 0.3), vec3.fromValues(0.05, 0.05, 0.05))
         
         // Matriz de modelado de sky
         var model_matrix_sky = mat4.create();
         mat4.identity(model_matrix_sky);
-        mat4.scale(model_matrix_sky, model_matrix_sky, [1000.0, 1000.0, 700.0]);
+        mat4.scale(model_matrix_sky, model_matrix_sky, [1000.0, 1000.0, 900.0]);
         sky.draw(model_matrix_sky);
         //
         ////////////////////////////////////////////////////////
