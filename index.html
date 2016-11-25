@@ -16,6 +16,7 @@
 <script type="text/javascript" src="js/Bridge.js"></script>
 <script type="text/javascript" src="js/Trees.js"></script>
 <script type="text/javascript" src="js/Tree.js"></script>
+<script type="text/javascript" src="js/TexturedSphere.js"></script>
 
 <script id="shader-fs-colored-obj" type="x-shader/x-fragment">
     precision mediump float;
@@ -306,6 +307,8 @@
     var lastMouseX = null;
     var lastMouseY = null;
 
+    var mars = null;
+
     function mvPushMatrix() {
         var copy = mat4.create();
         mat4.set(mvMatrix, copy);
@@ -380,6 +383,22 @@
         trees.draw();
         //
         ////////////////////////////////////////////////////////
+
+        ////////////////////////////////////////////////////////
+        //     
+        // Dibujamos a Marte
+        
+        // Configuramos la iluminación 
+        mars.setupShaders();
+        mars.setupLighting(vec3.fromValues(-100.0, 0.0, -60.0), vec3.fromValues(0.3, 0.3, 0.3), vec3.fromValues(0.05, 0.05, 0.05))
+        
+        // Matriz de modelado del mars
+        var model_matrix_mars = mat4.create();
+        mat4.identity(model_matrix_mars);
+        mat4.scale(model_matrix_mars, model_matrix_mars, [7.0, 7.0, 7.0]);
+        mars.draw(model_matrix_mars);
+        //
+        ////////////////////////////////////////////////////////
     }
 
     function updateCamera() {
@@ -428,6 +447,11 @@
 
         trees = new Trees(LEFT_BORDER_MAP, RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, TOP_BORDER_MAP,app.ph1);
         trees.initBuffers();
+
+
+        mars = new TexturedSphere(64,64);
+        mars.initBuffers();
+        mars.initTexture("mars_1k_color.jpg");
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.enable(gl.DEPTH_TEST);
