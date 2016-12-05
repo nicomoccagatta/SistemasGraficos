@@ -20,11 +20,18 @@
             var aux_texture = gl.createTexture();
             this.texture = aux_texture;
             this.texture.image = new Image();
-
-            this.texture.image.onload = function () {
-                   handleLoadedTexture()
-            }
             this.texture.image.src = texture_file;
+
+            this.texture.image.onload = function () {              
+                gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+                gl.bindTexture(gl.TEXTURE_2D, sky.texture);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, sky.texture.image);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+                gl.generateMipmap(gl.TEXTURE_2D);
+
+                gl.bindTexture(gl.TEXTURE_2D, null);
+            }
         }
 
 
@@ -52,14 +59,14 @@
                     var cosPhi = Math.cos(phi);
 
                     var x = cosPhi * sinTheta;
-                    var y = cosTheta;
-                    var z = sinPhi * sinTheta;
+                    var y = sinPhi * sinTheta;
+                    var z = cosTheta;
                     var u = 1.0 - (longNumber / this.longitudeBands);
                     var v = 1.0 - (latNumber / this.latitudeBands);
 
-                    this.normal_buffer.push(x);
-                    this.normal_buffer.push(y);
-                    this.normal_buffer.push(z);
+                    this.normal_buffer.push(-x);
+                    this.normal_buffer.push(-y);
+                    this.normal_buffer.push(-z);
 
                     this.texture_coord_buffer.push(u);
                     this.texture_coord_buffer.push(v);
