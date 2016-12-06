@@ -133,7 +133,7 @@ function Tree(points, min_height,scale) {
                     x = aux_current_curve_point[0] * next_cosTheta;
                     y = aux_current_curve_point[0] * next_sinTheta;
                     z = aux_current_curve_point[1];                    
-                    u -= deltaAngle;
+                    u -= (deltaAngle/360.0);
                     this.fillTexturedBuffers(this.normal_buffer, this.position_buffer, this.textured_buffer, x, y, z, u, v);
                     this.index_buffer.push(index_index_buffer);
                     index_index_buffer++;
