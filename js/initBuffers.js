@@ -1,7 +1,12 @@
 var treeTexture;
 var skyTexture;
+var rutaTexture;
+var veredaTexture;
+var columnaTexture;
+var cablesTexture;
 
-function initTexture() {	
+function initTexture() {
+	// SKY TEXTURE
 	skyTexture = gl.createTexture();
 	skyTexture.image = new Image();
 	skyTexture.image.onload = function() {		
@@ -9,12 +14,45 @@ function initTexture() {
 	}
 	skyTexture.image.src = "maps/sky_lightblue2.jpg";
 
+	// TREE TEXTURE
 	treeTexture = gl.createTexture();
 	treeTexture.image = new Image();
 	treeTexture.image.onload = function() {		
 		handleLoadedTextureMosaic(treeTexture);
 	}
 	treeTexture.image.src = "maps/hojas.jpg";
+
+	// RUTA TEXTURE
+	rutaTexture = gl.createTexture();
+	rutaTexture.image = new Image();
+	rutaTexture.image.onload = function() {		
+		handleLoadedTextureMosaic(rutaTexture);
+	}
+	rutaTexture.image.src = "maps/ruta.jpg";
+
+	// VEREDA TEXTURE
+	veredaTexture = gl.createTexture();
+	veredaTexture.image = new Image();
+	veredaTexture.image.onload = function() {		
+		handleLoadedTextureMosaic(veredaTexture);
+	}
+	veredaTexture.image.src = "maps/vereda.jpg";
+
+	// COLUMNA TEXTURE
+	columnaTexture = gl.createTexture();
+	columnaTexture.image = new Image();
+	columnaTexture.image.onload = function() {		
+		handleLoadedTextureMosaic(columnaTexture);
+	}
+	columnaTexture.image.src = "maps/oxido.jpg";
+
+	// CABLES TEXTURE
+	cablesTexture = gl.createTexture();
+	cablesTexture.image = new Image();
+	cablesTexture.image.onload = function() {		
+		handleLoadedTextureMosaic(cablesTexture);
+	}
+	cablesTexture.image.src = "maps/alambres.jpg";
 }
   
 function handleLoadedTexture(texture) {
