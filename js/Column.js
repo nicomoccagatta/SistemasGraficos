@@ -57,7 +57,7 @@ function calcNormals(source, destination) {
     /*for (var j = 0; j < 2; j++) {
         destination.push(0, 0, 0);
     }*///destination.push(0, 0, 0);
-    var v_normal = vec3.create();;
+    var v_normal = vec3.create();
     for (var i = 0; i < source.length - 6; i += 3) {
         var index = i;
         
@@ -78,6 +78,10 @@ function calcNormals(source, destination) {
           source[index + 7],
           source[index + 8]
         ];
+        
+        /*if ((v1[0] == v2[0]) && (v1[1] == v2[1]) &&(v1[2] == v2[2]) || (v3[0] == v1[0]) && (v3[1] == v1[1]) &&(v3[2] == v1[2])) {
+            destination.push(v_normal[0], v_normal[1], v_normal[2]);
+        }*/
         
         
         /*if ((i % 2) != 0) {
@@ -112,7 +116,9 @@ function calcNormals(source, destination) {
         /*for (var j = 0; j < 2; j++) {
             destination.push(0, 0, 0);
         }*/
-    }destination.push(v_normal[0], v_normal[1], v_normal[2]);destination.push(v_normal[0], v_normal[1], v_normal[2]);
+    }
+    destination.push(v_normal[0], v_normal[1], v_normal[2]);
+    destination.push(v_normal[0], v_normal[1], v_normal[2]);
 
     /*for (var i = 0; i < Math.floor(source.length / 9); i++) {
         var index = i * 9;
