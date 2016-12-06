@@ -7,6 +7,27 @@ const DELIMITER_DIFF = 0.4;
 
 
 function calcNormals(source, destination) {
+    /*this._calcularNormales = function(){
+       
+       this.normal_buffer = [];
+        for (var i = 0; i < this.rows; i++){
+            for (var j = 0; j < this.forma.length-2; j+=3){
+                var anterior = this._posicion(i-1, j);
+                var siguiente = this._posicion(i+1, j);
+
+                var d = vec3.create();
+                vec3.subtract(d, siguiente, anterior);
+
+                var normalSuperficie = vec3.create();
+                vec3.cross(normalSuperficie, d, this.tangentesCurva[j/3]);
+                vec3.normalize(normalSuperficie, normalSuperficie);
+
+                this.normal_buffer.push(normalSuperficie[0], normalSuperficie[1], normalSuperficie[2]);
+            }
+        }
+    }*/
+    
+    
     var subtract = function (a, b) {
         var vec3 = new Array(3);
         vec3[0] = a[0] - b[0],
@@ -33,15 +54,12 @@ function calcNormals(source, destination) {
     }
     
     
-            for (var j = 0; j < 2; j++) {
-                //destination.push(v_normal[0], v_normal[1], v_normal[2]);
-                destination.push(0, 0, 0);
-            }
-    
-    for (var i = 0; i < source.length - 6/*Math.floor(source.length / 3)*/; i += 3) {
-        //console.log(i);
-        //console.log(source.length);
-        var index = i //* 3;
+    /*for (var j = 0; j < 2; j++) {
+        destination.push(0, 0, 0);
+    }*///destination.push(0, 0, 0);
+    var v_normal = vec3.create();;
+    for (var i = 0; i < source.length - 6; i += 3) {
+        var index = i;
         
         var v1 = [
          source[index],
@@ -62,64 +80,39 @@ function calcNormals(source, destination) {
         ];
         
         
-        if ((i % 2) != 0) {
+        /*if ((i % 2) != 0) {
             v1 = (-v1);
             v2 = (-v2);
             v3 = (-v3);
+        }*/
+        
+        
+        
+        var u = vec3.create();
+        u = subtract(v2, v1);
+        var v = vec3.create();
+        v = subtract(v3, v1);
+        var v_final = vec3.create();
+        vec3.cross(v_final, u, v);
+        vec3.normalize(v_normal, v_final);
+        
+        
+        
+        if ((i % 2) != 0) {
+            v_normal[0] = (-v_normal[0]);
+            v_normal[1] = (-v_normal[1]);
+            v_normal[2] = (-v_normal[2]);
         }
         
         
         
-        var u = subtract(v2, v1);
-        var v = subtract(v3, v1);
-        var v_final = crossProduct(u, v);
-        var v_normal = normalize(v_final);
-        
-        //for (var j = 0; j < 3; j++) {
-        destination.push(v_normal[0], v_normal[1], v_normal[2]);
-        //}
-        
-        
-        
-        /*if ((i + 3) >= (source.length - 6)) {
-            for (var j = 0; j < 2; j++) {
-                //destination.push(v_normal[0], v_normal[1], v_normal[2]);
-                destination.push(0, 0, 0);
-            }
-        }*/
 
-        /*if (((i + 1) != source.length / 3) && (i + 2) > Math.floor(source.length / 9)) {
-            var extra = (source.length - Math.floor(source.length / 9) * 9);
-            index += extra;
-            
-            v1 = [
-             source[index],
-             source[index + 1],
-             source[index + 2]
-            ];
-            
-            v2 = [
-              source[index + 3],
-              source[index + 4],
-              source[index + 5]
-            ];
-            
-            v3 = [
-              source[index + 6],
-              source[index + 7],
-              source[index + 8]
-            ];
-            
-            u = subtract(v2, v1);
-            v = subtract(v3, v1);
-            v_final = crossProduct(u, v);
-            v_normal = normalize(v_final);
-            
-            for (var j = 0; j < (extra / 3); j++) {
-                destination.push(v_normal[0], v_normal[1], v_normal[2]);
-            }
+        destination.push(v_normal[0], v_normal[1], v_normal[2]);
+        
+        /*for (var j = 0; j < 2; j++) {
+            destination.push(0, 0, 0);
         }*/
-    }
+    }destination.push(v_normal[0], v_normal[1], v_normal[2]);destination.push(v_normal[0], v_normal[1], v_normal[2]);
 
     /*for (var i = 0; i < Math.floor(source.length / 9); i++) {
         var index = i * 9;
@@ -227,6 +220,43 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
     this.webgl_normal_buffer = null;
     this.webgl_color_buffer = null;
     this.webgl_index_buffer = null;
+    
+    
+    
+    /*this._posicion = function(i,j) {
+        if (i < 0)
+            return this._posicion(0, j);
+        if (i >= this.rows)
+            return this._posicion(this.position_buffer.length - 1, j);//this.rows-1, j);
+
+        var posicion = vec3.create();
+        posicion[0] = this.position_buffer[/*3/*this.cols*i + j];
+        posicion[1] = this.position_buffer[/*3/*this.cols*i + j + 1];
+        posicion[2] = this.position_buffer[/*3/*this.cols*i + j + 2];
+        return posicion;
+    }
+    
+    this.calcNormales = function(a, b) {
+        //this.normal_buffer = [];
+        for (var i = 0; i < this.position_buffer.length/3/*this.rows/; i++){
+            for (var j = 0; j < this.position_buffer.length/*this.forma.length-2/; j+=3){
+                var anterior = this._posicion(i-1, j);
+                var siguiente = this._posicion(i+1, j);
+
+                var d = vec3.create();
+                vec3.subtract(d, siguiente, anterior);
+
+                var normalSuperficie = vec3.create();
+                vec3.cross(normalSuperficie, d, this.tangentesCurva[j/3]);
+                vec3.normalize(normalSuperficie, normalSuperficie);
+
+                this.normal_buffer.push(normalSuperficie[0], normalSuperficie[1], normalSuperficie[2]);
+            }
+        }
+    }*/
+    
+    
+    
 
     this.initBuffers = function() {
         var min_center_x = (center_x - delimiter);
@@ -242,8 +272,8 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
         
         this.position_buffer = [
             // Base de arriba
-            middle_right_x, min_center_y, top_height,
-            middle_right_x, min_center_y, top_height,
+            //middle_right_x, min_center_y, top_height,
+            //middle_right_x, min_center_y, top_height,
             middle_right_x, min_center_y, top_height,
             max_center_x, min_center_y, top_height,
             middle_right_x, max_center_y, top_height,
@@ -278,6 +308,8 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
             max_center_x, max_center_y, top_height,
             max_center_x, max_center_y, base_height,
             
+            
+            
             middle_right_x, max_center_y, top_height,
             middle_right_x, max_center_y, base_height,
             middle_right_x, middle_right_y, top_height,
@@ -290,7 +322,10 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
             min_center_x, max_center_y, base_height,
             
             
-            //min_center_x, max_center_y, base_height,//agregado
+
+            
+            
+            
             
             min_center_x, min_center_y, top_height,
             min_center_x, min_center_y, base_height,
