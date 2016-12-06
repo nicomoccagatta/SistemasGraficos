@@ -12,28 +12,6 @@
         this.webgl_normal_buffer = null;
         this.webgl_texture_coord_buffer = null;
         this.webgl_index_buffer = null;
-        
-        this.texture = null;
-
-        this.initTexture = function(texture_file){
-            
-            var aux_texture = gl.createTexture();
-            this.texture = aux_texture;
-            this.texture.image = new Image();
-            this.texture.image.src = texture_file;
-
-            this.texture.image.onload = function () {              
-                gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-                gl.bindTexture(gl.TEXTURE_2D, sky.texture);
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, sky.texture.image);
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-                gl.generateMipmap(gl.TEXTURE_2D);
-
-                gl.bindTexture(gl.TEXTURE_2D, null);
-            }
-        }
-
 
         // Se generan los vertices para la esfera, calculando los datos para una esfera de radio 1
         // Y también la información de las normales y coordenadas de textura para cada vertice de la esfera
@@ -137,7 +115,7 @@
             gl.uniform3fv(shaderProgramTexturedObject.directionalColorUniform, diffuseColor);
         }
 
-        this.draw = function(modelMatrix){
+        this.draw = function(modelMatrix, texture){
          
             // setViewProjectionMatrix();
             gl.uniformMatrix4fv(shaderProgramTexturedObject.pMatrixUniform, false, pMatrix);
@@ -154,7 +132,7 @@
             gl.vertexAttribPointer(shaderProgramTexturedObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
             gl.activeTexture(gl.TEXTURE0);
-            gl.bindTexture(gl.TEXTURE_2D, this.texture);
+            gl.bindTexture(gl.TEXTURE_2D, texture);
             gl.uniform1i(shaderProgramTexturedObject.samplerUniform, 0);
 
             gl.uniformMatrix4fv(shaderProgramTexturedObject.ModelMatrixUniform, false, modelMatrix);
@@ -164,7 +142,7 @@
             mat3.transpose(normalMatrix, normalMatrix);
             gl.uniformMatrix3fv(shaderProgramTexturedObject.nMatrixUniform, false, normalMatrix);
 
-            gl.bindTexture(gl.TEXTURE_2D, this.texture);
+            gl.bindTexture(gl.TEXTURE_2D, texture);
             
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
             //gl.drawElements(gl.LINE_LOOP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);

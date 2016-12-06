@@ -17,6 +17,7 @@
 <script type="text/javascript" src="js/Trees.js"></script>
 <script type="text/javascript" src="js/Tree.js"></script>
 <script type="text/javascript" src="js/TexturedSphere.js"></script>
+<script type="text/javascript" src="js/initBuffers.js"></script>
 
 <script id="shader-fs-colored-obj" type="x-shader/x-fragment">
     precision mediump float;
@@ -354,7 +355,7 @@
 
         trees.setupShaders();
         trees.setupLighting(vec3.fromValues(-500.0, 0.0, -60.0), vec3.fromValues(0.3, 0.3, 0.3), vec3.fromValues(0.01, 0.01, 0.01));
-        trees.draw();
+        trees.draw(treeTexture);
         //
         ////////////////////////////////////////////////////////
 
@@ -366,7 +367,7 @@
         var model_matrix_sky = mat4.create();
         mat4.identity(model_matrix_sky);
         mat4.scale(model_matrix_sky, model_matrix_sky, [1000.0, 1000.0, 900.0]);
-        sky.draw(model_matrix_sky);
+        sky.draw(model_matrix_sky, skyTexture);
         //
         ////////////////////////////////////////////////////////
     }
@@ -385,7 +386,7 @@
         field.updateField(points);
         from_and_to = field.getYPositionFromX(points, app.pos);
         bridge = bridge.updateBridge(app, from_and_to);
-        trees.updateTrees(app.ph1,1,2,1.5,points);
+        trees.updateTrees(app.ph1,1,2,1.5);
         drawScene();
     }
 
@@ -406,6 +407,7 @@
         initGL(canvas);
         initShaders();
         initVariables();
+        initTexture();
 
         // Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, points)
         field = new Field(LEFT_BORDER_MAP, RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, TOP_BORDER_MAP, FIELD_DIAMETER, FIELD_HEIGHT, app.ph1, points);
@@ -421,7 +423,7 @@
 
         sky = new TexturedSphere(64,64);
         sky.initBuffers();
-        sky.initTexture("maps/sky_lightblue2.jpg");
+        //sky.initTexture("maps/sky_lightblue2.jpg");
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.enable(gl.DEPTH_TEST);
