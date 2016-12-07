@@ -601,6 +601,575 @@ function PlainRoad(height, center_x, from, to) {
 
 
 
+
+
+
+
+
+
+
+function CurvedRoadLeftBorder(base_height, max_height, center_x, from, to) {
+    this.position_buffer = [];
+    this.normal_buffer = [];
+    this.color_buffer = [];
+    this.index_buffer = [];
+    this.heights_along_road = [[]];
+
+    this.webgl_position_buffer = null;
+    this.webgl_normal_buffer = null;
+    this.webgl_color_buffer = null;
+    this.webgl_index_buffer = null;
+    
+    var height = max_height - base_height;
+    
+    var extreme_right_x = (center_x - HALF_WIDTH);
+    var extreme_left_x = (center_x + HALF_WIDTH);
+    
+    var intern_low_right_x = (extreme_right_x + INTERN_LOW_BORDER);
+    var intern_low_left_x = (extreme_left_x - INTERN_LOW_BORDER);
+    
+    var intern_high_right_x = (extreme_right_x + INTERN_HIGH_BORDER);
+    var intern_high_left_x = (extreme_left_x - INTERN_HIGH_BORDER);
+    
+    this.fillBuffers = function(x, y, z) {
+        /*this.normal_buffer.push(x);
+        this.normal_buffer.push(y);
+        this.normal_buffer.push(z);*/
+
+        this.color_buffer.push(ROAD_COLOR)
+        this.color_buffer.push(ROAD_COLOR)
+        this.color_buffer.push(ROAD_COLOR)
+        
+        this.position_buffer.push(x);
+        this.position_buffer.push(y);
+        this.position_buffer.push(z);
+    }
+
+    this.initBuffers = function() {
+        var y = from;
+        var z = base_height;
+        var x = extreme_left_x; 
+        this.fillBuffers(x, y, z);
+        /*this.fillBuffers(x, y, z);
+        this.fillBuffers(x, y, z);
+        this.fillBuffers(x, y, z);*/
+            
+        x = extreme_right_x;
+        this.fillBuffers(x, y, z);
+            
+        var radius = (to - from) / 2;
+        for (var angle = -89; angle <= 90; angle++) {
+            var theta = angle * 2 *  Math.PI / 360;
+            var sinTheta = Math.sin(theta);
+            var cosTheta = Math.cos(theta);
+            var this_step_y = from + radius + (radius * sinTheta);
+            var this_step_z = base_height + (height * cosTheta);
+            this.heights_along_road.push([this_step_y, this_step_z + MAX_HEIGHT_SEPARATION / 2]);
+            var previous_step_y = from + radius + (radius * Math.sin((angle - 1) * 2 *  Math.PI / 360));
+            var previous_step_z = base_height + (height * Math.cos((angle - 1) * 2 *  Math.PI / 360));
+
+            var height_previous_step = previous_step_z;
+            var max_height_previous_step = previous_step_z + MAX_HEIGHT_SEPARATION;
+            var middle_height_previous_step = previous_step_z + MIDDLE_HEIGHT_SEPARATION;
+            var height_this_step = this_step_z;
+            var max_height_this_step = this_step_z + MAX_HEIGHT_SEPARATION;
+            var middle_height_this_step = this_step_z + MIDDLE_HEIGHT_SEPARATION;
+            
+            
+            
+
+            //this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
+            //this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_left_x, previous_step_y, max_height_previous_step);
+            this.fillBuffers(extreme_left_x, this_step_y, height_this_step);
+            this.fillBuffers(extreme_left_x, this_step_y, max_height_this_step);
+            
+            
+            /*this.fillBuffers(extreme_left_x, this_step_y, max_height_this_step);
+            this.fillBuffers(extreme_left_x, this_step_y, height_this_step);
+            this.fillBuffers(extreme_left_x, this_step_y, max_height_this_step);*/
+
+            
+            this.fillBuffers(extreme_left_x, previous_step_y, max_height_previous_step);
+            
+            this.fillBuffers(intern_high_left_x, this_step_y, max_height_this_step);
+            this.fillBuffers(intern_high_left_x, previous_step_y, max_height_previous_step);
+            this.fillBuffers(intern_high_left_x, previous_step_y, max_height_previous_step);
+            this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step);
+            this.fillBuffers(intern_high_left_x, this_step_y, max_height_this_step);
+            this.fillBuffers(intern_low_left_x, this_step_y, middle_height_this_step);
+            this.fillBuffers(intern_low_left_x, this_step_y, middle_height_this_step);
+            this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step);
+            this.fillBuffers(intern_low_left_x, this_step_y, height_this_step);
+            this.fillBuffers(intern_low_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(intern_low_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(intern_low_left_x, this_step_y, height_this_step);
+            this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_left_x, this_step_y, height_this_step);
+
+        }
+
+        for (var index = 0; index < 180 * 19 ; index++) {
+            this.index_buffer.push(index);
+        }
+        
+        
+        calcNormals(this.position_buffer, this.normal_buffer);
+    }
+
+    this.getHeightsAlongRoad = function() {
+        return this.heights_along_road;
+    }
+    
+    this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
+        this.webgl_normal_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
+        this.webgl_normal_buffer.itemSize = 3;
+        this.webgl_normal_buffer.numItems = normal_buffer.length / 3;
+
+        this.webgl_color_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(color_buffer), gl.STATIC_DRAW);
+        this.webgl_color_buffer.itemSize = 3;
+        this.webgl_color_buffer.numItems = this.webgl_color_buffer.length / 3;
+
+        this.webgl_position_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(position_buffer), gl.STATIC_DRAW);
+        this.webgl_position_buffer.itemSize = 3;
+        this.webgl_position_buffer.numItems = position_buffer.length / 3;
+
+        this.webgl_index_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(index_buffer), gl.STATIC_DRAW);
+        this.webgl_index_buffer.itemSize = 1;
+        this.webgl_index_buffer.numItems = index_buffer.length;
+    }
+
+    this.setupShaders = function(){
+        gl.useProgram(shaderProgramColoredObject);
+    }
+
+    this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
+        var lighting = true;
+        gl.uniform1i(shaderProgramColoredObject.useLightingUniform, lighting);       
+
+        gl.uniform3fv(shaderProgramColoredObject.lightingDirectionUniform, lightPosition);
+        gl.uniform3fv(shaderProgramColoredObject.ambientColorUniform, ambientColor );
+        gl.uniform3fv(shaderProgramColoredObject.directionalColorUniform, diffuseColor);
+    }
+    
+    this.prepareDraw = function(modelMatrix, normal_buffer, color_buffer, position_buffer, index_buffer){
+        this.createBuffer(normal_buffer, color_buffer, position_buffer, index_buffer);
+        
+        gl.uniformMatrix4fv(shaderProgramColoredObject.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(shaderProgramColoredObject.ViewMatrixUniform, false, CameraMatrix); 
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+        gl.vertexAttribPointer(shaderProgramColoredObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
+        gl.vertexAttribPointer(shaderProgramColoredObject.vertexColorAttribute, this.webgl_color_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
+        gl.vertexAttribPointer(shaderProgramColoredObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.uniformMatrix4fv(shaderProgramColoredObject.ModelMatrixUniform, false, modelMatrix);
+        var normalMatrix = mat3.create();
+        mat3.fromMat4(normalMatrix, modelMatrix);
+        mat3.invert(normalMatrix, normalMatrix);
+        mat3.transpose(normalMatrix, normalMatrix);
+        gl.uniformMatrix3fv(shaderProgramColoredObject.nMatrixUniform, false, normalMatrix);
+    }
+
+    this.draw = function(modelMatrix) { 
+        this.prepareDraw(modelMatrix, this.normal_buffer, this.color_buffer, this.position_buffer, this.index_buffer);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+        gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
+    }
+}
+
+
+
+
+function CurvedRoadRightBorder(base_height, max_height, center_x, from, to) {
+    this.position_buffer = [];
+    this.normal_buffer = [];
+    this.color_buffer = [];
+    this.index_buffer = [];
+    this.heights_along_road = [[]];
+
+    this.webgl_position_buffer = null;
+    this.webgl_normal_buffer = null;
+    this.webgl_color_buffer = null;
+    this.webgl_index_buffer = null;
+    
+    var height = max_height - base_height;
+    
+    var extreme_right_x = (center_x - HALF_WIDTH);
+    var extreme_left_x = (center_x + HALF_WIDTH);
+    
+    var intern_low_right_x = (extreme_right_x + INTERN_LOW_BORDER);
+    var intern_low_left_x = (extreme_left_x - INTERN_LOW_BORDER);
+    
+    var intern_high_right_x = (extreme_right_x + INTERN_HIGH_BORDER);
+    var intern_high_left_x = (extreme_left_x - INTERN_HIGH_BORDER);
+    
+    this.fillBuffers = function(x, y, z) {
+        /*this.normal_buffer.push(x);
+        this.normal_buffer.push(y);
+        this.normal_buffer.push(z);*/
+
+        this.color_buffer.push(ROAD_COLOR)
+        this.color_buffer.push(ROAD_COLOR)
+        this.color_buffer.push(ROAD_COLOR)
+        
+        this.position_buffer.push(x);
+        this.position_buffer.push(y);
+        this.position_buffer.push(z);
+    }
+
+    this.initBuffers = function() {
+        var y = from;
+        var z = base_height;
+        var x = extreme_left_x; 
+        this.fillBuffers(x, y, z);
+        /*this.fillBuffers(x, y, z);
+        this.fillBuffers(x, y, z);
+        this.fillBuffers(x, y, z);*/
+            
+        x = extreme_right_x;
+        this.fillBuffers(x, y, z);
+            
+        var radius = (to - from) / 2;
+        for (var angle = -89; angle <= 90; angle++) {
+            var theta = angle * 2 *  Math.PI / 360;
+            var sinTheta = Math.sin(theta);
+            var cosTheta = Math.cos(theta);
+            var this_step_y = from + radius + (radius * sinTheta);
+            var this_step_z = base_height + (height * cosTheta);
+            this.heights_along_road.push([this_step_y, this_step_z + MAX_HEIGHT_SEPARATION / 2]);
+            var previous_step_y = from + radius + (radius * Math.sin((angle - 1) * 2 *  Math.PI / 360));
+            var previous_step_z = base_height + (height * Math.cos((angle - 1) * 2 *  Math.PI / 360));
+
+            var height_previous_step = previous_step_z;
+            var max_height_previous_step = previous_step_z + MAX_HEIGHT_SEPARATION;
+            var middle_height_previous_step = previous_step_z + MIDDLE_HEIGHT_SEPARATION;
+            var height_this_step = this_step_z;
+            var max_height_this_step = this_step_z + MAX_HEIGHT_SEPARATION;
+            var middle_height_this_step = this_step_z + MIDDLE_HEIGHT_SEPARATION;
+            
+            
+
+            //this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
+            //this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_right_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_right_x, previous_step_y, max_height_previous_step);
+            this.fillBuffers(extreme_right_x, this_step_y, height_this_step);
+            this.fillBuffers(extreme_right_x, this_step_y, max_height_this_step);
+            
+            /*this.fillBuffers(extreme_left_x, this_step_y, max_height_this_step);
+            this.fillBuffers(extreme_left_x, this_step_y, height_this_step);
+            this.fillBuffers(extreme_left_x, this_step_y, max_height_this_step);*/
+
+            
+            this.fillBuffers(extreme_right_x, previous_step_y, max_height_previous_step);
+            
+            this.fillBuffers(intern_high_right_x, this_step_y, max_height_this_step);
+            this.fillBuffers(intern_high_right_x, previous_step_y, max_height_previous_step);
+            this.fillBuffers(intern_high_right_x, previous_step_y, max_height_previous_step);
+            this.fillBuffers(intern_low_right_x, previous_step_y, middle_height_previous_step);
+            this.fillBuffers(intern_high_right_x, this_step_y, max_height_this_step);
+            this.fillBuffers(intern_low_right_x, this_step_y, middle_height_this_step);
+            this.fillBuffers(intern_low_right_x, this_step_y, middle_height_this_step);
+            this.fillBuffers(intern_low_right_x, previous_step_y, middle_height_previous_step);
+            this.fillBuffers(intern_low_right_x, this_step_y, height_this_step);
+            this.fillBuffers(intern_low_right_x, previous_step_y, height_previous_step);
+            this.fillBuffers(intern_low_right_x, previous_step_y, height_previous_step);
+            this.fillBuffers(intern_low_right_x, this_step_y, height_this_step);
+            this.fillBuffers(extreme_right_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_right_x, this_step_y, height_this_step);
+
+        }
+
+        for (var index = 0; index < 180 * 19 ; index++) {
+            this.index_buffer.push(index);
+        }
+        
+        
+        calcNormals(this.position_buffer, this.normal_buffer);
+    }
+
+    this.getHeightsAlongRoad = function() {
+        return this.heights_along_road;
+    }
+    
+    this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
+        this.webgl_normal_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
+        this.webgl_normal_buffer.itemSize = 3;
+        this.webgl_normal_buffer.numItems = normal_buffer.length / 3;
+
+        this.webgl_color_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(color_buffer), gl.STATIC_DRAW);
+        this.webgl_color_buffer.itemSize = 3;
+        this.webgl_color_buffer.numItems = this.webgl_color_buffer.length / 3;
+
+        this.webgl_position_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(position_buffer), gl.STATIC_DRAW);
+        this.webgl_position_buffer.itemSize = 3;
+        this.webgl_position_buffer.numItems = position_buffer.length / 3;
+
+        this.webgl_index_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(index_buffer), gl.STATIC_DRAW);
+        this.webgl_index_buffer.itemSize = 1;
+        this.webgl_index_buffer.numItems = index_buffer.length;
+    }
+
+    this.setupShaders = function(){
+        gl.useProgram(shaderProgramColoredObject);
+    }
+
+    this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
+        var lighting = true;
+        gl.uniform1i(shaderProgramColoredObject.useLightingUniform, lighting);       
+
+        gl.uniform3fv(shaderProgramColoredObject.lightingDirectionUniform, lightPosition);
+        gl.uniform3fv(shaderProgramColoredObject.ambientColorUniform, ambientColor );
+        gl.uniform3fv(shaderProgramColoredObject.directionalColorUniform, diffuseColor);
+    }
+    
+    this.prepareDraw = function(modelMatrix, normal_buffer, color_buffer, position_buffer, index_buffer){
+        this.createBuffer(normal_buffer, color_buffer, position_buffer, index_buffer);
+        
+        gl.uniformMatrix4fv(shaderProgramColoredObject.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(shaderProgramColoredObject.ViewMatrixUniform, false, CameraMatrix); 
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+        gl.vertexAttribPointer(shaderProgramColoredObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
+        gl.vertexAttribPointer(shaderProgramColoredObject.vertexColorAttribute, this.webgl_color_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
+        gl.vertexAttribPointer(shaderProgramColoredObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.uniformMatrix4fv(shaderProgramColoredObject.ModelMatrixUniform, false, modelMatrix);
+        var normalMatrix = mat3.create();
+        mat3.fromMat4(normalMatrix, modelMatrix);
+        mat3.invert(normalMatrix, normalMatrix);
+        mat3.transpose(normalMatrix, normalMatrix);
+        gl.uniformMatrix3fv(shaderProgramColoredObject.nMatrixUniform, false, normalMatrix);
+    }
+
+    this.draw = function(modelMatrix) { 
+        this.prepareDraw(modelMatrix, this.normal_buffer, this.color_buffer, this.position_buffer, this.index_buffer);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+        gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
+    }
+}
+
+
+
+
+
+function CurvedRoadMiddle(base_height, max_height, center_x, from, to) {
+    this.position_buffer = [];
+    this.normal_buffer = [];
+    this.color_buffer = [];
+    this.index_buffer = [];
+    this.heights_along_road = [[]];
+
+    this.webgl_position_buffer = null;
+    this.webgl_normal_buffer = null;
+    this.webgl_color_buffer = null;
+    this.webgl_index_buffer = null;
+    
+    var height = max_height - base_height;
+    
+    var extreme_right_x = (center_x - HALF_WIDTH);
+    var extreme_left_x = (center_x + HALF_WIDTH);
+    
+    var intern_low_right_x = (extreme_right_x + INTERN_LOW_BORDER);
+    var intern_low_left_x = (extreme_left_x - INTERN_LOW_BORDER);
+    
+    var intern_high_right_x = (extreme_right_x + INTERN_HIGH_BORDER);
+    var intern_high_left_x = (extreme_left_x - INTERN_HIGH_BORDER);
+    
+    this.fillBuffers = function(x, y, z) {
+        /*this.normal_buffer.push(x);
+        this.normal_buffer.push(y);
+        this.normal_buffer.push(z);*/
+
+        this.color_buffer.push(ROAD_COLOR)
+        this.color_buffer.push(ROAD_COLOR)
+        this.color_buffer.push(ROAD_COLOR)
+        
+        this.position_buffer.push(x);
+        this.position_buffer.push(y);
+        this.position_buffer.push(z);
+    }
+
+    this.initBuffers = function() {
+        var y = from;
+        var z = base_height;
+        var x = extreme_left_x; 
+        this.fillBuffers(x, y, z);
+        /*this.fillBuffers(x, y, z);
+        this.fillBuffers(x, y, z);
+        this.fillBuffers(x, y, z);*/
+            
+        x = extreme_right_x;
+        this.fillBuffers(x, y, z);
+            
+        var radius = (to - from) / 2;
+        for (var angle = -89; angle <= 90; angle++) {
+            var theta = angle * 2 *  Math.PI / 360;
+            var sinTheta = Math.sin(theta);
+            var cosTheta = Math.cos(theta);
+            var this_step_y = from + radius + (radius * sinTheta);
+            var this_step_z = base_height + (height * cosTheta);
+            this.heights_along_road.push([this_step_y, this_step_z + MAX_HEIGHT_SEPARATION / 2]);
+            var previous_step_y = from + radius + (radius * Math.sin((angle - 1) * 2 *  Math.PI / 360));
+            var previous_step_z = base_height + (height * Math.cos((angle - 1) * 2 *  Math.PI / 360));
+
+            var height_previous_step = previous_step_z;
+            var max_height_previous_step = previous_step_z + MAX_HEIGHT_SEPARATION;
+            var middle_height_previous_step = previous_step_z + MIDDLE_HEIGHT_SEPARATION;
+            var height_this_step = this_step_z;
+            var max_height_this_step = this_step_z + MAX_HEIGHT_SEPARATION;
+            var middle_height_this_step = this_step_z + MIDDLE_HEIGHT_SEPARATION;
+            
+            
+            
+            
+            
+            
+            
+
+            
+
+
+            
+
+            //this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step);
+            //this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step);
+            //this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step);
+            this.fillBuffers(intern_low_right_x, previous_step_y, middle_height_previous_step);
+            this.fillBuffers(intern_low_left_x, this_step_y, middle_height_this_step);
+            this.fillBuffers(intern_low_right_x, this_step_y, middle_height_this_step);
+            
+            
+            this.fillBuffers(intern_low_right_x, this_step_y, middle_height_this_step);
+            this.fillBuffers(intern_low_right_x, this_step_y, height_this_step);
+            this.fillBuffers(intern_low_right_x, previous_step_y, middle_height_previous_step);
+            this.fillBuffers(intern_low_right_x, previous_step_y, height_previous_step);
+            
+            
+            
+            this.fillBuffers(intern_low_right_x, previous_step_y, height_previous_step);
+            this.fillBuffers(intern_low_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(intern_low_right_x, this_step_y, height_this_step);
+            this.fillBuffers(intern_low_left_x, this_step_y, height_this_step);
+            
+            this.fillBuffers(intern_low_left_x, this_step_y, height_this_step);
+            this.fillBuffers(intern_low_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(intern_low_left_x, this_step_y, middle_height_this_step);
+            this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step);
+        }
+
+        for (var index = 0; index < 180 * 15 ; index++) {
+            this.index_buffer.push(index);
+        }
+        
+        
+        calcNormals(this.position_buffer, this.normal_buffer);
+    }
+
+    this.getHeightsAlongRoad = function() {
+        return this.heights_along_road;
+    }
+    
+    this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
+        this.webgl_normal_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
+        this.webgl_normal_buffer.itemSize = 3;
+        this.webgl_normal_buffer.numItems = normal_buffer.length / 3;
+
+        this.webgl_color_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(color_buffer), gl.STATIC_DRAW);
+        this.webgl_color_buffer.itemSize = 3;
+        this.webgl_color_buffer.numItems = this.webgl_color_buffer.length / 3;
+
+        this.webgl_position_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(position_buffer), gl.STATIC_DRAW);
+        this.webgl_position_buffer.itemSize = 3;
+        this.webgl_position_buffer.numItems = position_buffer.length / 3;
+
+        this.webgl_index_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(index_buffer), gl.STATIC_DRAW);
+        this.webgl_index_buffer.itemSize = 1;
+        this.webgl_index_buffer.numItems = index_buffer.length;
+    }
+
+    this.setupShaders = function(){
+        gl.useProgram(shaderProgramColoredObject);
+    }
+
+    this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
+        var lighting = true;
+        gl.uniform1i(shaderProgramColoredObject.useLightingUniform, lighting);       
+
+        gl.uniform3fv(shaderProgramColoredObject.lightingDirectionUniform, lightPosition);
+        gl.uniform3fv(shaderProgramColoredObject.ambientColorUniform, ambientColor );
+        gl.uniform3fv(shaderProgramColoredObject.directionalColorUniform, diffuseColor);
+    }
+    
+    this.prepareDraw = function(modelMatrix, normal_buffer, color_buffer, position_buffer, index_buffer){
+        this.createBuffer(normal_buffer, color_buffer, position_buffer, index_buffer);
+        
+        gl.uniformMatrix4fv(shaderProgramColoredObject.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(shaderProgramColoredObject.ViewMatrixUniform, false, CameraMatrix); 
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+        gl.vertexAttribPointer(shaderProgramColoredObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
+        gl.vertexAttribPointer(shaderProgramColoredObject.vertexColorAttribute, this.webgl_color_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
+        gl.vertexAttribPointer(shaderProgramColoredObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.uniformMatrix4fv(shaderProgramColoredObject.ModelMatrixUniform, false, modelMatrix);
+        var normalMatrix = mat3.create();
+        mat3.fromMat4(normalMatrix, modelMatrix);
+        mat3.invert(normalMatrix, normalMatrix);
+        mat3.transpose(normalMatrix, normalMatrix);
+        gl.uniformMatrix3fv(shaderProgramColoredObject.nMatrixUniform, false, normalMatrix);
+    }
+
+    this.draw = function(modelMatrix) { 
+        this.prepareDraw(modelMatrix, this.normal_buffer, this.color_buffer, this.position_buffer, this.index_buffer);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+        gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
+    }
+}
+
+
+
+
+
+
 function CurvedRoad(base_height, max_height, center_x, from, to) {
     this.position_buffer = [];
     this.normal_buffer = [];
@@ -965,8 +1534,16 @@ function Road(base_height, max_height, center_x, from, to) {
     plain_road_middle_one.initBuffers();
     var plain_road_right_border_one = new PlainRoadRightBorder(base_height, center_x, BOTTOM_BORDER_MAP, from);
     plain_road_right_border_one.initBuffers();
-    var curved_road = new CurvedRoad(base_height, max_height, center_x, from, to);
-    curved_road.initBuffers();
+    
+    //var curved_road = new CurvedRoad(base_height, max_height, center_x, from, to);
+    //curved_road.initBuffers();
+    var curved_road_left_border = new CurvedRoadLeftBorder(base_height, max_height, center_x, from, to);
+    curved_road_left_border.initBuffers();
+    var curved_road_middle = new CurvedRoadMiddle(base_height, max_height, center_x, from, to);
+    curved_road_middle.initBuffers();
+    var curved_road_right_border = new CurvedRoadRightBorder(base_height, max_height, center_x, from, to);
+    curved_road_right_border.initBuffers();
+    
     //var plain_road_two = new PlainRoad(base_height, center_x, to, TOP_BORDER_MAP);
     //plain_road_two.initBuffers();
     var plain_road_left_border_two = new PlainRoadLeftBorder(base_height, center_x, to, TOP_BORDER_MAP);
@@ -981,7 +1558,12 @@ function Road(base_height, max_height, center_x, from, to) {
         plain_road_left_border_one.setupShaders();
         plain_road_middle_one.setupShaders();
         plain_road_right_border_one.setupShaders();
-        curved_road.setupShaders();
+        
+        //curved_road.setupShaders();
+        curved_road_left_border.setupShaders();
+        curved_road_middle.setupShaders();
+        curved_road_right_border.setupShaders();
+        
         //plain_road_two.setupShaders();
         plain_road_left_border_two.setupShaders();
         plain_road_middle_two.setupShaders();
@@ -993,7 +1575,12 @@ function Road(base_height, max_height, center_x, from, to) {
         plain_road_left_border_one.setupLighting(lightPosition, ambientColor, diffuseColor);
         plain_road_middle_one.setupLighting(lightPosition, ambientColor, diffuseColor);
         plain_road_right_border_one.setupLighting(lightPosition, ambientColor, diffuseColor);
-        curved_road.setupLighting(lightPosition, ambientColor, diffuseColor);
+        
+        //curved_road.setupLighting(lightPosition, ambientColor, diffuseColor);
+        curved_road_left_border.setupLighting(lightPosition, ambientColor, diffuseColor);
+        curved_road_middle.setupLighting(lightPosition, ambientColor, diffuseColor);
+        curved_road_right_border.setupLighting(lightPosition, ambientColor, diffuseColor);
+        
         //plain_road_two.setupLighting(lightPosition, ambientColor, diffuseColor);
         plain_road_left_border_two.setupLighting(lightPosition, ambientColor, diffuseColor);
         plain_road_middle_two.setupLighting(lightPosition, ambientColor, diffuseColor);
@@ -1005,7 +1592,12 @@ function Road(base_height, max_height, center_x, from, to) {
         plain_road_left_border_one.draw(modelMatrix);
         plain_road_middle_one.draw(modelMatrix);
         plain_road_right_border_one.draw(modelMatrix);
-        curved_road.draw(modelMatrix);
+        
+        //curved_road.draw(modelMatrix);
+        curved_road_left_border.draw(modelMatrix);
+        curved_road_middle.draw(modelMatrix);
+        curved_road_right_border.draw(modelMatrix);
+        
         //plain_road_two.draw(modelMatrix);
         plain_road_left_border_two.draw(modelMatrix);
         plain_road_middle_two.draw(modelMatrix);
@@ -1013,6 +1605,6 @@ function Road(base_height, max_height, center_x, from, to) {
     }
     
     this.getHeightsAlongRoad = function() {
-        return curved_road.getHeightsAlongRoad();
+        return curved_road_left_border.getHeightsAlongRoad();
     }
 }
