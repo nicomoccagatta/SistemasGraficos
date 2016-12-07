@@ -236,8 +236,9 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
         var z = base_height;
         var x = extreme_left_x; 
         this.fillBuffers(x, y, z);
+        /*this.fillBuffers(x, y, z);
         this.fillBuffers(x, y, z);
-        //this.fillBuffers(x, y, z);
+        this.fillBuffers(x, y, z);*/
             
         x = extreme_right_x;
         this.fillBuffers(x, y, z);
@@ -252,13 +253,123 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
             this.heights_along_road.push([this_step_y, this_step_z + MAX_HEIGHT_SEPARATION / 2]);
             var previous_step_y = from + radius + (radius * Math.sin((angle - 1) * 2 *  Math.PI / 360));
             var previous_step_z = base_height + (height * Math.cos((angle - 1) * 2 *  Math.PI / 360));
-            
-            y = this_step_y;
-            z = this_step_z;
 
-            x = extreme_left_x;
+            /*y = this_step_y;
+            z = this_step_z;
+            
+            x = extreme_left_x;*/
+            
+            
+            
+            
+            var height_previous_step = previous_step_z;
+            var max_height_previous_step = previous_step_z + MAX_HEIGHT_SEPARATION;
+            var middle_height_previous_step = previous_step_z + MIDDLE_HEIGHT_SEPARATION;
+            var height_this_step = this_step_z;
+            var max_height_this_step = this_step_z + MAX_HEIGHT_SEPARATION;
+            var middle_height_this_step = this_step_z + MIDDLE_HEIGHT_SEPARATION;
+            
+            
+            this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(intern_high_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_left_x, previous_step_y, max_height_previous_step);
+            this.fillBuffers(intern_high_left_x, previous_step_y, max_height_previous_step);
+            
+            this.fillBuffers(intern_high_left_x, previous_step_y, max_height_previous_step);
+            this.fillBuffers(intern_high_left_x, previous_step_y, middle_height_previous_step);
+            this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step);
+            this.fillBuffers(intern_high_left_x, previous_step_y, middle_height_previous_step);
+
+            this.fillBuffers(intern_high_left_x, previous_step_y, middle_height_previous_step);
+            this.fillBuffers(intern_high_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(intern_high_right_x, previous_step_y, middle_height_previous_step);
+            this.fillBuffers(intern_high_right_x, previous_step_y, height_previous_step);
+            
+            this.fillBuffers(intern_high_right_x, previous_step_y, max_height_previous_step);
+            this.fillBuffers(intern_high_right_x, previous_step_y, max_height_previous_step);
+            this.fillBuffers(intern_low_right_x, previous_step_y, middle_height_previous_step);
+            this.fillBuffers(intern_high_right_x, previous_step_y, middle_height_previous_step);
+            
+            this.fillBuffers(intern_high_right_x, previous_step_y, max_height_previous_step);
+            this.fillBuffers(intern_high_right_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_right_x, previous_step_y, max_height_previous_step);
+            this.fillBuffers(extreme_right_x, previous_step_y, height_previous_step);
+            
+            this.fillBuffers(extreme_right_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_left_x, this_step_y, height_this_step);
+            this.fillBuffers(extreme_left_x, previous_step_y, max_height_previous_step);
+            this.fillBuffers(extreme_left_x, this_step_y, max_height_this_step);
+
+            this.fillBuffers(intern_high_left_x, previous_step_y, max_height_previous_step);
+            this.fillBuffers(intern_high_left_x, this_step_y, max_height_this_step);
+            this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step);
+            this.fillBuffers(intern_low_left_x, this_step_y, middle_height_this_step);
+
+            this.fillBuffers(intern_low_right_x, previous_step_y, middle_height_previous_step);
+            this.fillBuffers(intern_low_right_x, this_step_y, middle_height_this_step);
+            this.fillBuffers(intern_high_right_x, previous_step_y, max_height_previous_step);
+            this.fillBuffers(intern_high_right_x, this_step_y, max_height_this_step);
+            
+            this.fillBuffers(intern_low_right_x, previous_step_y, middle_height_previous_step);
+            this.fillBuffers(intern_low_right_x, this_step_y, middle_height_this_step);
+            this.fillBuffers(intern_high_right_x, previous_step_y, max_height_previous_step);
+            this.fillBuffers(intern_high_right_x, this_step_y, max_height_this_step);
+            
+            this.fillBuffers(extreme_right_x, previous_step_y, max_height_previous_step);
+            this.fillBuffers(extreme_right_x, this_step_y, max_height_this_step);
+            this.fillBuffers(extreme_right_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_right_x, this_step_y, height_this_step);
+            
+            this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_left_x, this_step_y, height_this_step);
+            
+            this.fillBuffers(extreme_left_x, this_step_y, height_this_step);
+            this.fillBuffers(intern_high_left_x, this_step_y, height_this_step);
+            this.fillBuffers(extreme_left_x, this_step_y, max_height_this_step);
+            this.fillBuffers(intern_high_left_x, this_step_y, max_height_this_step);
+            
+            this.fillBuffers(intern_high_left_x, this_step_y, max_height_this_step);
+            this.fillBuffers(intern_high_left_x, this_step_y, middle_height_this_step);
+            this.fillBuffers(intern_low_left_x, this_step_y, middle_height_this_step);
+            this.fillBuffers(intern_high_left_x, this_step_y, middle_height_this_step);
+            
+            this.fillBuffers(intern_high_left_x, this_step_y, middle_height_this_step);
+            this.fillBuffers(intern_high_left_x, this_step_y, height_this_step);
+            this.fillBuffers(intern_high_right_x, this_step_y, middle_height_this_step);
+            this.fillBuffers(intern_high_right_x, this_step_y, height_this_step);
+
+            this.fillBuffers(intern_high_right_x, this_step_y, max_height_this_step);
+            this.fillBuffers(intern_high_right_x, this_step_y, max_height_this_step);
+            this.fillBuffers(intern_low_right_x, this_step_y, middle_height_this_step);
+            this.fillBuffers(intern_high_right_x, this_step_y, middle_height_this_step);
+            
+            this.fillBuffers(intern_high_right_x, this_step_y, max_height_this_step);
+            this.fillBuffers(intern_high_right_x, this_step_y, height_this_step);
+            this.fillBuffers(extreme_right_x, this_step_y, max_height_this_step);
+            this.fillBuffers(extreme_right_x, this_step_y, height_this_step);
+            
+            
+            this.fillBuffers(extreme_right_x, this_step_y, height_this_step);
+            this.fillBuffers(extreme_right_x, this_step_y, height_this_step);
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            /*this.fillBuffers(x, y, z);
             this.fillBuffers(x, y, z);
-            //this.fillBuffers(x, y, z);
             
             x = extreme_right_x;
             this.fillBuffers(x, y, z);
@@ -349,13 +460,13 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
             
             this.fillBuffers(x, y, z);
             this.fillBuffers(x, y, z);
-            this.fillBuffers(x, y, z);
+            //this.fillBuffers(x, y, z);
             
             x = extreme_right_x;
-            this.fillBuffers(x, y, z);
+            this.fillBuffers(x, y, z);*/
         }
 
-        for (var index = 0; index < 180 * 30 + 3; index++) {
+        for (var index = 0; index < 180 * 68 ; index++) {
             this.index_buffer.push(index);
         }
         
