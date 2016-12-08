@@ -1504,8 +1504,6 @@ function CurvedRoad(base_height, max_height, center_x, from, to) {
 }
 
 function Road(base_height, max_height, center_x, from, to) {
-    //var plain_road_one = new PlainRoad(base_height, center_x, BOTTOM_BORDER_MAP, from);
-    //plain_road_one.initBuffers();
     /*
     var plain_road_left_border_one = new PlainRoadLeftBorder(base_height, center_x, BOTTOM_BORDER_MAP, from);
     plain_road_left_border_one.initBuffers();
@@ -1516,8 +1514,6 @@ function Road(base_height, max_height, center_x, from, to) {
     var plain_road_right_border_one = new PlainRoadRightBorder(base_height, center_x, BOTTOM_BORDER_MAP, from);
     plain_road_right_border_one.initBuffers();
     
-    //var curved_road = new CurvedRoad(base_height, max_height, center_x, from, to);
-    //curved_road.initBuffers();
     */
     var curved_road_left_border = new CurvedRoadLeftBorder(base_height, max_height, center_x, from, to);
     curved_road_left_border.initBuffers();
@@ -1527,8 +1523,6 @@ function Road(base_height, max_height, center_x, from, to) {
     var curved_road_right_border = new CurvedRoadRightBorder(base_height, max_height, center_x, from, to);
     curved_road_right_border.initBuffers();
     
-    //var plain_road_two = new PlainRoad(base_height, center_x, to, TOP_BORDER_MAP);
-    //plain_road_two.initBuffers();
     var plain_road_left_border_two = new PlainRoadLeftBorder(base_height, center_x, to, TOP_BORDER_MAP);
     plain_road_left_border_two.initBuffers();
     */
@@ -1540,21 +1534,18 @@ function Road(base_height, max_height, center_x, from, to) {
     */
     this.setupShaders = function() {
         /*
-        //plain_road_one.setupShaders();
         plain_road_left_border_one.setupShaders();
         */
         plain_road_middle_one.setupShaders();
         /*
         plain_road_right_border_one.setupShaders();
         
-        //curved_road.setupShaders();
         curved_road_left_border.setupShaders();
         */
         curved_road_middle.setupShaders();
         /*
         curved_road_right_border.setupShaders();
         
-        //plain_road_two.setupShaders();
         plain_road_left_border_two.setupShaders();
         */
         plain_road_middle_two.setupShaders();
@@ -1587,21 +1578,18 @@ function Road(base_height, max_height, center_x, from, to) {
 
     this.draw = function(modelMatrix) { 
         /*
-        //plain_road_one.draw(modelMatrix);
         plain_road_left_border_one.draw(modelMatrix);
         */
         plain_road_middle_one.draw(modelMatrix);
         /*
         plain_road_right_border_one.draw(modelMatrix);
         
-        //curved_road.draw(modelMatrix);
         curved_road_left_border.draw(modelMatrix);
         */
         curved_road_middle.draw(modelMatrix);
         /*
         curved_road_right_border.draw(modelMatrix);
         
-        //plain_road_two.draw(modelMatrix);
         plain_road_left_border_two.draw(modelMatrix);
         */
         plain_road_middle_two.draw(modelMatrix);
