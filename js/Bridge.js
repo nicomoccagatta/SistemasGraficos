@@ -134,11 +134,11 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
     }
 
     this.setupShaders = function() {
-        river.setupShaders();
+        //river.setupShaders();
         road.setupShaders();
-        this.setupGroupShaders(columns);
-        this.setupGroupShaders(arcs);
-        this.setupGroupShaders(tensors);
+       // this.setupGroupShaders(columns);
+       // this.setupGroupShaders(arcs);
+       // this.setupGroupShaders(tensors);
     }
 
     this.setupGroupLighting = function(group, lightPosition, ambientColor, diffuseColor) {
@@ -148,11 +148,11 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
     }
 
     this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
-        river.setupLighting(lightPosition, ambientColor, diffuseColor);
+       // river.setupLighting(lightPosition, ambientColor, diffuseColor);
         road.setupLighting(lightPosition, ambientColor, diffuseColor);
-        this.setupGroupLighting(columns, lightPosition, ambientColor, diffuseColor);
-        this.setupGroupLighting(arcs, lightPosition, ambientColor, diffuseColor);
-        this.setupGroupLighting(tensors, lightPosition, ambientColor, diffuseColor);
+       // this.setupGroupLighting(columns, lightPosition, ambientColor, diffuseColor);
+       // this.setupGroupLighting(arcs, lightPosition, ambientColor, diffuseColor);
+       // this.setupGroupLighting(tensors, lightPosition, ambientColor, diffuseColor);
     }
 
     this.drawGroup = function(group, modelMatrix) {
@@ -162,11 +162,11 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
     }
 
     this.draw = function(modelMatrix) {
-        river.draw(modelMatrix);
+      //  river.draw(modelMatrix);
         road.draw(modelMatrix);
-        this.drawGroup(columns, modelMatrix);
-        this.drawGroup(arcs, modelMatrix);
-        this.drawGroup(tensors, modelMatrix);
+      //  this.drawGroup(columns, modelMatrix);
+      //  this.drawGroup(arcs, modelMatrix);
+      //  this.drawGroup(tensors, modelMatrix);
     }
     
     this.updateBridge = function(app, from_and_to) {
