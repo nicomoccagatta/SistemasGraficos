@@ -84,7 +84,6 @@ function PlainRoadLeftBorder(height, center_x, from, to) {
         
         this.normal_buffer = [];
         calcNormals(this.position_buffer, this.normal_buffer);
-        //this.normal_buffer = this.position_buffer;
         
         this.index_buffer = [];
         for (var i = 0; i < this.normal_buffer.length / 3; i++) {
@@ -983,11 +982,9 @@ function CurvedRoadRightBorder(base_height, max_height, center_x, from, to) {
     this.prepareDraw = function(modelMatrix, normal_buffer, texture_coord_buffer, position_buffer, index_buffer) {
         this.createBuffer(normal_buffer, texture_coord_buffer, position_buffer, index_buffer);
     
-        // setViewProjectionMatrix();
         gl.uniformMatrix4fv(shaderProgramTexturedObject.pMatrixUniform, false, pMatrix);
         gl.uniformMatrix4fv(shaderProgramTexturedObject.ViewMatrixUniform, false, CameraMatrix); 
         
-        // Se configuran los buffers que alimentarán el pipeline
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
         gl.vertexAttribPointer(shaderProgramTexturedObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 

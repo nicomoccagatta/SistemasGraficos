@@ -3,9 +3,6 @@ const MIN_HEIGHT = 0;
 const DELIMITER_DIFF = 0.4;
 
 
-
-
-
 function calcNormals(source, destination) {
     /*this._calcularNormales = function(){
        
@@ -212,57 +209,13 @@ function calcNormals(source, destination) {
 }
 
 
-
-
-
-
-
 //El delimitador es para saber que tan grande es esa parte de la columna.
 function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
-    this.position_buffer = null;
-    this.normal_buffer = [];
-
     this.webgl_position_buffer = null;
     this.webgl_normal_buffer = null;
-    this.webgl_color_buffer = null;
+    this.webgl_texture_coord_buffer = null;
     this.webgl_index_buffer = null;
-    
-    
-    
-    /*this._posicion = function(i,j) {
-        if (i < 0)
-            return this._posicion(0, j);
-        if (i >= this.rows)
-            return this._posicion(this.position_buffer.length - 1, j);//this.rows-1, j);
-
-        var posicion = vec3.create();
-        posicion[0] = this.position_buffer[/*3/*this.cols*i + j];
-        posicion[1] = this.position_buffer[/*3/*this.cols*i + j + 1];
-        posicion[2] = this.position_buffer[/*3/*this.cols*i + j + 2];
-        return posicion;
-    }
-    
-    this.calcNormales = function(a, b) {
-        //this.normal_buffer = [];
-        for (var i = 0; i < this.position_buffer.length/3/*this.rows/; i++){
-            for (var j = 0; j < this.position_buffer.length/*this.forma.length-2/; j+=3){
-                var anterior = this._posicion(i-1, j);
-                var siguiente = this._posicion(i+1, j);
-
-                var d = vec3.create();
-                vec3.subtract(d, siguiente, anterior);
-
-                var normalSuperficie = vec3.create();
-                vec3.cross(normalSuperficie, d, this.tangentesCurva[j/3]);
-                vec3.normalize(normalSuperficie, normalSuperficie);
-
-                this.normal_buffer.push(normalSuperficie[0], normalSuperficie[1], normalSuperficie[2]);
-            }
-        }
-    }*/
-    
-    
-    
+      
 
     this.initBuffers = function() {
         var min_center_x = (center_x - delimiter);
@@ -277,9 +230,6 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
         var middle_right_y = (center_y + delimiter * 0.8);
         
         this.position_buffer = [
-            // Base de arriba
-            //middle_right_x, min_center_y, top_height,
-            //middle_right_x, min_center_y, top_height,
             middle_right_x, min_center_y, top_height,
             max_center_x, min_center_y, top_height,
             middle_right_x, max_center_y, top_height,
@@ -313,9 +263,7 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
             
             max_center_x, max_center_y, top_height,
             max_center_x, max_center_y, base_height,
-            
-            
-            
+                      
             middle_right_x, max_center_y, top_height,
             middle_right_x, max_center_y, base_height,
             middle_right_x, middle_right_y, top_height,
@@ -327,17 +275,10 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
             min_center_x, max_center_y, top_height,
             min_center_x, max_center_y, base_height,
             
-            
-
-            
-            
-            
-            
             min_center_x, min_center_y, top_height,
             min_center_x, min_center_y, base_height,
             
             min_center_x, min_center_y, base_height,
-            //min_center_x, min_center_y, base_height,//agregado
             
             // Base de abajo
             min_center_x, max_center_y, base_height,
@@ -352,99 +293,104 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
             max_center_x, min_center_y, base_height,
             max_center_x, max_center_y, base_height
         ];
+
+        this.texture_coord_buffer = [];
         
+        this.normal_buffer = [];
         calcNormals(this.position_buffer, this.normal_buffer);
-        //this.normal_buffer = this.position_buffer;
         
-        this.color_buffer = [];
         this.index_buffer = [];
         for (var i = 0; i < this.normal_buffer.length / 3; i++) {
-            this.color_buffer.push(1.0);
-            this.color_buffer.push(0.0);
-            this.color_buffer.push(0.0);
             this.index_buffer.push(i);
+            this.texture_coord_buffer.push(i / (this.normal_buffer.length / 3));
+            this.texture_coord_buffer.push(i / (this.normal_buffer.length / 3));
         }
     }
     
-    this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
+    this.createBuffer = function(normal_buffer, texture_coord_buffer, position_buffer, index_buffer) { 
         this.webgl_normal_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normal_buffer), gl.STATIC_DRAW);
         this.webgl_normal_buffer.itemSize = 3;
-        this.webgl_normal_buffer.numItems = normal_buffer.length / 3;
+        this.webgl_normal_buffer.numItems = this.normal_buffer.length / 3;
 
-        this.webgl_color_buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(color_buffer), gl.STATIC_DRAW);
-        this.webgl_color_buffer.itemSize = 3;
-        this.webgl_color_buffer.numItems = this.webgl_color_buffer.length / 3;
+        this.webgl_texture_coord_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texture_coord_buffer), gl.STATIC_DRAW);
+        this.webgl_texture_coord_buffer.itemSize = 2;
+        this.webgl_texture_coord_buffer.numItems = this.texture_coord_buffer.length / 2;
 
         this.webgl_position_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(position_buffer), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.position_buffer), gl.STATIC_DRAW);
         this.webgl_position_buffer.itemSize = 3;
-        this.webgl_position_buffer.numItems = position_buffer.length / 3;
+        this.webgl_position_buffer.numItems = this.position_buffer.length / 3;
 
         this.webgl_index_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(index_buffer), gl.STATIC_DRAW);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_buffer), gl.STATIC_DRAW);
         this.webgl_index_buffer.itemSize = 1;
-        this.webgl_index_buffer.numItems = index_buffer.length;
+        this.webgl_index_buffer.numItems = this.index_buffer.length;
     }
 
     this.setupShaders = function() {
-        gl.useProgram(shaderProgramColoredObject);
+        gl.useProgram(shaderProgramTexturedObject);
     }
 
     this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
-        var lighting = true;
-        gl.uniform1i(shaderProgramColoredObject.useLightingUniform, lighting);       
+        var lighting;
+        lighting = true;
+        gl.uniform1i(shaderProgramTexturedObject.useLightingUniform, lighting);       
 
-        gl.uniform3fv(shaderProgramColoredObject.lightingDirectionUniform, lightPosition);
-        gl.uniform3fv(shaderProgramColoredObject.ambientColorUniform, ambientColor );
-        gl.uniform3fv(shaderProgramColoredObject.directionalColorUniform, diffuseColor);
+        gl.uniform3fv(shaderProgramTexturedObject.lightingDirectionUniform, lightPosition);
+        gl.uniform3fv(shaderProgramTexturedObject.ambientColorUniform, ambientColor );
+        gl.uniform3fv(shaderProgramTexturedObject.directionalColorUniform, diffuseColor);
     }
     
-    this.prepareDraw = function(modelMatrix, normal_buffer, color_buffer, position_buffer, index_buffer) {
-        this.createBuffer(normal_buffer, color_buffer, position_buffer, index_buffer);
+    this.prepareDraw = function(modelMatrix, normal_buffer, texture_coord_buffer, position_buffer, index_buffer) {
+        this.createBuffer(normal_buffer, texture_coord_buffer, position_buffer, index_buffer);
+    
+        // setViewProjectionMatrix();
+        gl.uniformMatrix4fv(shaderProgramTexturedObject.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(shaderProgramTexturedObject.ViewMatrixUniform, false, CameraMatrix); 
         
-        gl.uniformMatrix4fv(shaderProgramColoredObject.pMatrixUniform, false, pMatrix);
-        gl.uniformMatrix4fv(shaderProgramColoredObject.ViewMatrixUniform, false, CameraMatrix); 
-
+        // Se configuran los buffers que alimentarán el pipeline
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
-        gl.vertexAttribPointer(shaderProgramColoredObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(shaderProgramTexturedObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
-        gl.vertexAttribPointer(shaderProgramColoredObject.vertexColorAttribute, this.webgl_color_buffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+        gl.vertexAttribPointer(shaderProgramTexturedObject.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
-        gl.vertexAttribPointer(shaderProgramColoredObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(shaderProgramTexturedObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
-        gl.uniformMatrix4fv(shaderProgramColoredObject.ModelMatrixUniform, false, modelMatrix);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, columnaTexture);
+        gl.uniform1i(shaderProgramTexturedObject.samplerUniform, 0);
+
+        gl.uniformMatrix4fv(shaderProgramTexturedObject.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
         mat3.fromMat4(normalMatrix, modelMatrix);
         mat3.invert(normalMatrix, normalMatrix);
         mat3.transpose(normalMatrix, normalMatrix);
-        gl.uniformMatrix3fv(shaderProgramColoredObject.nMatrixUniform, false, normalMatrix);
+        gl.uniformMatrix3fv(shaderProgramTexturedObject.nMatrixUniform, false, normalMatrix);
+
+        gl.bindTexture(gl.TEXTURE_2D, columnaTexture);
     }
 
     this.draw = function(modelMatrix) { 
-        this.prepareDraw(modelMatrix, this.normal_buffer, this.color_buffer, this.position_buffer, this.index_buffer);
+        this.prepareDraw(modelMatrix, this.normal_buffer, this.texture_coord_buffer, this.position_buffer, this.index_buffer);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
     }
 }
 
 
-
 //El delimitador es para saber que tan grande es esa parte de la columna.
 function BaseColumnTwo(height, center_x, center_y, delimiter) {
-    this.position_buffer = null;
-    this.normal_buffer = [];
-
     this.webgl_position_buffer = null;
     this.webgl_normal_buffer = null;
-    this.webgl_color_buffer = null;
+    this.webgl_texture_coord_buffer = null;
     this.webgl_index_buffer = null;
     
     this.initBuffers = function() {
@@ -505,88 +451,96 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
             min_center_x_base, min_center_y_base, base_height
         ];
         
-        calcNormals(this.position_buffer, this.normal_buffer);
-        //this.normal_buffer = this.position_buffer;
+        this.texture_coord_buffer = [];
         
-        this.color_buffer = [];
+        this.normal_buffer = [];
+        calcNormals(this.position_buffer, this.normal_buffer);
+        
         this.index_buffer = [];
         for (var i = 0; i < this.normal_buffer.length / 3; i++) {
-            this.color_buffer.push(1.0);
-            this.color_buffer.push(0.0);
-            this.color_buffer.push(0.0);
             this.index_buffer.push(i);
+            this.texture_coord_buffer.push(i / (this.normal_buffer.length / 3));
+            this.texture_coord_buffer.push(i / (this.normal_buffer.length / 3));
         }
     }
     
-    this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
+    this.createBuffer = function(normal_buffer, texture_coord_buffer, position_buffer, index_buffer) { 
         this.webgl_normal_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normal_buffer), gl.STATIC_DRAW);
         this.webgl_normal_buffer.itemSize = 3;
-        this.webgl_normal_buffer.numItems = normal_buffer.length / 3;
+        this.webgl_normal_buffer.numItems = this.normal_buffer.length / 3;
 
-        this.webgl_color_buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(color_buffer), gl.STATIC_DRAW);
-        this.webgl_color_buffer.itemSize = 3;
-        this.webgl_color_buffer.numItems = this.webgl_color_buffer.length / 3;
+        this.webgl_texture_coord_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texture_coord_buffer), gl.STATIC_DRAW);
+        this.webgl_texture_coord_buffer.itemSize = 2;
+        this.webgl_texture_coord_buffer.numItems = this.texture_coord_buffer.length / 2;
 
         this.webgl_position_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(position_buffer), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.position_buffer), gl.STATIC_DRAW);
         this.webgl_position_buffer.itemSize = 3;
-        this.webgl_position_buffer.numItems = position_buffer.length / 3;
+        this.webgl_position_buffer.numItems = this.position_buffer.length / 3;
 
         this.webgl_index_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(index_buffer), gl.STATIC_DRAW);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_buffer), gl.STATIC_DRAW);
         this.webgl_index_buffer.itemSize = 1;
-        this.webgl_index_buffer.numItems = index_buffer.length;
+        this.webgl_index_buffer.numItems = this.index_buffer.length;
     }
 
     this.setupShaders = function() {
-        gl.useProgram(shaderProgramColoredObject);
+        gl.useProgram(shaderProgramTexturedObject);
     }
 
     this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
-        var lighting = true;
-        gl.uniform1i(shaderProgramColoredObject.useLightingUniform, lighting);       
+        var lighting;
+        lighting = true;
+        gl.uniform1i(shaderProgramTexturedObject.useLightingUniform, lighting);       
 
-        gl.uniform3fv(shaderProgramColoredObject.lightingDirectionUniform, lightPosition);
-        gl.uniform3fv(shaderProgramColoredObject.ambientColorUniform, ambientColor );
-        gl.uniform3fv(shaderProgramColoredObject.directionalColorUniform, diffuseColor);
+        gl.uniform3fv(shaderProgramTexturedObject.lightingDirectionUniform, lightPosition);
+        gl.uniform3fv(shaderProgramTexturedObject.ambientColorUniform, ambientColor );
+        gl.uniform3fv(shaderProgramTexturedObject.directionalColorUniform, diffuseColor);
     }
     
-    this.prepareDraw = function(modelMatrix, normal_buffer, color_buffer, position_buffer, index_buffer) {
-        this.createBuffer(normal_buffer, color_buffer, position_buffer, index_buffer);
+    this.prepareDraw = function(modelMatrix, normal_buffer, texture_coord_buffer, position_buffer, index_buffer) {
+        this.createBuffer(normal_buffer, texture_coord_buffer, position_buffer, index_buffer);
+    
+        // setViewProjectionMatrix();
+        gl.uniformMatrix4fv(shaderProgramTexturedObject.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(shaderProgramTexturedObject.ViewMatrixUniform, false, CameraMatrix); 
         
-        gl.uniformMatrix4fv(shaderProgramColoredObject.pMatrixUniform, false, pMatrix);
-        gl.uniformMatrix4fv(shaderProgramColoredObject.ViewMatrixUniform, false, CameraMatrix); 
-
+        // Se configuran los buffers que alimentarán el pipeline
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
-        gl.vertexAttribPointer(shaderProgramColoredObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(shaderProgramTexturedObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
-        gl.vertexAttribPointer(shaderProgramColoredObject.vertexColorAttribute, this.webgl_color_buffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+        gl.vertexAttribPointer(shaderProgramTexturedObject.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
-        gl.vertexAttribPointer(shaderProgramColoredObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(shaderProgramTexturedObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
-        gl.uniformMatrix4fv(shaderProgramColoredObject.ModelMatrixUniform, false, modelMatrix);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, columnaTexture);
+        gl.uniform1i(shaderProgramTexturedObject.samplerUniform, 0);
+
+        gl.uniformMatrix4fv(shaderProgramTexturedObject.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
         mat3.fromMat4(normalMatrix, modelMatrix);
         mat3.invert(normalMatrix, normalMatrix);
         mat3.transpose(normalMatrix, normalMatrix);
-        gl.uniformMatrix3fv(shaderProgramColoredObject.nMatrixUniform, false, normalMatrix);
+        gl.uniformMatrix3fv(shaderProgramTexturedObject.nMatrixUniform, false, normalMatrix);
+
+        gl.bindTexture(gl.TEXTURE_2D, columnaTexture);
     }
 
     this.draw = function(modelMatrix) { 
-        this.prepareDraw(modelMatrix, this.normal_buffer, this.color_buffer, this.position_buffer, this.index_buffer);
+        this.prepareDraw(modelMatrix, this.normal_buffer, this.texture_coord_buffer, this.position_buffer, this.index_buffer);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
     }
 }
-
 
 
 function Column(first_max_height, second_max_height, third_max_height, center_x, center_y, delimiter) {
@@ -601,27 +555,33 @@ function Column(first_max_height, second_max_height, third_max_height, center_x,
     var third_base_column_one = new BaseColumnOne(first_max_height + MIN_HEIGHT, MIN_HEIGHT, center_x, center_y, (2 * DELIMITER_DIFF) + delimiter);
     third_base_column_one.initBuffers();
     
-    this.setupShaders = function() {
-        first_base_column_one.setupShaders();
-        first_base_column_two.setupShaders();
-        second_base_column_one.setupShaders();
-        second_base_column_two.setupShaders();
-        third_base_column_one.setupShaders();
-    }
+    this.setupShaders = function() {}
 
     this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
-        first_base_column_one.setupLighting(lightPosition, ambientColor, diffuseColor);
-        first_base_column_two.setupLighting(lightPosition, ambientColor, diffuseColor);
-        second_base_column_one.setupLighting(lightPosition, ambientColor, diffuseColor);
-        second_base_column_two.setupLighting(lightPosition, ambientColor, diffuseColor);
-        third_base_column_one.setupLighting(lightPosition, ambientColor, diffuseColor);
+        this.lightPosition = lightPosition;
+        this.ambientColor = ambientColor;
+        this.diffuseColor = diffuseColor;
     }
 
     this.draw = function(modelMatrix) { 
+        first_base_column_one.setupShaders();
+        first_base_column_one.setupLighting(this.lightPosition, this.ambientColor, this.diffuseColor);
         first_base_column_one.draw(modelMatrix);
+
+        first_base_column_two.setupShaders();
+        first_base_column_two.setupLighting(this.lightPosition, this.ambientColor, this.diffuseColor);
         first_base_column_two.draw(modelMatrix);
+
+        second_base_column_one.setupShaders();
+        second_base_column_one.setupLighting(this.lightPosition, this.ambientColor, this.diffuseColor);
         second_base_column_one.draw(modelMatrix);
+
+        second_base_column_two.setupShaders();
+        second_base_column_two.setupLighting(this.lightPosition, this.ambientColor, this.diffuseColor);
         second_base_column_two.draw(modelMatrix);
+
+        third_base_column_one.setupShaders();
+        third_base_column_one.setupLighting(this.lightPosition, this.ambientColor, this.diffuseColor);
         third_base_column_one.draw(modelMatrix);
     }
 }
