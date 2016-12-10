@@ -111,3 +111,21 @@ function webGLStart() {
     
     tick();
 }
+
+function initVariables () {
+    cameraMode = 1;
+    target = [0,0,0];
+    var initPosToTranslate = vec3.create();
+    vec3.set(initPosToTranslate,20.0,20.0,3.0);   //Aca pongo a donde quiero que vaya
+    var radius = vec3.squaredLength(initPosToTranslate);
+    thetaAngle = Math.acos(initPosToTranslate[2]/radius);   //para las rotaciones en zy e zx
+    phiAngle = Math.atan(initPosToTranslate[1]/initPosToTranslate[0]);  //para las rotaciones en el plano xy
+    cameraPosition = [radius*Math.cos(phiAngle)*Math.sin(thetaAngle),radius*Math.sin(phiAngle)*Math.sin(thetaAngle),radius*Math.cos(thetaAngle)];
+}
+
+function updateCamera() {
+    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    mat4.lookAt(CameraMatrix,cameraPosition,target,[0.0,0.0,1.0]);
+    mat4.perspective(pMatrix,degToRad(70), gl.viewportWidth / gl.viewportHeight, 0.1, 1000.0);
+}

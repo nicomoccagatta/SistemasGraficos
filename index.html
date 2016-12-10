@@ -195,48 +195,8 @@
     var lastMouseX = null;
     var lastMouseY = null;
 
-    function mvPushMatrix() {
-        var copy = mat4.create();
-        mat4.set(mvMatrix, copy);
-        mvMatrixStack.push(copy);
-    }
-
-    function mvPopMatrix() {
-        if (mvMatrixStack.length == 0) {
-            throw "Invalid popMatrix!";
-        }
-        mvMatrix = mvMatrixStack.pop();
-    }
-
-    function setViewProjectionMatrix() {
-        gl.uniformMatrix4fv(shaderProgramTexturedObject.pMatrixUniform, false, pMatrix);
-        gl.uniformMatrix4fv(shaderProgramTexturedObject.ViewMatrixUniform, false, CameraMatrix);        
-    }
-
-
     function degToRad(degrees) {
         return degrees * Math.PI / 180;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////
-
-    function initVariables () {
-        cameraMode = 1;
-        target = [0,0,0];
-        var initPosToTranslate = vec3.create();
-        vec3.set(initPosToTranslate,20.0,20.0,3.0);   //Aca pongo a donde quiero que vaya
-        var radius = vec3.squaredLength(initPosToTranslate);
-        thetaAngle = Math.acos(initPosToTranslate[2]/radius);   //para las rotaciones en zy e zx
-        phiAngle = Math.atan(initPosToTranslate[1]/initPosToTranslate[0]);  //para las rotaciones en el plano xy
-        cameraPosition = [radius*Math.cos(phiAngle)*Math.sin(thetaAngle),radius*Math.sin(phiAngle)*Math.sin(thetaAngle),radius*Math.cos(thetaAngle)];
-    }
-
-    function updateCamera() {
-        gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        mat4.lookAt(CameraMatrix,cameraPosition,target,[0.0,0.0,1.0]);
-        mat4.perspective(pMatrix,degToRad(70), gl.viewportWidth / gl.viewportHeight, 0.1, 1000.0);
     }
 
     // Variables de los shaders
@@ -249,46 +209,46 @@
 <body onload="webGLStart();">
 <style>
 
-body {
-  font: 13px sans-serif;
-  position: relative;
-  width: 960px;
-  height: 500px;
-}
+    body {
+      font: 13px sans-serif;
+      position: relative;
+      width: 960px;
+      height: 500px;
+    }
 
-form {
-  position: absolute;
-  background-color: lightgrey;
-  bottom: -200px;
-  left: 1000px;
-}
+    form {
+      position: absolute;
+      background-color: lightgrey;
+      bottom: -200px;
+      left: 1000px;
+    }
 
-rect {
-  fill: none;
-  pointer-events: all;
-}
+    rect {
+      fill: none;
+      pointer-events: all;
+    }
 
-circle,
-.line {
-  fill: none;
-  stroke: blue;
-  stroke-width: 5.0px;
-}
+    circle,
+    .line {
+      fill: none;
+      stroke: blue;
+      stroke-width: 5.0px;
+    }
 
-circle {
-  fill: #fff;
-  fill-opacity: .2;
-  cursor: move;
-}
+    circle {
+      fill: #fff;
+      fill-opacity: .2;
+      cursor: move;
+    }
 
-.selected {
-  fill: #ff7f0e;
-  stroke: #ff7f0e;
-}
+    .selected {
+      fill: #ff7f0e;
+      stroke: #ff7f0e;
+    }</style>
 
-</style>
 <form>
 </form>
+
 <script src="js/d3.v3.min.js"></script>
 <script src="js/points.controller.js"></script>
 
