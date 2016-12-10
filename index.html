@@ -18,264 +18,173 @@
 <script type="text/javascript" src="js/Tree.js"></script>
 <script type="text/javascript" src="js/TexturedSphere.js"></script>
 <script type="text/javascript" src="js/initBuffers.js"></script>
+<script type="text/javascript" src="js/shaderProgram.js"></script>
+<script type="text/javascript" src="js/drawProgram.js"></script>
+<script type="text/javascript" src="js/textureHandler.js"></script>
 
-<script id="shader-fs-colored-obj" type="x-shader/x-fragment">
+<script id="shader-fs" type="x-shader/x-fragment">
     precision mediump float;
 
-    varying vec3 vVertexColor;
-    varying vec3 vLightWeighting;
+    varying vec4 vTextureCoord;
+    varying vec3 vPosition;
+    varying vec3 vmPosition;
+    varying vec3 vNormal;
+    varying vec3 vTangent;
+    varying vec3 vBinormal;
+
+    varying float vUseReflection;
+    uniform bool uUseColor;
+    uniform bool uUseNormal;
+    uniform bool uUseIlumination;
+    uniform float uIluminationIntensity;
+
+    uniform vec3 uCameraPosition;
+    varying vec3 light_dir_normalized;
+    varying vec3 view_dir_normalized;
 
     uniform sampler2D uSampler;
-
-    void main(void) {
-        gl_FragColor = vec4(vVertexColor.rgb * vLightWeighting, 1.0);
-    }
-</script>
-
-<script id="shader-vs-colored-obj" type="x-shader/x-vertex">
-    attribute vec3 aVertexPosition;
-    attribute vec3 aVertexNormal;
-    attribute vec3 aVertexColor;
-
-    uniform mat4 uViewMatrix;
-    uniform mat4 uModelMatrix;
-    uniform mat4 uPMatrix;
-    uniform mat3 uNMatrix;
+    uniform sampler2D uSamplerReflectionMap;
+    uniform sampler2D uSamplerNormalMap;
+    uniform sampler2D uSamplerIluminationMap;
 
     uniform vec3 uAmbientColor;
-
-    uniform vec3 uLightPosition;
-    uniform vec3 uDirectionalColor;
-
     uniform bool uUseLighting;
+    uniform bool uUsePunctualLights;
 
-    varying vec3 vVertexColor;
-    varying vec3 vLightWeighting;
-
-    void main(void) {
-    
-        // Transformamos al vertice al espacio de la camara
-        vec4 pos_camera_view = uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
-        
-        // Transformamos al vertice al espacio de la proyeccion
-        gl_Position = uPMatrix * pos_camera_view;
-        
-        // Coordenada de textura sin modifiaciones
-        vVertexColor = aVertexColor;
-                            
-        ////////////////////////////////////////////
-        // Calculos de la iluminacion
-        vec3 light_dir =  uLightPosition - vec3( pos_camera_view );
-        normalize(light_dir);
-        if (!uUseLighting) 
-        {
-            vLightWeighting = vec3(1.0, 1.0, 1.0);
-        }
-        else 
-        {
-            vec3 transformedNormal = normalize(uNMatrix * aVertexNormal);
-            float directionalLightWeighting = max(dot(transformedNormal, light_dir), 0.0);
-            vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
-        }
-        ////////////////////////////////////////////
-    }
-</script>
-
-<script id="shader-fs-textured-obj" type="x-shader/x-fragment">
-    precision mediump float;
-
-    varying vec2 vTextureCoord;
-    varying vec3 vLightWeighting;
-
-    uniform sampler2D uSampler;
+    // Sol: Direccional
+    uniform vec3 uPrincipalLightDirection;
+    uniform vec3 uPrincipalDiffuseColor;
+    uniform vec3 uPrincipalSpecularColor;
+    uniform float uPrincipalLightIntensity;
 
     void main(void) {
-        vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+        vec3 normal = normalize(vNormal);
+
+        // Normal Map
+        if (uUseNormal) {
+            vec3 tangente = normalize(vTangent);
+            vec3 binormal = normalize(vBinormal);
+
+            // Matriz para pasar de coordenadas de vista a coordenadas intrinsecas (coordenadas para hacer el normal mapping)
+            mat3 toLocalObject = mat3(tangente, binormal, normal);
+            vec3 nMap         = texture2D(uSamplerNormalMap, vec2(vTextureCoord.s, vTextureCoord.t)).rgb;
+            vec3 normalMap    = (nMap * 2.0) - 1.0;
+            normal            = normalize(toLocalObject * normalMap);
+        }
+
+        // Calculos de la iluminación
+        // Sol
+        vec3 dir_luz_norm = normalize(uPrincipalLightDirection - vmPosition);
+        vec3 dir_vista_norm = normalize(uCameraPosition - vmPosition);
+        vec3 halfVector = normalize(dir_luz_norm + dir_vista_norm);
+
+        vec3 lightDir = uPrincipalLightDirection;
+        vec3 lightDirNormalized = normalize(lightDir);
+        float diffusePrincipalLightWeighting = max(dot(lightDirNormalized,normal), 0.0);
+        float specularPrincipalLightWeighting = pow(max(dot(normal, halfVector),0.0),64.0);
+     
+        if (! uUseLighting) {
+            diffusePrincipalLightWeighting = 0.0;
+            specularPrincipalLightWeighting = 0.0;
+            diffuseSecondaryLightWeighting = 0.0;
+            specularSecondaryLightWeighting = 0.0;
+        }
+
+        vec3 vPrincipalLightWeighting = uPrincipalLightIntensity * (uAmbientColor +
+                                                                    uPrincipalDiffuseColor * diffusePrincipalLightWeighting +
+                                                                    uPrincipalSpecularColor * specularPrincipalLightWeighting);
+                                                                    
+        vec3 vLightWeighting = vPrincipalLightWeighting;
+
+        // Auto Iluminación
+        if (uUseIlumination) {
+            vLightWeighting += uIluminationIntensity * texture2D(uSamplerIluminationMap, vec2(vTextureCoord.s, vTextureCoord.t)).rgb;
+        }
+
+        // Utilizo color o textura
+        vec4 textureColor;
+        if (uUseColor) {
+            textureColor = vec4(vTextureCoord.rgb, 1.0);
+        } else {
+            textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+        }
         gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
+
+        // Si utiliza reflexion
+        if (vTextureCoord[3] == 2.0 || vUseReflection == 1.0) {
+            vec3 view = normalize(vPosition);
+            vec3 reflection = reflect(view, vNormal);
+            float m = 2.0 * sqrt( pow(reflection.x, 2.0) + pow(reflection.y, 2.0) + pow(reflection.z + 1.0, 2.0));
+            vec2 reflectionDir = reflection.xy / m + 0.5;
+            vec4 reflectionTexture = texture2D(uSamplerReflectionMap, reflectionDir);
+            gl_FragColor = vec4(mix(textureColor, reflectionTexture, 0.2).rgb * vLightWeighting, textureColor.a);
+        }
     }
 </script>
 
-<script id="shader-vs-textured-obj" type="x-shader/x-vertex">
+<script id="shader-vs" type="x-shader/x-vertex">
     attribute vec3 aVertexPosition;
     attribute vec3 aVertexNormal;
-    attribute vec2 aTextureCoord;
+    attribute vec3 aVertexTangent;
+    attribute vec3 aVertexBinormal;
+    attribute vec4 aTextureCoord;
 
     uniform mat4 uViewMatrix;
     uniform mat4 uModelMatrix;
-    uniform mat4 uPMatrix;
-    uniform mat3 uNMatrix;
+    uniform mat4 uProyMatrix;
+    uniform mat3 uNormalMatrix;
 
-    uniform vec3 uAmbientColor;
+    uniform vec3 uPunctual1LightPosition;
+    uniform vec3 uPunctual2LightPosition;
+    uniform vec3 uPunctual3LightPosition;
+    uniform vec3 uPunctual4LightPosition;
 
-    uniform vec3 uLightPosition;
-    uniform vec3 uDirectionalColor;
+    uniform vec3 uEyePoint;
+    uniform vec3 uSunPosition;
 
-    uniform bool uUseLighting;
+    varying vec4 vTextureCoord;
+    varying vec3 vPosition;
+    varying vec3 vmPosition;
+    varying vec3 vNormal;
+    varying vec3 vTangent;
+    varying vec3 vBinormal;
 
-    varying vec2 vTextureCoord;
-    varying vec3 vLightWeighting;
+    varying vec3 light_dir_normalized;
+    varying vec3 view_dir_normalized;
+
+    uniform float uUseReflection;
+    varying float vUseReflection;
 
     void main(void) {
-	
-		// Transformamos al vertice al espacio de la camara
-		vec4 pos_camera_view = uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
-		
-		// Transformamos al vertice al espacio de la proyeccion
-        gl_Position = uPMatrix * pos_camera_view;
-		
-		// Coordenada de textura sin modifiaciones
+        // Transformamos al vértice al espacio de la cámara
+        vec4 pos_camera_view = uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
+
+        // Transformamos al vértice al espacio de la proyección
+        gl_Position = uProyMatrix * pos_camera_view;
+
+        vPosition = vec3(pos_camera_view) / pos_camera_view.w;
+
+        // Coordenada de textura sin modificaciones
         vTextureCoord = aTextureCoord;
-							
-		////////////////////////////////////////////
-		// Calculos de la iluminacion
-		vec3 light_dir =  uLightPosition - vec3( pos_camera_view );
-		normalize(light_dir);
-        if (!uUseLighting) 
-		{
-            vLightWeighting = vec3(1.0, 1.0, 1.0);
-        }
-		else 
-		{
-            vec3 transformedNormal = normalize(uNMatrix * aVertexNormal);
-            float directionalLightWeighting = max(dot(transformedNormal, light_dir), 0.0);
-            vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
-        }
-		////////////////////////////////////////////
+
+        // Para normalMap
+        vNormal = normalize(uNormalMatrix * aVertexNormal);
+        vTangent = normalize(uNormalMatrix * aVertexTangent);
+        vBinormal = normalize(uNormalMatrix * aVertexBinormal);
+
+        vmPosition = (uModelMatrix * vec4(aVertexPosition, 1.0)).xyz;
+
+        light_dir_normalized = normalize(uSunPosition - vmPosition);
+        view_dir_normalized = normalize(uEyePoint - vmPosition);
+
+        // Indica si usa reflection.
+        vUseReflection = uUseReflection;
     }
 </script>
-
 
 <script type="text/javascript">
 
     var gl;
-
-    function initGL(canvas) {
-        try {
-            gl = canvas.getContext("experimental-webgl");
-            gl.viewportWidth = canvas.width;
-            gl.viewportHeight = canvas.height;
-        } catch (e) {
-        }
-        if (!gl) {
-            alert("Could not initialise WebGL, sorry :-(");
-        }
-    }
-
-    function getShader(gl, id) {
-        var shaderScript = document.getElementById(id);
-        if (!shaderScript) {
-            return null;
-        }
-
-        var str = "";
-        var k = shaderScript.firstChild;
-        while (k) {
-            if (k.nodeType == 3) {
-                str += k.textContent;
-            }
-            k = k.nextSibling;
-        }
-
-        var shader;
-        if (shaderScript.type == "x-shader/x-fragment") {
-            shader = gl.createShader(gl.FRAGMENT_SHADER);
-        } else if (shaderScript.type == "x-shader/x-vertex") {
-            shader = gl.createShader(gl.VERTEX_SHADER);
-        } else {
-            return null;
-        }
-
-        gl.shaderSource(shader, str);
-        gl.compileShader(shader);
-
-        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-            alert(gl.getShaderInfoLog(shader));
-            return null;
-        }
-
-        return shader;
-    }
-
-    var shaderProgramTexturedObject;
-    var shaderProgramColoredObject;
-
-       function initShaders() {
-
-        ////////////////////////////////////////////
-        ////////////////////////////////////////////
-        //
-        // Inicializamos todo lo relacionado con el program shader para
-        // renderizar objetos texturados
-
-        var fragmentShaderTexturedObj = getShader(gl, "shader-fs-textured-obj");
-        var vertexShaderTexturedObj = getShader(gl, "shader-vs-textured-obj");
-
-        shaderProgramTexturedObject = gl.createProgram();
-        gl.attachShader(shaderProgramTexturedObject, vertexShaderTexturedObj);
-        gl.attachShader(shaderProgramTexturedObject, fragmentShaderTexturedObj);
-        gl.linkProgram(shaderProgramTexturedObject);
-
-        if (!gl.getProgramParameter(shaderProgramTexturedObject, gl.LINK_STATUS)) {
-            alert("Could not initialise shaders");
-        }
-
-        shaderProgramTexturedObject.vertexPositionAttribute = gl.getAttribLocation(shaderProgramTexturedObject, "aVertexPosition");
-        gl.enableVertexAttribArray(shaderProgramTexturedObject.vertexPositionAttribute);
-
-        shaderProgramTexturedObject.textureCoordAttribute = gl.getAttribLocation(shaderProgramTexturedObject, "aTextureCoord");
-        gl.enableVertexAttribArray(shaderProgramTexturedObject.textureCoordAttribute);
-
-        shaderProgramTexturedObject.vertexNormalAttribute = gl.getAttribLocation(shaderProgramTexturedObject, "aVertexNormal");
-        gl.enableVertexAttribArray(shaderProgramTexturedObject.vertexNormalAttribute);
-
-        shaderProgramTexturedObject.pMatrixUniform = gl.getUniformLocation(shaderProgramTexturedObject, "uPMatrix");
-        shaderProgramTexturedObject.ViewMatrixUniform = gl.getUniformLocation(shaderProgramTexturedObject, "uViewMatrix");
-        shaderProgramTexturedObject.ModelMatrixUniform = gl.getUniformLocation(shaderProgramTexturedObject, "uModelMatrix");
-        shaderProgramTexturedObject.nMatrixUniform = gl.getUniformLocation(shaderProgramTexturedObject, "uNMatrix");
-        shaderProgramTexturedObject.samplerUniform = gl.getUniformLocation(shaderProgramTexturedObject, "uSampler");
-        shaderProgramTexturedObject.useLightingUniform = gl.getUniformLocation(shaderProgramTexturedObject, "uUseLighting");
-        shaderProgramTexturedObject.ambientColorUniform = gl.getUniformLocation(shaderProgramTexturedObject, "uAmbientColor");
-        shaderProgramTexturedObject.lightingDirectionUniform = gl.getUniformLocation(shaderProgramTexturedObject, "uLightPosition");
-        shaderProgramTexturedObject.directionalColorUniform = gl.getUniformLocation(shaderProgramTexturedObject, "uDirectionalColor");
-
-        ////////////////////////////////////////////
-        ////////////////////////////////////////////
-        //
-        // Inicializamos todo lo relacionado con el program shader para
-        // renderizar objetos Coloreados
-
-        var fragmentShaderColoredObj = getShader(gl, "shader-fs-colored-obj");
-        var vertexShaderColoredObj = getShader(gl, "shader-vs-colored-obj");
-
-        shaderProgramColoredObject = gl.createProgram();
-        gl.attachShader(shaderProgramColoredObject, vertexShaderColoredObj);
-        gl.attachShader(shaderProgramColoredObject, fragmentShaderColoredObj);
-        gl.linkProgram(shaderProgramColoredObject);
-
-        if (!gl.getProgramParameter(shaderProgramColoredObject, gl.LINK_STATUS)) {
-            alert("Could not initialise shaders");
-        }
-
-
-        shaderProgramColoredObject.vertexPositionAttribute = gl.getAttribLocation(shaderProgramColoredObject, "aVertexPosition");
-        gl.enableVertexAttribArray(shaderProgramColoredObject.vertexPositionAttribute);
-
-        shaderProgramColoredObject.vertexColorAttribute = gl.getAttribLocation(shaderProgramColoredObject, "aVertexColor");
-        gl.enableVertexAttribArray(shaderProgramColoredObject.vertexColorAttribute);
-
-        shaderProgramColoredObject.vertexNormalAttribute = gl.getAttribLocation(shaderProgramColoredObject, "aVertexNormal");
-        gl.enableVertexAttribArray(shaderProgramColoredObject.vertexNormalAttribute);
-
-        shaderProgramColoredObject.pMatrixUniform = gl.getUniformLocation(shaderProgramColoredObject, "uPMatrix");
-        shaderProgramColoredObject.ViewMatrixUniform = gl.getUniformLocation(shaderProgramColoredObject, "uViewMatrix");
-        shaderProgramColoredObject.ModelMatrixUniform = gl.getUniformLocation(shaderProgramColoredObject, "uModelMatrix");
-        shaderProgramColoredObject.nMatrixUniform = gl.getUniformLocation(shaderProgramColoredObject, "uNMatrix");
-        shaderProgramColoredObject.samplerUniform = gl.getUniformLocation(shaderProgramColoredObject, "uSampler");
-        shaderProgramColoredObject.useLightingUniform = gl.getUniformLocation(shaderProgramColoredObject, "uUseLighting");
-        shaderProgramColoredObject.ambientColorUniform = gl.getUniformLocation(shaderProgramColoredObject, "uAmbientColor");
-        shaderProgramColoredObject.lightingDirectionUniform = gl.getUniformLocation(shaderProgramColoredObject, "uLightPosition");
-        shaderProgramColoredObject.directionalColorUniform = gl.getUniformLocation(shaderProgramColoredObject, "uDirectionalColor");
-    }
 
     var CameraMatrix = mat4.create();
     var mvMatrix = mat4.create();
@@ -323,54 +232,6 @@
         cameraPosition = [radius*Math.cos(phiAngle)*Math.sin(thetaAngle),radius*Math.sin(phiAngle)*Math.sin(thetaAngle),radius*Math.cos(thetaAngle)];
     }
 
-    function drawScene() {
-	
-		// Se configura el vierport dentro de area canvas. En este caso se utiliza toda
-		// el area disponible
-        gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-		
-		// Se habilita el color de borrado para la pantalla (Color Buffer) y otros buffers
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-		// Se configura la matriz de proyeccion
-        mat4.perspective(pMatrix, 3.14/12.0, gl.viewportWidth / gl.viewportHeight, 0.1, 2000.0);
-
-
-        // Matrices de modelado
-        var model_matrix_bridge = mat4.create();
-        mat4.identity(model_matrix_bridge);
-
-        var model_matrix_field = mat4.create();
-        mat4.identity(model_matrix_field);
-        
-        ////////////////////////////////////////////////////////
-        bridge.setupLighting(vec3.fromValues(-500.0, 0.0, -60.0), vec3.fromValues(0.3, 0.3, 0.3), vec3.fromValues(0.05, 0.05, 0.05));
-        bridge.draw(model_matrix_bridge);
-
-        field.setupShaders();
-        field.setupLighting(vec3.fromValues(-500.0, 0.0, -60.0), vec3.fromValues(0.3, 0.3, 0.3), vec3.fromValues(0.01, 0.01, 0.01));
-        field.draw(model_matrix_field);
-
-
-        trees.setupShaders();
-        trees.setupLighting(vec3.fromValues(-500.0, 0.0, -60.0), vec3.fromValues(0.3, 0.3, 0.3), vec3.fromValues(0.01, 0.01, 0.01));
-        trees.draw(treeTexture);
-        //
-        ////////////////////////////////////////////////////////
-
-        ////////////////////////////////////////////////////////
-        sky.setupShaders();
-        sky.setupLighting(vec3.fromValues(-300.0, 0.0, -60.0), vec3.fromValues(1.0, 1.0, 1.0), vec3.fromValues(0.0, 0.0, 0.0))
-        
-        // Matriz de modelado de sky
-        var model_matrix_sky = mat4.create();
-        mat4.identity(model_matrix_sky);
-        mat4.scale(model_matrix_sky, model_matrix_sky, [1000.0, 1000.0, 900.0]);
-        sky.draw(model_matrix_sky, skyTexture);
-        //
-        ////////////////////////////////////////////////////////
-    }
-
     function updateCamera() {
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -378,59 +239,8 @@
         mat4.perspective(pMatrix,degToRad(70), gl.viewportWidth / gl.viewportHeight, 0.1, 1000.0);
     }
 
-    function tick() {
-        requestAnimFrame(tick); 
-        handleKeyPresses();
-        updateCamera();
-        field.updateField(points);
-        from_and_to = field.getYPositionFromX(points, app.pos);
-        bridge = bridge.updateBridge(app, from_and_to);
-        trees.updateTrees(app.ph1,1,2,1.5);
-        drawScene();
-    }
-
-    function webGLStart() {
-        var canvas = document.getElementById("TP Sistemas Graficos");
-        widthOfCanvas = canvas.width;
-        heightOfCanvas = canvas.height;
-
-        if (canvas.addEventListener) {
-            // IE9, Chrome, Safari, Opera
-            canvas.addEventListener("mousewheel", MouseWheelHandler, false);
-            // Firefox
-            canvas.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
-        }
-        // IE 6/7/8
-        else canvas.attachEvent("onmousewheel", MouseWheelHandler);     
-
-        initGL(canvas);
-        initShaders();
-        initVariables();
-        initTexture();
-
-        // Field(from_x, to_x, from_y, to_y, diameter, min_height, max_height, points)
-        field = new Field(LEFT_BORDER_MAP, RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, TOP_BORDER_MAP, FIELD_DIAMETER, FIELD_HEIGHT, app.ph1, points);
-        field.initBuffers();
-
-        from_and_to = field.getYPositionFromX(points, app.pos);
-        bridge = new Bridge(app.ph1, app.ph2, app.ph3, app.s1, app.pos, app.cols, from_and_to[0], from_and_to[1]); 
-        // Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to)
-
-        trees = new Trees(LEFT_BORDER_MAP, RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, TOP_BORDER_MAP,app.ph1);
-        trees.initBuffers();
-
-
-        sky = new TexturedSphere(64,64);
-        sky.initBuffers();
-
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
-        gl.enable(gl.DEPTH_TEST);
-
-        document.onkeydown = handleKeyDown;
-        document.onkeyup = handleKeyUp;
-        
-        tick();
-    }
+    // Variables de los shaders
+    var shaderProgramSimple;
 
 </script>
 
