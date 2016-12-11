@@ -3,7 +3,7 @@ const MAX_HEIGHT_SEPARATION = 0.85;
 const INTERN_LOW_BORDER = 1.3;
 const INTERN_HIGH_BORDER = 1;
 const HALF_WIDTH = 5;
-const ROAD_COLOR = 0.25;
+const ROAD_COLOR = 0.5;
 
 
 
@@ -58,9 +58,43 @@ function PlainRoadLeftBorder(height, center_x, from, to) {
             extreme_left_x, to, height
         ];
         
-        this.normal_buffer = [];
+        /*this.normal_buffer = [];
         calcNormals(this.position_buffer, this.normal_buffer);
-        //this.normal_buffer = this.position_buffer;
+        for (var i = 0; i < this.normal_buffer.length; i++) {
+            this.normal_buffer[i] = -this.normal_buffer[i];
+        }*/
+        
+        
+        this.normal_buffer = [
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 1.0,
+            
+            /*extreme_right_x, to, max_height,
+            extreme_right_x, to, height,
+            extreme_right_x, to, max_height,*/
+            
+            1.0, 0.0, 1.0,
+            //extreme_right_x, from, max_height,extreme_right_x, from, max_height,
+            
+            0.0, 0.0, 1.0,
+            0.0, 0.0, 1.0,
+            0.0, 0.0, 1.0,
+            -1.0, 0.0, 1.0,
+            -1.0, 0.0, 1.0,
+            -1.0, 0.0, 1.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            0.0, 0.0, -1.0,
+            0.0, 0.0, -1.0,
+            0.0, 0.0, -1.0,
+            0.0, 0.0, -1.0
+        ];
         
         this.color_buffer = [];
         this.index_buffer = [];
@@ -194,9 +228,45 @@ function PlainRoadRightBorder(height, center_x, from, to) {
             extreme_right_x, to, height
         ];
         
-        this.normal_buffer = [];
+        /*this.normal_buffer = [];
         calcNormals(this.position_buffer, this.normal_buffer);
-        //this.normal_buffer = this.position_buffer;
+        for (var i = 0; i < this.normal_buffer.length; i++) {
+            this.normal_buffer[i] = -this.normal_buffer[i];
+        }*/
+        
+        this.normal_buffer = [
+            -1.0, 0.0, 1.0,
+            -1.0, 0.0, 1.0,
+            -1.0, 0.0, 1.0,
+            -1.0, 0.0, 1.0,
+            -1.0, 0.0, 1.0,
+            0.0, 0.0, 1.0,
+            
+            /*extreme_right_x, to, max_height,
+            extreme_right_x, to, height,
+            extreme_right_x, to, max_height,*/
+            
+            0.0, 0.0, 1.0,
+            //extreme_right_x, from, max_height,extreme_right_x, from, max_height,
+            
+            1.0, 0.0, 1.0,
+            1.0, 0.0, 1.0,
+            1.0, 0.0, 0.0,
+            1.0, 1.0, 0.0,
+            1.0, 1.0, 0.0,
+            1.0, 1.0, 0.0,
+            -1.0, 0.0, 0.0,
+            -1.0, 0.0, 0.0,
+            -1.0, 0.0, 0.0,
+            -1.0, 0.0, 0.0,
+            -1.0, 0.0, 0.0,
+            0.0, 0.0, -1.0,
+            0.0, 0.0, -1.0,
+            0.0, 0.0, -1.0
+        ];
+        
+        
+        
         
         this.color_buffer = [];
         this.index_buffer = [];
@@ -324,9 +394,37 @@ function PlainRoadMiddle(height, center_x, from, to) {
             intern_low_left_x, from, middle_height
         ];
         
-        this.normal_buffer = [];
+        
+        
+        this.normal_buffer = [
+            //intern_low_left_x, from, middle_height,
+            -1.0, 0.0, 1.0,
+            0.0, 0.0, 1.0,
+            0.0, 0.0, 1.0,
+            0.0, 0.0, 1.0,
+            1.0, 0.0, 1.0,
+            
+            1.0, 0.0, 1.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, -1.0,
+            
+            1.0, 0.0, -1.0,
+            0.0, 0.0, -1.0,
+            0.0, 0.0, -1.0,
+            -1.0, 0.0, -1.0,
+            
+            -1.0, 0.0, -1.0,
+            -1.0, 0.0, 0.0,
+            -1.0, 0.0, 0.0,
+            -1.0, 0.0, 1.0
+        ];
+        
+        /*this.normal_buffer = [];
         calcNormals(this.position_buffer, this.normal_buffer);
-        //this.normal_buffer = this.position_buffer;
+        for (var i = 0; i < this.normal_buffer.length; i++) {
+            this.normal_buffer[i] = -this.normal_buffer[i];
+        }*/
         
         this.color_buffer = [];
         this.index_buffer = [];
@@ -632,10 +730,6 @@ function CurvedRoadLeftBorder(base_height, max_height, center_x, from, to) {
     var intern_high_left_x = (extreme_left_x - INTERN_HIGH_BORDER);
     
     this.fillBuffers = function(x, y, z) {
-        /*this.normal_buffer.push(x);
-        this.normal_buffer.push(y);
-        this.normal_buffer.push(z);*/
-
         this.color_buffer.push(ROAD_COLOR)
         this.color_buffer.push(ROAD_COLOR)
         this.color_buffer.push(ROAD_COLOR)
@@ -643,6 +737,12 @@ function CurvedRoadLeftBorder(base_height, max_height, center_x, from, to) {
         this.position_buffer.push(x);
         this.position_buffer.push(y);
         this.position_buffer.push(z);
+    }
+    
+    this.fillNormalBuffer = function(x, y, z) {
+        this.normal_buffer.push(x);
+        this.normal_buffer.push(y);
+        this.normal_buffer.push(z);
     }
 
     this.initBuffers = function() {
@@ -679,7 +779,7 @@ function CurvedRoadLeftBorder(base_height, max_height, center_x, from, to) {
             
 
             //this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
-            //this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
             this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
             this.fillBuffers(extreme_left_x, previous_step_y, max_height_previous_step);
             this.fillBuffers(extreme_left_x, this_step_y, height_this_step);
@@ -709,13 +809,36 @@ function CurvedRoadLeftBorder(base_height, max_height, center_x, from, to) {
             this.fillBuffers(extreme_left_x, this_step_y, height_this_step);
 
         }
-
-        for (var index = 0; index < 180 * 19 ; index++) {
-            this.index_buffer.push(index);
+        
+        for (var i = 0; i < 180 ; i++) {
+            this.fillNormalBuffer(1.0, 0.0, 0.0);
+            this.fillNormalBuffer(1.0, 0.0, 0.0);
+            this.fillNormalBuffer(1.0, 0.0, 0.0);
+            this.fillNormalBuffer(1.0, 0.0, 0.0);
+            this.fillNormalBuffer(1.0, 0.0, 0.0);
+            this.fillNormalBuffer(1.0, 0.0, 0.0);
+            this.fillNormalBuffer(1.0, 0.0, 1.0);
+            this.fillNormalBuffer(1.0, 0.0, 1.0);
+            this.fillNormalBuffer(0.0, 0.0, 1.0);
+            this.fillNormalBuffer(0.0, 0.0, 1.0);
+            this.fillNormalBuffer(-1.0, 0.0, 1.0);
+            this.fillNormalBuffer(-1.0, 0.0, 1.0);
+            this.fillNormalBuffer(-1.0, 0.0, 1.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);  
+            this.fillNormalBuffer(0.0, 0.0, -1.0);
+            this.fillNormalBuffer(0.0, 0.0, -1.0);
+            this.fillNormalBuffer(0.0, 0.0, -1.0);
+        };
+        
+        for (var index = 0; index < 180 * 20 ; index++) {
+            this.index_buffer.push(index); 
         }
         
         
-        calcNormals(this.position_buffer, this.normal_buffer);
+        //calcNormals(this.position_buffer, this.normal_buffer);
     }
 
     this.getHeightsAlongRoad = function() {
@@ -830,6 +953,12 @@ function CurvedRoadRightBorder(base_height, max_height, center_x, from, to) {
         this.position_buffer.push(y);
         this.position_buffer.push(z);
     }
+    
+    this.fillNormalBuffer = function(x, y, z) {
+        this.normal_buffer.push(x);
+        this.normal_buffer.push(y);
+        this.normal_buffer.push(z);
+    }
 
     this.initBuffers = function() {
         var y = from;
@@ -898,8 +1027,29 @@ function CurvedRoadRightBorder(base_height, max_height, center_x, from, to) {
             this.index_buffer.push(index);
         }
         
+        for (var i = 0; i < 180 ; i++) {
+            this.fillNormalBuffer(-1.0, 0.0, 1.0);
+            this.fillNormalBuffer(-1.0, 0.0, 1.0);
+            this.fillNormalBuffer(-1.0, 0.0, 1.0);
+            this.fillNormalBuffer(-1.0, 0.0, 1.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);
+            this.fillNormalBuffer(0.0, 0.0, 1.0);
+            this.fillNormalBuffer(0.0, 0.0, 1.0);
+            this.fillNormalBuffer(1.0, 0.0, 1.0);
+            this.fillNormalBuffer(1.0, 0.0, 1.0);
+            this.fillNormalBuffer(1.0, 0.0, 0.0);
+            this.fillNormalBuffer(1.0, 1.0, 0.0);
+            this.fillNormalBuffer(1.0, 1.0, 0.0);
+            this.fillNormalBuffer(1.0, 1.0, 0.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);  
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);
+            this.fillNormalBuffer(0.0, 0.0, -1.0);
+        };
         
-        calcNormals(this.position_buffer, this.normal_buffer);
+        //calcNormals(this.position_buffer, this.normal_buffer);
     }
 
     this.getHeightsAlongRoad = function() {
@@ -1015,6 +1165,12 @@ function CurvedRoadMiddle(base_height, max_height, center_x, from, to) {
         this.position_buffer.push(y);
         this.position_buffer.push(z);
     }
+    
+    this.fillNormalBuffer = function(x, y, z) {
+        this.normal_buffer.push(x);
+        this.normal_buffer.push(y);
+        this.normal_buffer.push(z);
+    }
 
     this.initBuffers = function() {
         var y = from;
@@ -1045,22 +1201,10 @@ function CurvedRoadMiddle(base_height, max_height, center_x, from, to) {
             var height_this_step = this_step_z;
             var max_height_this_step = this_step_z + MAX_HEIGHT_SEPARATION;
             var middle_height_this_step = this_step_z + MIDDLE_HEIGHT_SEPARATION;
-            
-            
-            
-            
-            
-            
-            
-
-            
-
-
-            
 
             //this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step);
             //this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step);
-            //this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step);
+            this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step);
             this.fillBuffers(intern_low_right_x, previous_step_y, middle_height_previous_step);
             this.fillBuffers(intern_low_left_x, this_step_y, middle_height_this_step);
             this.fillBuffers(intern_low_right_x, this_step_y, middle_height_this_step);
@@ -1082,14 +1226,63 @@ function CurvedRoadMiddle(base_height, max_height, center_x, from, to) {
             this.fillBuffers(intern_low_left_x, previous_step_y, height_previous_step);
             this.fillBuffers(intern_low_left_x, this_step_y, middle_height_this_step);
             this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step);
+            
+            var aux_y, aux_z;
+            aux_y = this_step_y - previous_step_y;
+            if (angle > 0) {
+                aux_z = height_previous_step - height_this_step;
+            } else {
+                aux_z = height_this_step - height_previous_step;
+            }
+            this.fillNormalBuffer(-aux_z, aux_y, aux_z);
+            this.fillNormalBuffer(0.0, aux_y, aux_z);
+            this.fillNormalBuffer(0.0, aux_y, aux_z);
+            this.fillNormalBuffer(0.0, aux_y, aux_z);
+            
+            this.fillNormalBuffer(0.0, aux_y, aux_z);
+            this.fillNormalBuffer(0.0, aux_y, aux_z);
+            this.fillNormalBuffer(aux_z, 0.0, 0.0);
+            this.fillNormalBuffer(aux_z, 0.0, 0.0);
+            
+            this.fillNormalBuffer(aux_z, 0.0, -aux_z);
+            this.fillNormalBuffer(0.0, -aux_y, -aux_z);
+            this.fillNormalBuffer(0.0, -aux_y, -aux_z);
+            this.fillNormalBuffer(0.0, -aux_y, -aux_z);
+            
+            this.fillNormalBuffer(0.0, -aux_y, -aux_z);
+            this.fillNormalBuffer(-aux_z, 0.0, -aux_z);
+            this.fillNormalBuffer(-aux_z, 0.0, 0.0);
+            this.fillNormalBuffer(-aux_z, aux_y, aux_z);
         }
 
-        for (var index = 0; index < 180 * 15 ; index++) {
+        for (var index = 0; index < 180 * 16 ; index++) {
             this.index_buffer.push(index);
         }
         
+        /*for (var i = 0; i < 180 ; i++) {
+            this.fillNormalBuffer(-1.0, 0.0, 1.0);
+            this.fillNormalBuffer(0.0, 0.0, 1.0);
+            this.fillNormalBuffer(0.0, 0.0, 1.0);
+            this.fillNormalBuffer(0.0, 0.0, 1.0);
+            
+            this.fillNormalBuffer(1.0, 0.0, 1.0);
+            this.fillNormalBuffer(1.0, 0.0, 1.0);
+            this.fillNormalBuffer(1.0, 0.0, 0.0);
+            this.fillNormalBuffer(1.0, 0.0, 0.0);
+            
+            this.fillNormalBuffer(1.0, 0.0, -1.0);
+            this.fillNormalBuffer(1.0, 0.0, -1.0);
+            this.fillNormalBuffer(0.0, 0.0, -1.0);
+            this.fillNormalBuffer(0.0, 0.0, -1.0);
+            
+            this.fillNormalBuffer(-1.0, 0.0, -1.0);
+            this.fillNormalBuffer(-1.0, 0.0, -1.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);
+            this.fillNormalBuffer(-1.0, 0.0, 1.0);
+            //this.fillNormalBuffer(-1.0, 0.0, 1.0);  
+        };*/
         
-        calcNormals(this.position_buffer, this.normal_buffer);
+        //calcNormals(this.position_buffer, this.normal_buffer);
     }
 
     this.getHeightsAlongRoad = function() {

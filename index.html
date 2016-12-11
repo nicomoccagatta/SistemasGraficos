@@ -64,7 +64,7 @@
                             
         ////////////////////////////////////////////
         // Calculos de la iluminacion
-        vec3 light_dir =  uLightPosition - vec3( pos_camera_view );
+        vec3 light_dir = vec3(-100.0, 10.0, 10.0);//uLightPosition - vec3( pos_camera_view );
         normalize(light_dir);
         if (!uUseLighting) 
         {
@@ -147,6 +147,14 @@
 <script type="text/javascript">
 
     var gl;
+    
+    
+    
+    
+    var sol_x = -100.0;
+    var sol_y = 1.0;
+    var sol_z = 10.0;
+    
 
     function initGL(canvas) {
         try {
@@ -236,6 +244,30 @@
         shaderProgramTexturedObject.ambientColorUniform = gl.getUniformLocation(shaderProgramTexturedObject, "uAmbientColor");
         shaderProgramTexturedObject.lightingDirectionUniform = gl.getUniformLocation(shaderProgramTexturedObject, "uLightPosition");
         shaderProgramTexturedObject.directionalColorUniform = gl.getUniformLocation(shaderProgramTexturedObject, "uDirectionalColor");
+        
+        
+        
+        
+        
+        
+        
+        //AGREGADO ILUMINACION
+        
+        var intensidad_sol = 1.0
+        
+        gl.uniform3fv(shaderProgramTexturedObject.solPositionUniform, vec3.fromValues(sol_x, sol_y, sol_z));//(solX, solY, solZ));
+        gl.uniform3fv(shaderProgramTexturedObject.solIntensityUniform, vec3.fromValues(intensidad_sol, intensidad_sol, intensidad_sol));
+        gl.uniform1f(shaderProgramTexturedObject.solPersistanceUniform, 2000);
+        
+        
+        shaderProgramTexturedObject.solPositionUniform = gl.getUniformLocation(shaderProgramTexturedObject, "uSol.position");
+        shaderProgramTexturedObject.solIntensityUniform = gl.getUniformLocation(shaderProgramTexturedObject, "uSol.intensity");
+        shaderProgramTexturedObject.solPersistanceUniform = gl.getUniformLocation(shaderProgramTexturedObject, "uSol.persistance");
+        
+        
+        
+        
+        
 
         ////////////////////////////////////////////
         ////////////////////////////////////////////
@@ -274,6 +306,12 @@
         shaderProgramColoredObject.ambientColorUniform = gl.getUniformLocation(shaderProgramColoredObject, "uAmbientColor");
         shaderProgramColoredObject.lightingDirectionUniform = gl.getUniformLocation(shaderProgramColoredObject, "uLightPosition");
         shaderProgramColoredObject.directionalColorUniform = gl.getUniformLocation(shaderProgramColoredObject, "uDirectionalColor");
+        
+        
+        //AGREGADO
+        shaderProgramColoredObject.solPositionUniform = gl.getUniformLocation(shaderProgramColoredObject, "uSol.position");
+        shaderProgramColoredObject.solIntensityUniform = gl.getUniformLocation(shaderProgramColoredObject, "uSol.intensity");
+        shaderProgramColoredObject.solPersistanceUniform = gl.getUniformLocation(shaderProgramColoredObject, "uSol.persistance");
     }
 
     var CameraMatrix = mat4.create();
@@ -324,6 +362,8 @@
 
     function drawScene() {
 	
+        initShaders();
+    
 		// Se configura el vierport dentro de area canvas. En este caso se utiliza toda
 		// el area disponible
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
@@ -344,23 +384,23 @@
         
         ////////////////////////////////////////////////////////
         bridge.setupShaders();
-        bridge.setupLighting(vec3.fromValues(-500.0, 0.0, -60.0), vec3.fromValues(0.3, 0.3, 0.3), vec3.fromValues(0.05, 0.05, 0.05));
+        bridge.setupLighting(vec3.fromValues(sol_x, sol_y, sol_z), vec3.fromValues(0.3, 0.3, 0.3), vec3.fromValues(0.05, 0.05, 0.05));
         bridge.draw(model_matrix_bridge);
 
         field.setupShaders();
-        field.setupLighting(vec3.fromValues(-500.0, 0.0, -60.0), vec3.fromValues(0.3, 0.3, 0.3), vec3.fromValues(0.01, 0.01, 0.01));
+        field.setupLighting(vec3.fromValues(sol_x, sol_y, sol_z), vec3.fromValues(0.3, 0.3, 0.3), vec3.fromValues(0.01, 0.01, 0.01));
         field.draw(model_matrix_field);
 
 
         trees.setupShaders();
-        trees.setupLighting(vec3.fromValues(-500.0, 0.0, -60.0), vec3.fromValues(0.3, 0.3, 0.3), vec3.fromValues(0.01, 0.01, 0.01));
+        trees.setupLighting(vec3.fromValues(sol_x, sol_y, sol_z/*-500.0, 0.0, -60.0*/), vec3.fromValues(0.3, 0.3, 0.3), vec3.fromValues(0.01, 0.01, 0.01));
         trees.draw();
         //
         ////////////////////////////////////////////////////////
 
         ////////////////////////////////////////////////////////
         sky.setupShaders();
-        sky.setupLighting(vec3.fromValues(-300.0, 0.0, -60.0), vec3.fromValues(1.0, 1.0, 1.0), vec3.fromValues(0.0, 0.0, 0.0))
+        sky.setupLighting(vec3.fromValues(sol_x, sol_x, sol_x), vec3.fromValues(1.0, 1.0, 1.0), vec3.fromValues(0.0, 0.0, 0.0))
         
         // Matriz de modelado de sky
         var model_matrix_sky = mat4.create();
@@ -428,6 +468,10 @@
 
         document.onkeydown = handleKeyDown;
         document.onkeyup = handleKeyUp;
+        
+        
+        //col = new Column(5, 10, 15, 20, 20, 1);
+        
         
         tick();
     }
