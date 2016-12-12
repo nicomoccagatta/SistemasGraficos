@@ -1,9 +1,11 @@
 var treeTexture;
+var tierraTexture;
 var skyTexture;
 var rutaTexture;
 var veredaTexture;
 var columnaTexture;
 var cablesTexture;
+var pastoTexture;
 
 function initTexture() {
 	// SKY TEXTURE
@@ -22,6 +24,22 @@ function initTexture() {
 	}
 	treeTexture.image.src = "maps/hojas.jpg";
 
+	// TIERRA TEXTURE
+	tierraTexture = gl.createTexture();
+	tierraTexture.image = new Image();
+	tierraTexture.image.onload = function() {		
+		handleLoadedTextureMosaic(tierraTexture);
+	}
+	tierraTexture.image.src = "maps/tierra1.jpg";
+
+	// TIERRA TEXTURE
+	pastoTexture = gl.createTexture();
+	pastoTexture.image = new Image();
+	pastoTexture.image.onload = function() {		
+		handleLoadedTextureMosaic(pastoTexture);
+	}
+	pastoTexture.image.src = "maps/pasto1.jpg";
+/*
 	// RUTA TEXTURE
 	rutaTexture = gl.createTexture();
 	rutaTexture.image = new Image();
@@ -53,8 +71,20 @@ function initTexture() {
 		handleLoadedTextureMosaic(cablesTexture);
 	}
 	cablesTexture.image.src = "maps/alambres.jpg";
+	*/
 }
-  
+
+function handleLoadedTexture(texture) {
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+    gl.generateMipmap(gl.TEXTURE_2D);
+
+    gl.bindTexture(gl.TEXTURE_2D, null);
+}
+/*  
 function handleLoadedTexture(texture) {
 	gl.bindTexture(gl.TEXTURE_2D, texture);
 	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -66,7 +96,7 @@ function handleLoadedTexture(texture) {
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); 
 	gl.bindTexture(gl.TEXTURE_2D, null);
 }
-
+*/
 function handleLoadedTextureMosaic(texture) {
 	gl.bindTexture(gl.TEXTURE_2D, texture);
 	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);

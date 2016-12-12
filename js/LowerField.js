@@ -1,77 +1,99 @@
-function TexturedSphere(latitude_bands, longitude_bands) {
+function LowerField(from_x, to_x, from_y, to_y, diameter, min_height, max_height, points) {
+	this.webgl_position_buffer = null;
+	this.webgl_normal_buffer = null;
+	this.webgl_binormal_buffer = null;
+	this.webgl_texture_coord_buffer = null;
+	this.webgl_index_buffer = null;
 
-    this.latitudeBands = latitude_bands;
-    this.longitudeBands = longitude_bands;
-    this.esTexturada = true;
+	this.position_buffer = [];
+	this.normal_buffer = [];
+	this.color_buffer = [];
+	this.index_buffer = [];
 
-    this.vertex_buffer = null;
-    this.index_buffer = null;
+	this.texture = null;
+	var weakThis = this;
 
-    this.position_buffer = null;
-    this.normal_buffer = null;
-    this.texture_coord_buffer = null;
-    this.index_buffer = null;
-
-    this.webgl_position_buffer = null;
-    this.webgl_normal_buffer = null;
-    this.webgl_texture_coord_buffer = null;
-    this.webgl_tangent_buffer = null;
-    this.webgl_binormal_buffer = null;
-    this.webgl_index_buffer = null;
-
-    this.texture = null;
-    var weakThis = this;
-
-    this.initTexture = function(texture_file){
-        var aux_texture = gl.createTexture();
-        this.texture = aux_texture;
-        this.texture.image = new Image();
-
-        this.texture.image.onload = function () {
-            handleLoadedTexture(weakThis.texture);
-        }
-        this.texture.image.src = texture_file;
+    this.initTexture = function(texture){
+        this.texture = texture;
     }
 
-    // Se generan los vertices para la esfera, calculando los datos para una esfera de radio 1
-    // Y también la información de las normales y coordenadas de textura para cada vertice de la esfera
-    // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de índices 
-    // a todos los triángulos de la esfera
     this.initBuffers = function() {
         this.vertex_buffer = [];
 
-        var latNumber;
-        var longNumber;
+        var long_x = to_x - from_x;
+        var long_y = to_y - from_y;
+        var radius = diameter / 2.0;
+        
+        var max_center_y = to_y - radius;
+        var min_center_y = from_y + radius;
+        var delta_y = max_center_y - min_center_y;
 
-        for (latNumber=0; latNumber < this.latitudeBands; latNumber++) {
-            var theta = latNumber * Math.PI / (this.latitudeBands - 1);
-            var sinTheta = Math.sin(theta);
-            var cosTheta = Math.cos(theta);
+        var max_x = to_x;
+        var min_x = from_x;
+        var delta_x = max_x - min_x;
 
-            for (longNumber=0; longNumber < this.longitudeBands; longNumber++) {
-                var phi = longNumber * 2 * Math.PI / (this.longitudeBands - 1);
-                var sinPhi = Math.sin(phi);
-                var cosPhi = Math.cos(phi);
+        var quant_sections = points.length;
+        var index_lower_land = 0;
 
-                var x = cosPhi * sinTheta;
-                var y = sinPhi * sinTheta;
-                var z = cosTheta;
-                
+        this.curve = new BSpline(points, min_x, delta_x, min_center_y, delta_y);
+
+        for (var num_section = 0; num_section < quant_sections; num_section++) {
+            for (var dif_u = 0.0; dif_u <= 0.8 ; dif_u += 0.2) {
+
+                var aux_center_arc = this.curve.get_center_xy(num_section, dif_u);
+                var next_center_arc = this.curve.get_center_xy(num_section, dif_u+0.20);
+
+                var bottom_arc_y = aux_center_arc[1] - radius;
+                var next_bottom_arc_y = next_center_arc[1] - radius;
+
+                x = aux_center_arc[0];
+                y = bottom_arc_y;
+                z = max_height;
+
                 var position = [x,y,z];
-                var normal = [-x,-y,-z];
-                    //normal = [x,y,z];
-                var tangent = [-y,x,0];
-                var texture = [0,0];
+                var normal = [0,0,1];
+                var tangent = [1,1,0];
+                var texture = [(num_section+dif_u) / quant_sections, 1];
+                this.vertex_buffer.push(new Vertice(position, position, normal, tangent, texture));
+                this.index_buffer.push(index_lower_land);
+                index_lower_land++;
 
-                var u = 1.0 - (longNumber / (this.longitudeBands - 1));
-                var v = 1.0 - (latNumber / (this.latitudeBands - 1));
-                texture = [u,v];
 
-                var verticeActual = new Vertice(position, this.color, normal, tangent, texture);
-                this.vertex_buffer.push(verticeActual);
+                x = next_center_arc[0];
+                y = next_bottom_arc_y;
+
+                var position = [x,y,z];
+                var normal = [0,0,1];
+                var tangent = [1,1,0];
+                var texture = [(num_section+dif_u+0.2) / quant_sections, 1];
+                this.vertex_buffer.push(new Vertice(position, position, normal, tangent, texture));
+                this.index_buffer.push(index_lower_land);
+                index_lower_land++;
+
+                x = aux_center_arc[0];
+                y = from_y;
+
+                var position = [x,y,z];
+                var normal = [0,0,1];
+                var tangent = [1,1,0];
+                var texture = [(num_section+dif_u) / quant_sections, 0];
+                this.vertex_buffer.push(new Vertice(position, position, normal, tangent, texture));
+                this.index_buffer.push(index_lower_land);
+                index_lower_land++;
+
+                x = next_center_arc[0];
+
+                var position = [x,y,z];
+                var normal = [0,0,1];
+                var tangent = [1,1,0];
+                var texture = [(num_section+dif_u+0.2) / quant_sections, 0];
+                this.vertex_buffer.push(new Vertice(position, position, normal, tangent, texture));
+                this.index_buffer.push(index_lower_land);
+                this.index_buffer.push(index_lower_land);
+                this.index_buffer.push(index_lower_land-2);
+                index_lower_land++;
             }
         }
-        this.index_buffer = grid(this.latitudeBands, this.longitudeBands);
 
         // Creación e Inicialización de los buffers a nivel de OpenGL
         var position_buffer = getPositionBuffer(this.vertex_buffer);
@@ -153,6 +175,5 @@ function TexturedSphere(latitude_bands, longitude_bands) {
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
         gl.uniform1f(shaderProgram.useNormalUniform, false);
         gl.uniform1f(shaderProgram.useReflectionUniform, 0.0);
-    }
-    
+    }    
 }
