@@ -64,6 +64,7 @@
     uniform float uPrincipalLightIntensity;
 
     void main(void) {
+<<<<<<< HEAD
         vec3 normal = normalize(vNormal);
 
         // Normal Map
@@ -76,6 +77,31 @@
             vec3 nMap         = texture2D(uSamplerNormalMap, vec2(vTextureCoord.s, vTextureCoord.t)).rgb;
             vec3 normalMap    = (nMap * 2.0) - 1.0;
             normal            = normalize(toLocalObject * normalMap);
+=======
+    
+        // Transformamos al vertice al espacio de la camara
+        vec4 pos_camera_view = uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
+        
+        // Transformamos al vertice al espacio de la proyeccion
+        gl_Position = uPMatrix * pos_camera_view;
+        
+        // Coordenada de textura sin modifiaciones
+        vVertexColor = aVertexColor;
+                            
+        ////////////////////////////////////////////
+        // Calculos de la iluminacion
+        vec3 light_dir = vec3(-100.0, 10.0, 10.0);//uLightPosition - vec3( pos_camera_view );
+        normalize(light_dir);
+        if (!uUseLighting) 
+        {
+            vLightWeighting = vec3(1.0, 1.0, 1.0);
+        }
+        else 
+        {
+            vec3 transformedNormal = normalize(uNMatrix * aVertexNormal);
+            float directionalLightWeighting = max(dot(transformedNormal, light_dir), 0.0);
+            vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
+>>>>>>> a7736b3001b5381e6fbc164eb71b3efd78a1b753
         }
 
         // Calculos de la iluminación

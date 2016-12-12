@@ -3,7 +3,7 @@ const MAX_HEIGHT_SEPARATION = 0.85;
 const INTERN_LOW_BORDER = 1.3;
 const INTERN_HIGH_BORDER = 1;
 const HALF_WIDTH = 5;
-const ROAD_COLOR = 0.25;
+const ROAD_COLOR = 0.5;
 
 
 
@@ -111,10 +111,47 @@ function PlainRoadLeftBorder(height, center_x, from, to) {
             1, 10
         ];
         
-        var normal_buffer = [];
+        
+        /*this.normal_buffer = [];
         calcNormals(this.position_buffer, this.normal_buffer);
+        for (var i = 0; i < this.normal_buffer.length; i++) {
+            this.normal_buffer[i] = -this.normal_buffer[i];
+        }*/
+        
+        
+        this.normal_buffer = [
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 1.0,
+            
+            /*extreme_right_x, to, max_height,
+            extreme_right_x, to, height,
+            extreme_right_x, to, max_height,*/
+            
+            1.0, 0.0, 1.0,
+            //extreme_right_x, from, max_height,extreme_right_x, from, max_height,
+            
+            0.0, 0.0, 1.0,
+            0.0, 0.0, 1.0,
+            0.0, 0.0, 1.0,
+            -1.0, 0.0, 1.0,
+            -1.0, 0.0, 1.0,
+            -1.0, 0.0, 1.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            0.0, 0.0, -1.0,
+            0.0, 0.0, -1.0,
+            0.0, 0.0, -1.0,
+            0.0, 0.0, -1.0
+        ];
+        
+        this.color_buffer = [];
         var binormal_buffer = getBinormalBufferFromVectors(this.normal_buffer, this.tangent_buffer);
-
         this.index_buffer = [];
         for (var i = 0; i < this.normal_buffer.length / 3; i++) {
             this.index_buffer.push(i);
@@ -242,8 +279,43 @@ function PlainRoadRightBorder(height, center_x, from, to) {
             1, 10
         ];
         
-        this.normal_buffer = [];
+        /*this.normal_buffer = [];
         calcNormals(this.position_buffer, this.normal_buffer);
+
+        for (var i = 0; i < this.normal_buffer.length; i++) {
+            this.normal_buffer[i] = -this.normal_buffer[i];
+        }*/
+        
+        this.normal_buffer = [
+            -1.0, 0.0, 1.0,
+            -1.0, 0.0, 1.0,
+            -1.0, 0.0, 1.0,
+            -1.0, 0.0, 1.0,
+            -1.0, 0.0, 1.0,
+            0.0, 0.0, 1.0,
+            
+            /*extreme_right_x, to, max_height,
+            extreme_right_x, to, height,
+            extreme_right_x, to, max_height,*/
+            
+            0.0, 0.0, 1.0,
+            //extreme_right_x, from, max_height,extreme_right_x, from, max_height,
+            
+            1.0, 0.0, 1.0,
+            1.0, 0.0, 1.0,
+            1.0, 0.0, 0.0,
+            1.0, 1.0, 0.0,
+            1.0, 1.0, 0.0,
+            1.0, 1.0, 0.0,
+            -1.0, 0.0, 0.0,
+            -1.0, 0.0, 0.0,
+            -1.0, 0.0, 0.0,
+            -1.0, 0.0, 0.0,
+            -1.0, 0.0, 0.0,
+            0.0, 0.0, -1.0,
+            0.0, 0.0, -1.0,
+            0.0, 0.0, -1.0
+        ];
         
         this.index_buffer = [];
         for (var i = 0; i < this.normal_buffer.length / 3; i++) {
@@ -394,25 +466,116 @@ function PlainRoadMiddle(height, center_x, from, to) {
             1, 1
         ];
         
-        this.normal_buffer = [];
-        calcNormals(this.position_buffer, this.normal_buffer);
+        this.normal_buffer = [
+            //intern_low_left_x, from, middle_height,
+            -1.0, 0.0, 1.0,
+            0.0, 0.0, 1.0,
+            0.0, 0.0, 1.0,
+            0.0, 0.0, 1.0,
+            1.0, 0.0, 1.0,
+            
+            1.0, 0.0, 1.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, -1.0,
+            
+            1.0, 0.0, -1.0,
+            0.0, 0.0, -1.0,
+            0.0, 0.0, -1.0,
+            -1.0, 0.0, -1.0,
+            
+            -1.0, 0.0, -1.0,
+            -1.0, 0.0, 0.0,
+            -1.0, 0.0, 0.0,
+            -1.0, 0.0, 1.0
+        ];
         
+        /*this.normal_buffer = [];
+        calcNormals(this.position_buffer, this.normal_buffer);
+        for (var i = 0; i < this.normal_buffer.length; i++) {
+            this.normal_buffer[i] = -this.normal_buffer[i];
+        }*/
+        
+        this.color_buffer = [];
         this.index_buffer = [];
         for (var i = 0; i < this.normal_buffer.length / 3; i++) {
+            this.color_buffer.push(ROAD_COLOR);
+            this.color_buffer.push(ROAD_COLOR);
+            this.color_buffer.push(ROAD_COLOR);
             this.index_buffer.push(i);
         }
     }
     
-    this.prepareDraw = function(shaderProgram, modelMatrix, normal_buffer, texture_coord_buffer, position_buffer, index_buffer) {
+    this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
+        this.webgl_normal_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
+        this.webgl_normal_buffer.itemSize = 3;
+        this.webgl_normal_buffer.numItems = normal_buffer.length / 3;
 
+        this.webgl_color_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(color_buffer), gl.STATIC_DRAW);
+        this.webgl_color_buffer.itemSize = 3;
+        this.webgl_color_buffer.numItems = this.webgl_color_buffer.length / 3;
+
+        this.webgl_position_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(position_buffer), gl.STATIC_DRAW);
+        this.webgl_position_buffer.itemSize = 3;
+        this.webgl_position_buffer.numItems = position_buffer.length / 3;
+
+        this.webgl_index_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(index_buffer), gl.STATIC_DRAW);
+        this.webgl_index_buffer.itemSize = 1;
+        this.webgl_index_buffer.numItems = index_buffer.length;
     }
 
-    this.draw = function(modelMatrix, shaderProgram) { 
-        this.prepareDraw(shaderProgram, modelMatrix, this.normal_buffer, this.texture_coord_buffer, this.position_buffer, this.index_buffer);
+    this.setupShaders = function() {
+        gl.useProgram(shaderProgramColoredObject);
+    }
+
+    this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
+        var lighting = true;
+        gl.uniform1i(shaderProgramColoredObject.useLightingUniform, lighting);       
+
+        gl.uniform3fv(shaderProgramColoredObject.lightingDirectionUniform, lightPosition);
+        gl.uniform3fv(shaderProgramColoredObject.ambientColorUniform, ambientColor );
+        gl.uniform3fv(shaderProgramColoredObject.directionalColorUniform, diffuseColor);
+    }
+    
+    this.prepareDraw = function(modelMatrix, normal_buffer, color_buffer, position_buffer, index_buffer) {
+        this.createBuffer(normal_buffer, color_buffer, position_buffer, index_buffer);
+        
+        gl.uniformMatrix4fv(shaderProgramColoredObject.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(shaderProgramColoredObject.ViewMatrixUniform, false, CameraMatrix); 
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+        gl.vertexAttribPointer(shaderProgramColoredObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
+        gl.vertexAttribPointer(shaderProgramColoredObject.vertexColorAttribute, this.webgl_color_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
+        gl.vertexAttribPointer(shaderProgramColoredObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.uniformMatrix4fv(shaderProgramColoredObject.ModelMatrixUniform, false, modelMatrix);
+        var normalMatrix = mat3.create();
+        mat3.fromMat4(normalMatrix, modelMatrix);
+        mat3.invert(normalMatrix, normalMatrix);
+        mat3.transpose(normalMatrix, normalMatrix);
+        gl.uniformMatrix3fv(shaderProgramColoredObject.nMatrixUniform, false, normalMatrix);
+    }
+
+    this.draw = function(modelMatrix) { 
+        this.prepareDraw(modelMatrix, this.normal_buffer, this.color_buffer, this.position_buffer, this.index_buffer);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
     }
 }
+
+
 
 function CurvedRoadLeftBorder(base_height, max_height, center_x, from, to) {
     this.position_buffer = [];
@@ -444,6 +607,12 @@ function CurvedRoadLeftBorder(base_height, max_height, center_x, from, to) {
 
         this.texture_coord_buffer.push(u);
         this.texture_coord_buffer.push(v);
+    }
+    
+    this.fillNormalBuffer = function(x, y, z) {
+        this.normal_buffer.push(x);
+        this.normal_buffer.push(y);
+        this.normal_buffer.push(z);
     }
 
     this.initBuffers = function() {
@@ -481,6 +650,19 @@ function CurvedRoadLeftBorder(base_height, max_height, center_x, from, to) {
             this.fillBuffers(extreme_left_x, this_step_y, height_this_step, 0, vstep);
             this.fillBuffers(extreme_left_x, this_step_y, max_height_this_step, 0.2, vstep);
             
+
+            //this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step);
+            this.fillBuffers(extreme_left_x, previous_step_y, max_height_previous_step);
+            this.fillBuffers(extreme_left_x, this_step_y, height_this_step);
+            this.fillBuffers(extreme_left_x, this_step_y, max_height_this_step);
+            
+            
+            /*this.fillBuffers(extreme_left_x, this_step_y, max_height_this_step);
+            this.fillBuffers(extreme_left_x, this_step_y, height_this_step);
+            this.fillBuffers(extreme_left_x, this_step_y, max_height_this_step);*/
+
             
             this.fillBuffers(extreme_left_x, previous_step_y, max_height_previous_step, 0.2, vprevstep);
             
@@ -500,12 +682,33 @@ function CurvedRoadLeftBorder(base_height, max_height, center_x, from, to) {
             this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step, 0, vprevstep);
             this.fillBuffers(extreme_left_x, this_step_y, height_this_step, 0, vstep);
         }
-
-        for (var index = 0; index < 180 * 19 ; index++) {
-            this.index_buffer.push(index);
+        
+        for (var i = 0; i < 180 ; i++) {
+            this.fillNormalBuffer(1.0, 0.0, 0.0);
+            this.fillNormalBuffer(1.0, 0.0, 0.0);
+            this.fillNormalBuffer(1.0, 0.0, 0.0);
+            this.fillNormalBuffer(1.0, 0.0, 0.0);
+            this.fillNormalBuffer(1.0, 0.0, 0.0);
+            this.fillNormalBuffer(1.0, 0.0, 0.0);
+            this.fillNormalBuffer(1.0, 0.0, 1.0);
+            this.fillNormalBuffer(1.0, 0.0, 1.0);
+            this.fillNormalBuffer(0.0, 0.0, 1.0);
+            this.fillNormalBuffer(0.0, 0.0, 1.0);
+            this.fillNormalBuffer(-1.0, 0.0, 1.0);
+            this.fillNormalBuffer(-1.0, 0.0, 1.0);
+            this.fillNormalBuffer(-1.0, 0.0, 1.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);  
+            this.fillNormalBuffer(0.0, 0.0, -1.0);
+            this.fillNormalBuffer(0.0, 0.0, -1.0);
+            this.fillNormalBuffer(0.0, 0.0, -1.0);
+        };
+        
+        for (var index = 0; index < 180 * 20 ; index++) {
+            this.index_buffer.push(index); 
         }
-                
-        calcNormals(this.position_buffer, this.normal_buffer);
     }
 
     this.getHeightsAlongRoad = function() {
@@ -619,6 +822,12 @@ function CurvedRoadRightBorder(base_height, max_height, center_x, from, to) {
         this.texture_coord_buffer.push(u);
         this.texture_coord_buffer.push(v);
     }
+    
+    this.fillNormalBuffer = function(x, y, z) {
+        this.normal_buffer.push(x);
+        this.normal_buffer.push(y);
+        this.normal_buffer.push(z);
+    }
 
     this.initBuffers = function() {
         var y = from;
@@ -677,8 +886,29 @@ function CurvedRoadRightBorder(base_height, max_height, center_x, from, to) {
             this.index_buffer.push(index);
         }
         
+        for (var i = 0; i < 180 ; i++) {
+            this.fillNormalBuffer(-1.0, 0.0, 1.0);
+            this.fillNormalBuffer(-1.0, 0.0, 1.0);
+            this.fillNormalBuffer(-1.0, 0.0, 1.0);
+            this.fillNormalBuffer(-1.0, 0.0, 1.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);
+            this.fillNormalBuffer(0.0, 0.0, 1.0);
+            this.fillNormalBuffer(0.0, 0.0, 1.0);
+            this.fillNormalBuffer(1.0, 0.0, 1.0);
+            this.fillNormalBuffer(1.0, 0.0, 1.0);
+            this.fillNormalBuffer(1.0, 0.0, 0.0);
+            this.fillNormalBuffer(1.0, 1.0, 0.0);
+            this.fillNormalBuffer(1.0, 1.0, 0.0);
+            this.fillNormalBuffer(1.0, 1.0, 0.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);  
+            this.fillNormalBuffer(-1.0, 0.0, 0.0);
+            this.fillNormalBuffer(0.0, 0.0, -1.0);
+        };
         
-        calcNormals(this.position_buffer, this.normal_buffer);
+        //calcNormals(this.position_buffer, this.normal_buffer);
     }
 
     this.getHeightsAlongRoad = function() {
@@ -792,6 +1022,12 @@ function CurvedRoadMiddle(base_height, max_height, center_x, from, to) {
         this.texture_coord_buffer.push(u);
         this.texture_coord_buffer.push(v);
     }
+    
+    this.fillNormalBuffer = function(x, y, z) {
+        this.normal_buffer.push(x);
+        this.normal_buffer.push(y);
+        this.normal_buffer.push(z);
+    }
 
     this.initBuffers = function() {
         var y = from;
@@ -820,8 +1056,7 @@ function CurvedRoadMiddle(base_height, max_height, center_x, from, to) {
             var middle_height_previous_step = previous_step_z + MIDDLE_HEIGHT_SEPARATION;
             var height_this_step = this_step_z;
             var max_height_this_step = this_step_z + MAX_HEIGHT_SEPARATION;
-            var middle_height_this_step = this_step_z + MIDDLE_HEIGHT_SEPARATION;
-            
+            var middle_height_this_step = this_step_z + MIDDLE_HEIGHT_SEPARATION;            
             
             this.fillBuffers(intern_low_right_x, previous_step_y, middle_height_previous_step, 1, vprevstep);
             this.fillBuffers(intern_low_left_x, this_step_y, middle_height_this_step, 0, vstep);
@@ -843,13 +1078,41 @@ function CurvedRoadMiddle(base_height, max_height, center_x, from, to) {
             this.fillBuffers(intern_low_left_x, previous_step_y, height_previous_step, 0, vprevstep);
             this.fillBuffers(intern_low_left_x, this_step_y, middle_height_this_step, 0, vstep);
             this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step, 0, vprevstep);
+
+            
+            var aux_y, aux_z;
+            aux_y = this_step_y - previous_step_y;
+            if (angle > 0) {
+                aux_z = height_previous_step - height_this_step;
+            } else {
+                aux_z = height_this_step - height_previous_step;
+            }
+            this.fillNormalBuffer(-aux_z, aux_y, aux_z);
+            this.fillNormalBuffer(0.0, aux_y, aux_z);
+            this.fillNormalBuffer(0.0, aux_y, aux_z);
+            this.fillNormalBuffer(0.0, aux_y, aux_z);
+            
+            this.fillNormalBuffer(0.0, aux_y, aux_z);
+            this.fillNormalBuffer(0.0, aux_y, aux_z);
+            this.fillNormalBuffer(aux_z, 0.0, 0.0);
+            this.fillNormalBuffer(aux_z, 0.0, 0.0);
+            
+            this.fillNormalBuffer(aux_z, 0.0, -aux_z);
+            this.fillNormalBuffer(0.0, -aux_y, -aux_z);
+            this.fillNormalBuffer(0.0, -aux_y, -aux_z);
+            this.fillNormalBuffer(0.0, -aux_y, -aux_z);
+            
+            this.fillNormalBuffer(0.0, -aux_y, -aux_z);
+            this.fillNormalBuffer(-aux_z, 0.0, -aux_z);
+            this.fillNormalBuffer(-aux_z, 0.0, 0.0);
+            this.fillNormalBuffer(-aux_z, aux_y, aux_z);
+
         }
 
-        for (var index = 0; index < 180 * 15 ; index++) {
+        for (var index = 0; index < 180 * 16 ; index++) {
             this.index_buffer.push(index);
         }
-                
-        calcNormals(this.position_buffer, this.normal_buffer);
+
     }
 
     this.getHeightsAlongRoad = function() {
