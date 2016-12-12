@@ -127,24 +127,6 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
         }
     }
 
-    this.setupGroupShaders = function(group) {
-        for (var i = 0; i < group.length; i++) {
-            group[i].setupShaders();
-        }
-    }
-
-    this.setupGroupLighting = function(group, lightPosition, ambientColor, diffuseColor) {
-        for (var i = 0; i < group.length; i++) {
-            group[i].setupLighting(lightPosition, ambientColor, diffuseColor);
-        }
-    }
-
-    this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
-        this.lightPosition = lightPosition;
-        this.ambientColor = ambientColor;
-        this.diffuseColor = diffuseColor;
-    }
-
     this.drawGroup = function(group, modelMatrix) {
         for (var i = 0; i < group.length; i++) {
             group[i].draw(modelMatrix);
@@ -153,11 +135,9 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
 
     this.draw = function(modelMatrix, shaderProgram) {
         river.draw(modelMatrix, shaderProgram);
-/*
-        road.setupShaders();
-        road.setupLighting(this.lightPosition, this.ambientColor, this.diffuseColor);
-        road.draw(modelMatrix);
 
+        road.draw(modelMatrix, shaderProgram);
+/*
         this.setupGroupShaders(columns);
         this.setupGroupLighting(columns, this.lightPosition, this.ambientColor, this.diffuseColor);
         this.drawGroup(columns, modelMatrix);
