@@ -40,33 +40,17 @@ function drawScene() {
     gl.uniform3f(shaderProgramSimple.specularPrincipalColorUniform, 0.4, 0.4, 0.4);         //Especular
 
     // ################################### DIBUJADO DE LA ESCENA ###################################
-    // Dibujamos la escena        
-    var model_matrix_escena = mat4.create();
-    mat4.identity(model_matrix_escena);
-    mat4.rotate(model_matrix_escena, model_matrix_escena, Math.PI/2, [1,0,0]);
-    mat4.rotate(model_matrix_escena, model_matrix_escena, Math.PI, [0,1,0]);
-    /////////////////////////////////////////////-------------------------------------------------
-
-/*
-    // Matrices de modelado
-    var model_matrix_bridge = mat4.create();
-    mat4.identity(model_matrix_bridge);
-
     
     ////////////////////////////////////////////////////////
-    bridge.setupLighting(vec3.fromValues(-500.0, 0.0, -60.0), vec3.fromValues(0.3, 0.3, 0.3), vec3.fromValues(0.05, 0.05, 0.05));
-    bridge.draw(model_matrix_bridge);
-*/
+    var model_matrix_bridge = mat4.create();
+    mat4.identity(model_matrix_bridge);
+    bridge.draw(model_matrix_bridge, shaderProgramSimple);
     ////////////////////////////////////////////////////////
     var model_matrix_field = mat4.create();
     mat4.identity(model_matrix_field);
     field.draw(model_matrix_field, shaderProgramSimple);
     ////////////////////////////////////////////////////////
-
-    ////////////////////////////////////////////////////////
     trees.draw(treeTexture, shaderProgramSimple);
-    ////////////////////////////////////////////////////////
-
     ////////////////////////////////////////////////////////
     var model_matrix_sky = mat4.create();
     mat4.identity(model_matrix_sky);
@@ -121,11 +105,9 @@ function webGLStart() {
     field.initBuffers();
 
     from_and_to = field.getYPositionFromX(points, app.pos);
-
-/*
+    
     bridge = new Bridge(app.ph1, app.ph2, app.ph3, app.s1, app.pos, app.cols, from_and_to[0], from_and_to[1]); 
 
-*/
     trees = new Trees(LEFT_BORDER_MAP, RIGHT_BORDER_MAP, BOTTOM_BORDER_MAP, TOP_BORDER_MAP,app.ph1);
     trees.initBuffers();
 
