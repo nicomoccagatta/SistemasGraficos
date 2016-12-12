@@ -20,7 +20,13 @@
 <script type="text/javascript" src="js/initBuffers.js"></script>
 <script type="text/javascript" src="js/shaderProgram.js"></script>
 <script type="text/javascript" src="js/drawProgram.js"></script>
-<script type="text/javascript" src="js/textureHandler.js"></script>
+<script type="text/javascript" src="js/Vertice.js"></script>
+<script type="text/javascript" src="js/bufferVertices.js"></script>
+<script type="text/javascript" src="js/Grid.js"></script>
+<script type="text/javascript" src="js/UpperField.js"></script>
+<script type="text/javascript" src="js/ArcField.js"></script>
+<script type="text/javascript" src="js/LowerField.js"></script>
+<script type="text/javascript" src="js/BSpline.js"></script>
 
 <script id="shader-fs" type="x-shader/x-fragment">
     precision mediump float;
@@ -86,8 +92,6 @@
         if (! uUseLighting) {
             diffusePrincipalLightWeighting = 0.0;
             specularPrincipalLightWeighting = 0.0;
-            diffuseSecondaryLightWeighting = 0.0;
-            specularSecondaryLightWeighting = 0.0;
         }
 
         vec3 vPrincipalLightWeighting = uPrincipalLightIntensity * (uAmbientColor +
@@ -244,7 +248,8 @@
     .selected {
       fill: #ff7f0e;
       stroke: #ff7f0e;
-    }</style>
+    }
+</style>
 
 <form>
 </form>
