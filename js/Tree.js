@@ -30,14 +30,12 @@ function Tree(points, min_height,scale) {
 
     this.Base1 = function(u) {
         return -u*u+u+0.5;
-    }
-    
+    }    
  
     this.Base2 = function(u) {
         return 0.5*u*u;
     }
     
-
     this.get_Rz = function(num_section,u) {
         // repeat the first and last items
         var points_aux = [];

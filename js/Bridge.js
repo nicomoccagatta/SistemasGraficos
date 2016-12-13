@@ -139,11 +139,8 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
         this.drawGroup(columns, modelMatrix, shaderProgram);
 
         this.drawGroup(arcs, modelMatrix, shaderProgram);
-/*
-        this.setupGroupShaders(tensors);
-        this.setupGroupLighting(tensors, this.lightPosition, this.ambientColor, this.diffuseColor);
-        this.drawGroup(tensors, modelMatrix);
-*/
+
+        this.drawGroup(tensors, modelMatrix, shaderProgram);
     }
     
     this.updateBridge = function(app, from_and_to) {

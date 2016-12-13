@@ -6,7 +6,7 @@ function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_a
     this.webgl_normal_buffer = null;
     this.webgl_binormal_buffer = null;
     this.webgl_tangent_buffer = null;
-    this.webgl_color_buffer = null;
+    this.webgl_texture_coord_buffer = null;
     this.webgl_index_buffer = null;
     
     this.heights_along_arc = [[]];
