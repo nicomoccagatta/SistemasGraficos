@@ -267,7 +267,7 @@ function Tree(points, min_height,scale) {
         ///////////////////////////////////
     }
     
-    this.prepareColorDraw = function(shaderProgram, modelMatrix, normal_buffer, color_buffer, position_buffer, index_buffer){
+    this.prepareColorDraw = function(shaderProgram, modelMatrix) {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer_base);
         gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.webgl_position_buffer_base.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -293,7 +293,7 @@ function Tree(points, min_height,scale) {
         gl.uniform1f(shaderProgram.useReflectionUniform, 0.0);
     }
 
-    this.prepareTextureDraw = function(shaderProgram, modelMatrix, normal_buffer, textured_buffer, position_buffer, index_buffer, texture){
+    this.prepareTextureDraw = function(shaderProgram, modelMatrix) {
         // Se configuran los buffers que alimentarán el pipeline
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer_tree);
         gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.webgl_position_buffer_tree.itemSize, gl.FLOAT, false, 0, 0);
@@ -312,9 +312,9 @@ function Tree(points, min_height,scale) {
         gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.webgl_texture_coord_buffer_tree.itemSize, gl.FLOAT, false, 0, 0);
 
         gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.bindTexture(gl.TEXTURE_2D, treeTexture);
         gl.uniform1i(shaderProgram.samplerUniform, 0);
-        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.bindTexture(gl.TEXTURE_2D, treeTexture);
 
         gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
@@ -329,12 +329,12 @@ function Tree(points, min_height,scale) {
         gl.uniform1f(shaderProgram.useReflectionUniform, 0.0);
     }
 
-    this.draw = function(modelMatrix, texture, shaderProgram){
-        this.prepareColorDraw(shaderProgram, modelMatrix, this.normal_buffer_tree_base, this.color_buffer_tree_base, this.position_buffer_tree_base, this.index_buffer_tree_base);
+    this.draw = function(modelMatrix, shaderProgram){
+        this.prepareColorDraw(shaderProgram, modelMatrix);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer_base);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer_base.numItems, gl.UNSIGNED_SHORT, 0);
 
-        this.prepareTextureDraw(shaderProgram, modelMatrix, this.normal_buffer, this.textured_buffer, this.position_buffer, this.index_buffer, texture);
+        this.prepareTextureDraw(shaderProgram, modelMatrix);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer_tree);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer_tree.numItems, gl.UNSIGNED_SHORT, 0);
     }

@@ -104,18 +104,18 @@ function Trees(from_x, to_x, from_y, to_y, min_height) {
 	  return Math.round(Math.random() * (max - min) + min);
 	}
 
-    this.draw = function(texture, shaderProgram) {
+    this.draw = function(shaderProgram) {
     	////////////////// TREE 1 //////////////////////
         var model_matrix_tree = mat4.create();
         mat4.identity(model_matrix_tree);
 
         for(var i = 0; i < 10; i++) {
     		mat4.translate(model_matrix_tree,model_matrix_tree, this.positions_1[i]);
-        	this.tree1.draw(model_matrix_tree, texture, shaderProgram);
+        	this.tree1.draw(model_matrix_tree, shaderProgram);
     		mat4.translate(model_matrix_tree,model_matrix_tree, [-this.positions_1[i][0],-this.positions_1[i][1],-this.positions_1[i][2]]);
 
     		mat4.translate(model_matrix_tree,model_matrix_tree, this.positions_1[10+i]);
-	        this.tree1.draw(model_matrix_tree, texture, shaderProgram);
+	        this.tree1.draw(model_matrix_tree, shaderProgram);
     		mat4.translate(model_matrix_tree,model_matrix_tree, [-this.positions_1[10+i][0],-this.positions_1[10+i][1],-this.positions_1[10+i][2]]);
     	}
     	////////////////// TREE 1 ///////////////////////////////
@@ -127,11 +127,11 @@ function Trees(from_x, to_x, from_y, to_y, min_height) {
 
         for(var i = 0; i < 10; i++) {
     		mat4.translate(model_matrix_tree2,model_matrix_tree2, this.positions_2[i]);
-        	this.tree2.draw(model_matrix_tree2, texture, shaderProgram);
+        	this.tree2.draw(model_matrix_tree2, shaderProgram);
     		mat4.translate(model_matrix_tree2,model_matrix_tree2, [-this.positions_2[i][0],-this.positions_2[i][1],-this.positions_2[i][2]]);
 
     		mat4.translate(model_matrix_tree2,model_matrix_tree2, this.positions_2[10+i]);
-	        this.tree2.draw(model_matrix_tree2, texture, shaderProgram);
+	        this.tree2.draw(model_matrix_tree2, shaderProgram);
     		mat4.translate(model_matrix_tree2,model_matrix_tree2, [-this.positions_2[10+i][0],-this.positions_2[10+i][1],-this.positions_2[10+i][2]]);
     	}
     	////////////////// TREE 2 ///////////////////////////////
@@ -143,11 +143,11 @@ function Trees(from_x, to_x, from_y, to_y, min_height) {
 
         for(var i = 0; i < 10; i++) {
     		mat4.translate(model_matrix_tree3,model_matrix_tree3, this.positions_3[i]);
-        	this.tree3.draw(model_matrix_tree3, texture, shaderProgram);
+        	this.tree3.draw(model_matrix_tree3, shaderProgram);
     		mat4.translate(model_matrix_tree3,model_matrix_tree3, [-this.positions_3[i][0],-this.positions_3[i][1],-this.positions_3[i][2]]);
 
     		mat4.translate(model_matrix_tree3,model_matrix_tree3, this.positions_3[10+i]);
-	        this.tree3.draw(model_matrix_tree3, texture, shaderProgram);
+	        this.tree3.draw(model_matrix_tree3, shaderProgram);
     		mat4.translate(model_matrix_tree3,model_matrix_tree3, [-this.positions_3[10+i][0],-this.positions_3[10+i][1],-this.positions_3[10+i][2]]);
     	}
     	////////////////// TREE 3 ///////////////////////////////

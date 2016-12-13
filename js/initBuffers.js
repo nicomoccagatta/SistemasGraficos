@@ -55,7 +55,7 @@ function initTexture() {
 		handleLoadedTextureMosaic(veredaTexture);
 	}
 	veredaTexture.image.src = "maps/vereda.jpg";
-
+*/
 	// COLUMNA TEXTURE
 	columnaTexture = gl.createTexture();
 	columnaTexture.image = new Image();
@@ -63,7 +63,7 @@ function initTexture() {
 		handleLoadedTextureMosaic(columnaTexture);
 	}
 	columnaTexture.image.src = "maps/oxido.jpg";
-
+/*
 	// CABLES TEXTURE
 	cablesTexture = gl.createTexture();
 	cablesTexture.image = new Image();

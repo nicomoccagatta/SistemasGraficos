@@ -50,7 +50,7 @@ function drawScene() {
     mat4.identity(model_matrix_field);
     field.draw(model_matrix_field, shaderProgramSimple);
     ////////////////////////////////////////////////////////
-    trees.draw(treeTexture, shaderProgramSimple);
+    trees.draw(shaderProgramSimple);
     ////////////////////////////////////////////////////////
     var model_matrix_sky = mat4.create();
     mat4.identity(model_matrix_sky);

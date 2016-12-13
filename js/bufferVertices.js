@@ -76,13 +76,15 @@ function getBinormalBuffer(vertexBuffer){
 
 function getBinormalBufferFromVectors(normal, tangente) {
     this.binormal = [];
-    for (var i = 0; i < this.normal_buffer.length / 3; i++) {
+    for (var i = 0; i < normal.length / 3; i++) {
         var binormal = [];
         var _normal = [normal[i*3], normal[i*3+1], normal[i*3+2]];
         var _tangente = [tangente[i*3], tangente[i*3+1], tangente[i*3+2]];
         vec3.cross(binormal, _normal, _tangente);
         vec3.normalize(binormal,binormal);
-        this.binormal.push(binormal);
+        this.binormal.push(binormal[0]);
+        this.binormal.push(binormal[1]);
+        this.binormal.push(binormal[2]);
     }
     return this.binormal;
 }
