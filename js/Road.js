@@ -3,7 +3,6 @@ const MAX_HEIGHT_SEPARATION = 0.85;
 const INTERN_LOW_BORDER = 1.3;
 const INTERN_HIGH_BORDER = 1;
 const HALF_WIDTH = 5;
-const ROAD_COLOR = 0.5;
 
 
 
@@ -107,15 +106,7 @@ function PlainRoadLeftBorder(height, center_x, from, to) {
             1, 0,
             1, 10
         ];
-        
-        
-        /*this.normal_buffer = [];
-        calcNormals(this.position_buffer, this.normal_buffer);
-        for (var i = 0; i < this.normal_buffer.length; i++) {
-            this.normal_buffer[i] = -this.normal_buffer[i];
-        }*/
-        
-        
+                
         var normal_buffer = [
             1.0, 0.0, 0.0,
             1.0, 0.0, 0.0,
@@ -147,7 +138,7 @@ function PlainRoadLeftBorder(height, center_x, from, to) {
             0.0, 0.0, -1.0
         ];
         
-        //var binormal_buffer = getBinormalBufferFromVectors(this.normal_buffer, this.tangent_buffer);
+        var binormal_buffer = getBinormalBufferFromVectors(normal_buffer, tangent_buffer);
         this.index_buffer = [];
         for (var i = 0; i < normal_buffer.length / 3; i++) {
             this.index_buffer.push(i);
@@ -158,13 +149,13 @@ function PlainRoadLeftBorder(height, center_x, from, to) {
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
         this.webgl_normal_buffer.itemSize = 3;
         this.webgl_normal_buffer.numItems = normal_buffer.length / 3;
-/*
+
         this.webgl_binormal_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_binormal_buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(binormal_buffer), gl.STATIC_DRAW);
         this.webgl_binormal_buffer.itemSize = 3;
         this.webgl_binormal_buffer.numItems = binormal_buffer.length / 3;
-*/
+
         this.webgl_tangent_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(tangent_buffer), gl.STATIC_DRAW);
@@ -188,15 +179,46 @@ function PlainRoadLeftBorder(height, center_x, from, to) {
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texture_coord_buffer), gl.STATIC_DRAW);
         this.webgl_texture_coord_buffer.itemSize = 2;
         this.webgl_texture_coord_buffer.numItems = texture_coord_buffer.length / 2;
-
     }
     
-    this.prepareDraw = function(shaderProgram, modelMatrix, normal_buffer, texture_coord_buffer, position_buffer, index_buffer) {
+    this.prepareDraw = function(shaderProgram, modelMatrix) {
+        // Se configuran los buffers que alimentarán el pipeline
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
+        gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_binormal_buffer);
+        gl.vertexAttribPointer(shaderProgram.vertexBinormalAttribute, this.webgl_binormal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
+        gl.vertexAttribPointer(shaderProgram.vertexTangentAttribute, this.webgl_tangent_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.uniform1i(shaderProgram.useColorUniform, false);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, veredaTexture);
+        gl.uniform1i(shaderProgram.samplerUniform, 0);
+        gl.bindTexture(gl.TEXTURE_2D, veredaTexture);
+
+        gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);
+        var normalMatrix = mat3.create();
+        mat3.fromMat4(normalMatrix, modelMatrix);
+        mat3.invert(normalMatrix, normalMatrix);
+        mat3.transpose(normalMatrix, normalMatrix);
+        gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+        gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
+        gl.uniform1f(shaderProgram.useNormalUniform, false);
+        gl.uniform1f(shaderProgram.useReflectionUniform, 0.0);
     }
 
     this.draw = function(modelMatrix, shaderProgram) { 
-        this.prepareDraw(shaderProgram, modelMatrix, this.normal_buffer, this.texture_coord_buffer, this.position_buffer, this.index_buffer);
+        this.prepareDraw(shaderProgram, modelMatrix);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
     }
@@ -221,7 +243,7 @@ function PlainRoadRightBorder(height, center_x, from, to) {
         var intern_high_left_x = (extreme_left_x - INTERN_HIGH_BORDER);
         var intern_high_right_x = (extreme_right_x + INTERN_HIGH_BORDER);
         
-        this.position_buffer = [
+        var position_buffer = [
             extreme_right_x, from, height,
             extreme_right_x, from, height,
             extreme_right_x, from, height,
@@ -273,7 +295,7 @@ function PlainRoadRightBorder(height, center_x, from, to) {
         ];
 
         //TODO no modifique esta parte pero creo que lo del 10 está mal y debería ser 1
-        this.texture_coord_buffer = [
+        var texture_coord_buffer = [
             1 , 0,
             1 , 0,
             1 , 0,
@@ -308,7 +330,7 @@ function PlainRoadRightBorder(height, center_x, from, to) {
             this.normal_buffer[i] = -this.normal_buffer[i];
         }*/
         
-        this.normal_buffer = [
+        var normal_buffer = [
             -1.0, 0.0, 1.0,
             -1.0, 0.0, 1.0,
             -1.0, 0.0, 1.0,
@@ -339,85 +361,87 @@ function PlainRoadRightBorder(height, center_x, from, to) {
             0.0, 0.0, -1.0
         ];
         
+        var binormal_buffer = getBinormalBufferFromVectors(normal_buffer, tangent_buffer);
         this.index_buffer = [];
-        for (var i = 0; i < this.normal_buffer.length / 3; i++) {
+        for (var i = 0; i < normal_buffer.length / 3; i++) {
             this.index_buffer.push(i);
         }
-    }
-    
-    this.createBuffer = function(normal_buffer, texture_coord_buffer, position_buffer, index_buffer) { 
+
         this.webgl_normal_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normal_buffer), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
         this.webgl_normal_buffer.itemSize = 3;
-        this.webgl_normal_buffer.numItems = this.normal_buffer.length / 3;
+        this.webgl_normal_buffer.numItems = normal_buffer.length / 3;
 
-        this.webgl_texture_coord_buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texture_coord_buffer), gl.STATIC_DRAW);
-        this.webgl_texture_coord_buffer.itemSize = 2;
-        this.webgl_texture_coord_buffer.numItems = this.texture_coord_buffer.length / 2;
+        this.webgl_binormal_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_binormal_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(binormal_buffer), gl.STATIC_DRAW);
+        this.webgl_binormal_buffer.itemSize = 3;
+        this.webgl_binormal_buffer.numItems = binormal_buffer.length / 3;
+
+        this.webgl_tangent_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(tangent_buffer), gl.STATIC_DRAW);
+        this.webgl_tangent_buffer.itemSize = 3;
+        this.webgl_tangent_buffer.numItems = tangent_buffer.length / 3;
 
         this.webgl_position_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.position_buffer), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(position_buffer), gl.STATIC_DRAW);
         this.webgl_position_buffer.itemSize = 3;
-        this.webgl_position_buffer.numItems = this.position_buffer.length / 3;
+        this.webgl_position_buffer.numItems = position_buffer.length / 3;
 
         this.webgl_index_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_buffer), gl.STATIC_DRAW);
         this.webgl_index_buffer.itemSize = 1;
         this.webgl_index_buffer.numItems = this.index_buffer.length;
-    }
 
-    this.setupShaders = function() {
-        gl.useProgram(shaderProgramTexturedObject);
-    }
-
-    this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
-        var lighting;
-        lighting = true;
-        gl.uniform1i(shaderProgramTexturedObject.useLightingUniform, lighting);       
-
-        gl.uniform3fv(shaderProgramTexturedObject.lightingDirectionUniform, lightPosition);
-        gl.uniform3fv(shaderProgramTexturedObject.ambientColorUniform, ambientColor );
-        gl.uniform3fv(shaderProgramTexturedObject.directionalColorUniform, diffuseColor);
+        this.webgl_texture_coord_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texture_coord_buffer), gl.STATIC_DRAW);
+        this.webgl_texture_coord_buffer.itemSize = 2;
+        this.webgl_texture_coord_buffer.numItems = texture_coord_buffer.length / 2;
     }
     
-    this.prepareDraw = function(modelMatrix, normal_buffer, texture_coord_buffer, position_buffer, index_buffer) {
-        this.createBuffer(normal_buffer, texture_coord_buffer, position_buffer, index_buffer);
-    
-        // setViewProjectionMatrix();
-        gl.uniformMatrix4fv(shaderProgramTexturedObject.pMatrixUniform, false, pMatrix);
-        gl.uniformMatrix4fv(shaderProgramTexturedObject.ViewMatrixUniform, false, CameraMatrix); 
-        
+    this.prepareDraw = function(shaderProgram, modelMatrix) {
         // Se configuran los buffers que alimentarán el pipeline
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
-        gl.vertexAttribPointer(shaderProgramTexturedObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
-        gl.vertexAttribPointer(shaderProgramTexturedObject.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
-        gl.vertexAttribPointer(shaderProgramTexturedObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_binormal_buffer);
+        gl.vertexAttribPointer(shaderProgram.vertexBinormalAttribute, this.webgl_binormal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
+        gl.vertexAttribPointer(shaderProgram.vertexTangentAttribute, this.webgl_tangent_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.uniform1i(shaderProgram.useColorUniform, false);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
         gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, columnaTexture);
-        gl.uniform1i(shaderProgramTexturedObject.samplerUniform, 0);
+        gl.bindTexture(gl.TEXTURE_2D, veredaTexture);
+        gl.uniform1i(shaderProgram.samplerUniform, 0);
+        gl.bindTexture(gl.TEXTURE_2D, veredaTexture);
 
-        gl.uniformMatrix4fv(shaderProgramTexturedObject.ModelMatrixUniform, false, modelMatrix);
+        gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
         mat3.fromMat4(normalMatrix, modelMatrix);
         mat3.invert(normalMatrix, normalMatrix);
         mat3.transpose(normalMatrix, normalMatrix);
-        gl.uniformMatrix3fv(shaderProgramTexturedObject.nMatrixUniform, false, normalMatrix);
+        gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
 
-        gl.bindTexture(gl.TEXTURE_2D, columnaTexture);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+        gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
+        gl.uniform1f(shaderProgram.useNormalUniform, false);
+        gl.uniform1f(shaderProgram.useReflectionUniform, 0.0);
     }
 
-    this.draw = function(modelMatrix) { 
-        this.prepareDraw(modelMatrix, this.normal_buffer, this.texture_coord_buffer, this.position_buffer, this.index_buffer);
+    this.draw = function(modelMatrix, shaderProgram) { 
+        this.prepareDraw(shaderProgram, modelMatrix);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
     }
@@ -442,7 +466,7 @@ function PlainRoadMiddle(height, center_x, from, to) {
         var intern_high_left_x = (extreme_left_x - INTERN_HIGH_BORDER);
         var intern_high_right_x = (extreme_right_x + INTERN_HIGH_BORDER);
         
-        this.position_buffer = [
+        var position_buffer = [
             intern_low_left_x, from, middle_height,
             intern_low_left_x, from, middle_height,
             intern_low_right_x, from, middle_height,
@@ -487,7 +511,7 @@ function PlainRoadMiddle(height, center_x, from, to) {
         ];
         
         //TODO no cambie nada  
-        this.texture_coord_buffer = [
+        var texture_coord_buffer = [
             0, 0,
             0, 0,
             1, 0,
@@ -510,7 +534,7 @@ function PlainRoadMiddle(height, center_x, from, to) {
             1, 1
         ];
         
-        this.normal_buffer = [
+        var normal_buffer = [
             //intern_low_left_x, from, middle_height,
             -1.0, 0.0, 1.0,
             0.0, 0.0, 1.0,
@@ -540,28 +564,29 @@ function PlainRoadMiddle(height, center_x, from, to) {
             this.normal_buffer[i] = -this.normal_buffer[i];
         }*/
         
-        this.color_buffer = [];
+        var binormal_buffer = getBinormalBufferFromVectors(normal_buffer, tangent_buffer);
         this.index_buffer = [];
-        for (var i = 0; i < this.normal_buffer.length / 3; i++) {
-            this.color_buffer.push(ROAD_COLOR);
-            this.color_buffer.push(ROAD_COLOR);
-            this.color_buffer.push(ROAD_COLOR);
+        for (var i = 0; i < normal_buffer.length / 3; i++) {
             this.index_buffer.push(i);
         }
-    }
-    
-    this.createBuffer = function(normal_buffer, color_buffer, position_buffer, index_buffer) {
+
         this.webgl_normal_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);
         this.webgl_normal_buffer.itemSize = 3;
         this.webgl_normal_buffer.numItems = normal_buffer.length / 3;
 
-        this.webgl_color_buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(color_buffer), gl.STATIC_DRAW);
-        this.webgl_color_buffer.itemSize = 3;
-        this.webgl_color_buffer.numItems = this.webgl_color_buffer.length / 3;
+        this.webgl_binormal_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_binormal_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(binormal_buffer), gl.STATIC_DRAW);
+        this.webgl_binormal_buffer.itemSize = 3;
+        this.webgl_binormal_buffer.numItems = binormal_buffer.length / 3;
+
+        this.webgl_tangent_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(tangent_buffer), gl.STATIC_DRAW);
+        this.webgl_tangent_buffer.itemSize = 3;
+        this.webgl_tangent_buffer.numItems = tangent_buffer.length / 3;
 
         this.webgl_position_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
@@ -571,49 +596,55 @@ function PlainRoadMiddle(height, center_x, from, to) {
 
         this.webgl_index_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(index_buffer), gl.STATIC_DRAW);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_buffer), gl.STATIC_DRAW);
         this.webgl_index_buffer.itemSize = 1;
-        this.webgl_index_buffer.numItems = index_buffer.length;
-    }
+        this.webgl_index_buffer.numItems = this.index_buffer.length;
 
-    this.setupShaders = function() {
-        gl.useProgram(shaderProgramColoredObject);
-    }
-
-    this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
-        var lighting = true;
-        gl.uniform1i(shaderProgramColoredObject.useLightingUniform, lighting);       
-
-        gl.uniform3fv(shaderProgramColoredObject.lightingDirectionUniform, lightPosition);
-        gl.uniform3fv(shaderProgramColoredObject.ambientColorUniform, ambientColor );
-        gl.uniform3fv(shaderProgramColoredObject.directionalColorUniform, diffuseColor);
+        this.webgl_texture_coord_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texture_coord_buffer), gl.STATIC_DRAW);
+        this.webgl_texture_coord_buffer.itemSize = 2;
+        this.webgl_texture_coord_buffer.numItems = texture_coord_buffer.length / 2;
     }
     
-    this.prepareDraw = function(modelMatrix, normal_buffer, color_buffer, position_buffer, index_buffer) {
-        this.createBuffer(normal_buffer, color_buffer, position_buffer, index_buffer);
-        
-        gl.uniformMatrix4fv(shaderProgramColoredObject.pMatrixUniform, false, pMatrix);
-        gl.uniformMatrix4fv(shaderProgramColoredObject.ViewMatrixUniform, false, CameraMatrix); 
-
+    this.prepareDraw = function(shaderProgram, modelMatrix) {
+        // Se configuran los buffers que alimentarán el pipeline
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
-        gl.vertexAttribPointer(shaderProgramColoredObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
-        gl.vertexAttribPointer(shaderProgramColoredObject.vertexColorAttribute, this.webgl_color_buffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
-        gl.vertexAttribPointer(shaderProgramColoredObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
-        gl.uniformMatrix4fv(shaderProgramColoredObject.ModelMatrixUniform, false, modelMatrix);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_binormal_buffer);
+        gl.vertexAttribPointer(shaderProgram.vertexBinormalAttribute, this.webgl_binormal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
+        gl.vertexAttribPointer(shaderProgram.vertexTangentAttribute, this.webgl_tangent_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.uniform1i(shaderProgram.useColorUniform, false);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, rutaTexture);
+        gl.uniform1i(shaderProgram.samplerUniform, 0);
+        gl.bindTexture(gl.TEXTURE_2D, rutaTexture);
+
+        gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
         mat3.fromMat4(normalMatrix, modelMatrix);
         mat3.invert(normalMatrix, normalMatrix);
         mat3.transpose(normalMatrix, normalMatrix);
-        gl.uniformMatrix3fv(shaderProgramColoredObject.nMatrixUniform, false, normalMatrix);
+        gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+        gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
+        gl.uniform1f(shaderProgram.useNormalUniform, false);
+        gl.uniform1f(shaderProgram.useReflectionUniform, 0.0);
     }
 
-    this.draw = function(modelMatrix) { 
-        this.prepareDraw(modelMatrix, this.normal_buffer, this.color_buffer, this.position_buffer, this.index_buffer);
+    this.draw = function(modelMatrix, shaderProgram) { 
+        this.prepareDraw(shaderProgram, modelMatrix);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
     }
@@ -622,6 +653,7 @@ function PlainRoadMiddle(height, center_x, from, to) {
 function CurvedRoadLeftBorder(base_height, max_height, center_x, from, to) {
     this.position_buffer = [];
     this.normal_buffer = [];
+    this.binormal_buffer = [];
     this.texture_coord_buffer = [];
     this.index_buffer = [];
     this.heights_along_road = [[]];
@@ -773,27 +805,28 @@ function CurvedRoadLeftBorder(base_height, max_height, center_x, from, to) {
             this.fillTangentBuffer(0.0, 0.0, 0.0);
         };
         
+        this.binormal_buffer = getBinormalBufferFromVectors(this.normal_buffer, this.tangent_buffer);
         for (var index = 0; index < 180 * 20 ; index++) {
             this.index_buffer.push(index); 
         }
-    }
 
-    this.getHeightsAlongRoad = function() {
-        return this.heights_along_road;
-    }
-    
-    this.createBuffer = function(normal_buffer, texture_coord_buffer, position_buffer, index_buffer) { 
         this.webgl_normal_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normal_buffer), gl.STATIC_DRAW);
         this.webgl_normal_buffer.itemSize = 3;
         this.webgl_normal_buffer.numItems = this.normal_buffer.length / 3;
 
-        this.webgl_texture_coord_buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texture_coord_buffer), gl.STATIC_DRAW);
-        this.webgl_texture_coord_buffer.itemSize = 2;
-        this.webgl_texture_coord_buffer.numItems = this.texture_coord_buffer.length / 2;
+        this.webgl_binormal_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_binormal_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.binormal_buffer), gl.STATIC_DRAW);
+        this.webgl_binormal_buffer.itemSize = 3;
+        this.webgl_binormal_buffer.numItems = this.binormal_buffer.length / 3;
+
+        this.webgl_tangent_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.tangent_buffer), gl.STATIC_DRAW);
+        this.webgl_tangent_buffer.itemSize = 3;
+        this.webgl_tangent_buffer.numItems = this.tangent_buffer.length / 3;
 
         this.webgl_position_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
@@ -806,53 +839,64 @@ function CurvedRoadLeftBorder(base_height, max_height, center_x, from, to) {
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_buffer), gl.STATIC_DRAW);
         this.webgl_index_buffer.itemSize = 1;
         this.webgl_index_buffer.numItems = this.index_buffer.length;
-    }
 
-    this.setupShaders = function() {
-        gl.useProgram(shaderProgramTexturedObject);
-    }
-
-    this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
-        var lighting;
-        lighting = true;
-        gl.uniform1i(shaderProgramTexturedObject.useLightingUniform, lighting);       
-
-        gl.uniform3fv(shaderProgramTexturedObject.lightingDirectionUniform, lightPosition);
-        gl.uniform3fv(shaderProgramTexturedObject.ambientColorUniform, ambientColor );
-        gl.uniform3fv(shaderProgramTexturedObject.directionalColorUniform, diffuseColor);
-    }
-    
-    this.prepareDraw = function(modelMatrix, normal_buffer, texture_coord_buffer, position_buffer, index_buffer) {
-        this.createBuffer(normal_buffer, texture_coord_buffer, position_buffer, index_buffer);
-    
-        gl.uniformMatrix4fv(shaderProgramTexturedObject.pMatrixUniform, false, pMatrix);
-        gl.uniformMatrix4fv(shaderProgramTexturedObject.ViewMatrixUniform, false, CameraMatrix); 
-        
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
-        gl.vertexAttribPointer(shaderProgramTexturedObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
-
+        this.webgl_texture_coord_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
-        gl.vertexAttribPointer(shaderProgramTexturedObject.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texture_coord_buffer), gl.STATIC_DRAW);
+        this.webgl_texture_coord_buffer.itemSize = 2;
+        this.webgl_texture_coord_buffer.numItems = this.texture_coord_buffer.length / 2;
+    }
+
+    this.getHeightsAlongRoad = function() {
+        return this.heights_along_road;
+    }
+    
+    this.prepareDraw = function(shaderProgram, modelMatrix) {/*
+        HAY 2 posiciones y 2 texturas mas que las normales y tangentes!
+
+        console.log("tamanio buffer posicion: "+this.webgl_position_buffer.numItems);
+        console.log("tamanio buffer normal: "+this.webgl_normal_buffer.numItems);
+        console.log("tamanio buffer binormal: "+this.webgl_binormal_buffer.numItems);
+        console.log("tamanio buffer tangente: "+this.webgl_tangent_buffer.numItems);
+        console.log("tamanio buffer coordenadas: "+this.webgl_texture_coord_buffer.numItems);
+        console.log("tamanio buffer index: "+this.webgl_index_buffer.numItems);*/
+        // Se configuran los buffers que alimentarán el pipeline
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
-        gl.vertexAttribPointer(shaderProgramTexturedObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_binormal_buffer);
+        gl.vertexAttribPointer(shaderProgram.vertexBinormalAttribute, this.webgl_binormal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
+        gl.vertexAttribPointer(shaderProgram.vertexTangentAttribute, this.webgl_tangent_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.uniform1i(shaderProgram.useColorUniform, false);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
         gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, columnaTexture);
-        gl.uniform1i(shaderProgramTexturedObject.samplerUniform, 0);
+        gl.bindTexture(gl.TEXTURE_2D, veredaTexture);
+        gl.uniform1i(shaderProgram.samplerUniform, 0);
+        gl.bindTexture(gl.TEXTURE_2D, veredaTexture);
 
-        gl.uniformMatrix4fv(shaderProgramTexturedObject.ModelMatrixUniform, false, modelMatrix);
+        gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
         mat3.fromMat4(normalMatrix, modelMatrix);
         mat3.invert(normalMatrix, normalMatrix);
         mat3.transpose(normalMatrix, normalMatrix);
-        gl.uniformMatrix3fv(shaderProgramTexturedObject.nMatrixUniform, false, normalMatrix);
+        gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
 
-        gl.bindTexture(gl.TEXTURE_2D, columnaTexture);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+        gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
+        gl.uniform1f(shaderProgram.useNormalUniform, false);
+        gl.uniform1f(shaderProgram.useReflectionUniform, 0.0);
     }
 
-    this.draw = function(modelMatrix) { 
-        this.prepareDraw(modelMatrix, this.normal_buffer, this.texture_coord_buffer, this.position_buffer, this.index_buffer);
+    this.draw = function(modelMatrix, shaderProgram) { 
+        this.prepareDraw(shaderProgram, modelMatrix);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
     }
@@ -861,6 +905,7 @@ function CurvedRoadLeftBorder(base_height, max_height, center_x, from, to) {
 function CurvedRoadRightBorder(base_height, max_height, center_x, from, to) {
     this.position_buffer = [];
     this.normal_buffer = [];
+    this.binormal_buffer = [];
     this.texture_coord_buffer = [];
     this.index_buffer = [];
     this.heights_along_road = [[]];
@@ -958,10 +1003,6 @@ function CurvedRoadRightBorder(base_height, max_height, center_x, from, to) {
             this.fillBuffers(extreme_right_x, previous_step_y, height_previous_step, 0, vprevstep);
             this.fillBuffers(extreme_right_x, this_step_y, height_this_step, 0, vstep);
         }
-
-        for (var index = 0; index < 180 * 19 ; index++) {
-            this.index_buffer.push(index);
-        }
         
         for (var i = 0; i < 180 ; i++) {
             this.fillNormalBuffer(-1.0, 0.0, 1.0);
@@ -1006,25 +1047,28 @@ function CurvedRoadRightBorder(base_height, max_height, center_x, from, to) {
             this.fillTangentBuffer(0.0, 0.0, 0.0);
         };
         
-        //calcNormals(this.position_buffer, this.normal_buffer);
-    }
+        this.binormal_buffer = getBinormalBufferFromVectors(this.normal_buffer, this.tangent_buffer);
+        for (var index = 0; index < this.normal_buffer.length / 3 ; index++) {
+            this.index_buffer.push(index); 
+        }
 
-    this.getHeightsAlongRoad = function() {
-        return this.heights_along_road;
-    }
-    
-    this.createBuffer = function(normal_buffer, texture_coord_buffer, position_buffer, index_buffer) { 
         this.webgl_normal_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normal_buffer), gl.STATIC_DRAW);
         this.webgl_normal_buffer.itemSize = 3;
         this.webgl_normal_buffer.numItems = this.normal_buffer.length / 3;
 
-        this.webgl_texture_coord_buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texture_coord_buffer), gl.STATIC_DRAW);
-        this.webgl_texture_coord_buffer.itemSize = 2;
-        this.webgl_texture_coord_buffer.numItems = this.texture_coord_buffer.length / 2;
+        this.webgl_binormal_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_binormal_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.binormal_buffer), gl.STATIC_DRAW);
+        this.webgl_binormal_buffer.itemSize = 3;
+        this.webgl_binormal_buffer.numItems = this.binormal_buffer.length / 3;
+
+        this.webgl_tangent_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.tangent_buffer), gl.STATIC_DRAW);
+        this.webgl_tangent_buffer.itemSize = 3;
+        this.webgl_tangent_buffer.numItems = this.tangent_buffer.length / 3;
 
         this.webgl_position_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
@@ -1037,53 +1081,64 @@ function CurvedRoadRightBorder(base_height, max_height, center_x, from, to) {
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_buffer), gl.STATIC_DRAW);
         this.webgl_index_buffer.itemSize = 1;
         this.webgl_index_buffer.numItems = this.index_buffer.length;
-    }
 
-    this.setupShaders = function() {
-        gl.useProgram(shaderProgramTexturedObject);
-    }
-
-    this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
-        var lighting;
-        lighting = true;
-        gl.uniform1i(shaderProgramTexturedObject.useLightingUniform, lighting);       
-
-        gl.uniform3fv(shaderProgramTexturedObject.lightingDirectionUniform, lightPosition);
-        gl.uniform3fv(shaderProgramTexturedObject.ambientColorUniform, ambientColor );
-        gl.uniform3fv(shaderProgramTexturedObject.directionalColorUniform, diffuseColor);
-    }
-    
-    this.prepareDraw = function(modelMatrix, normal_buffer, texture_coord_buffer, position_buffer, index_buffer) {
-        this.createBuffer(normal_buffer, texture_coord_buffer, position_buffer, index_buffer);
-    
-        gl.uniformMatrix4fv(shaderProgramTexturedObject.pMatrixUniform, false, pMatrix);
-        gl.uniformMatrix4fv(shaderProgramTexturedObject.ViewMatrixUniform, false, CameraMatrix); 
-        
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
-        gl.vertexAttribPointer(shaderProgramTexturedObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
-
+        this.webgl_texture_coord_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
-        gl.vertexAttribPointer(shaderProgramTexturedObject.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texture_coord_buffer), gl.STATIC_DRAW);
+        this.webgl_texture_coord_buffer.itemSize = 2;
+        this.webgl_texture_coord_buffer.numItems = this.texture_coord_buffer.length / 2;
+    }
+
+    this.getHeightsAlongRoad = function() {
+        return this.heights_along_road;
+    }
+
+    this.prepareDraw = function(shaderProgram, modelMatrix) {/*
+        HAY 2 posiciones y 2 texturas mas que las normales y tangentes
+        
+        console.log("tamanio buffer posicion: "+this.webgl_position_buffer.numItems);
+        console.log("tamanio buffer normal: "+this.webgl_normal_buffer.numItems);
+        console.log("tamanio buffer binormal: "+this.webgl_binormal_buffer.numItems);
+        console.log("tamanio buffer tangente: "+this.webgl_tangent_buffer.numItems);
+        console.log("tamanio buffer coordenadas: "+this.webgl_texture_coord_buffer.numItems);
+        console.log("tamanio buffer index: "+this.webgl_index_buffer.numItems);*/
+        // Se configuran los buffers que alimentarán el pipeline
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
-        gl.vertexAttribPointer(shaderProgramTexturedObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_binormal_buffer);
+        gl.vertexAttribPointer(shaderProgram.vertexBinormalAttribute, this.webgl_binormal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
+        gl.vertexAttribPointer(shaderProgram.vertexTangentAttribute, this.webgl_tangent_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.uniform1i(shaderProgram.useColorUniform, false);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
         gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, columnaTexture);
-        gl.uniform1i(shaderProgramTexturedObject.samplerUniform, 0);
+        gl.bindTexture(gl.TEXTURE_2D, veredaTexture);
+        gl.uniform1i(shaderProgram.samplerUniform, 0);
+        gl.bindTexture(gl.TEXTURE_2D, veredaTexture);
 
-        gl.uniformMatrix4fv(shaderProgramTexturedObject.ModelMatrixUniform, false, modelMatrix);
+        gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
         mat3.fromMat4(normalMatrix, modelMatrix);
         mat3.invert(normalMatrix, normalMatrix);
         mat3.transpose(normalMatrix, normalMatrix);
-        gl.uniformMatrix3fv(shaderProgramTexturedObject.nMatrixUniform, false, normalMatrix);
+        gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
 
-        gl.bindTexture(gl.TEXTURE_2D, columnaTexture);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+        gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
+        gl.uniform1f(shaderProgram.useNormalUniform, false);
+        gl.uniform1f(shaderProgram.useReflectionUniform, 0.0);
     }
 
-    this.draw = function(modelMatrix) { 
-        this.prepareDraw(modelMatrix, this.normal_buffer, this.texture_coord_buffer, this.position_buffer, this.index_buffer);
+    this.draw = function(modelMatrix, shaderProgram) { 
+        this.prepareDraw(shaderProgram, modelMatrix);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
     }
@@ -1092,6 +1147,7 @@ function CurvedRoadRightBorder(base_height, max_height, center_x, from, to) {
 function CurvedRoadMiddle(base_height, max_height, center_x, from, to) {
     this.position_buffer = [];
     this.normal_buffer = [];
+    this.binormal_buffer = [];
     this.texture_coord_buffer = [];
     this.index_buffer = [];
     this.heights_along_road = [[]];
@@ -1170,12 +1226,10 @@ function CurvedRoadMiddle(base_height, max_height, center_x, from, to) {
             this.fillBuffers(intern_low_left_x, this_step_y, middle_height_this_step, 0, vstep);
             this.fillBuffers(intern_low_right_x, this_step_y, middle_height_this_step, 1, vstep);
             
-            
             this.fillBuffers(intern_low_right_x, this_step_y, middle_height_this_step, 1, vstep);
             this.fillBuffers(intern_low_right_x, this_step_y, height_this_step, 1, vstep);
             this.fillBuffers(intern_low_right_x, previous_step_y, middle_height_previous_step, 1, vprevstep);
             this.fillBuffers(intern_low_right_x, previous_step_y, height_previous_step, 1, vprevstep);
-            
             
             this.fillBuffers(intern_low_right_x, previous_step_y, height_previous_step, 1, 1);
             this.fillBuffers(intern_low_left_x, previous_step_y, height_previous_step, 1, 1);
@@ -1207,7 +1261,8 @@ function CurvedRoadMiddle(base_height, max_height, center_x, from, to) {
             
             this.fillNormalBuffer(aux_z, 0.0, -aux_z);
             this.fillNormalBuffer(0.0, -aux_y, -aux_z);
-            this.fillNormalBuffer(0.0, -aux_y, -aux_z);
+          //  TODO::  Comento la linea esta solo para dibujar la ruta, no se si sobra
+          //  this.fillNormalBuffer(0.0, -aux_y, -aux_z);
             this.fillNormalBuffer(0.0, -aux_y, -aux_z);
             
             this.fillNormalBuffer(0.0, -aux_y, -aux_z);
@@ -1228,7 +1283,8 @@ function CurvedRoadMiddle(base_height, max_height, center_x, from, to) {
             
             this.fillTangentBuffer(intern_low_left_x - intern_low_right_x, 0.0, 0.0);
             this.fillTangentBuffer(intern_low_right_x - intern_low_left_x, this_step_y - previous_step_y, height_this_step - height_previous_step);
-            this.fillTangentBuffer(intern_low_left_x - intern_low_right_x, 0.0, 0.0);
+          //  TODO::  Comento la linea esta solo para dibujar la ruta, no se si sobra
+            //this.fillTangentBuffer(intern_low_left_x - intern_low_right_x, 0.0, 0.0);
             this.fillTangentBuffer(0.0, 0.0, 0.0);
             
             this.fillTangentBuffer(0.0, previous_step_y - this_step_y, height_previous_step - height_this_step);
@@ -1236,28 +1292,29 @@ function CurvedRoadMiddle(base_height, max_height, center_x, from, to) {
             this.fillTangentBuffer(0.0, previous_step_y - this_step_y, middle_height_previous_step - middle_height_this_step);
             this.fillTangentBuffer(0.0, 0.0, 0.0);
         }
-
-        for (var index = 0; index < 180 * 16 ; index++) {
-            this.index_buffer.push(index);
+  
+        this.binormal_buffer = getBinormalBufferFromVectors(this.normal_buffer, this.tangent_buffer);
+        for (var index = 0; index < this.normal_buffer.length / 3 ; index++) {
+            this.index_buffer.push(index); 
         }
-    }
 
-    this.getHeightsAlongRoad = function() {
-        return this.heights_along_road;
-    }
-    
-    this.createBuffer = function(normal_buffer, texture_coord_buffer, position_buffer, index_buffer) { 
         this.webgl_normal_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normal_buffer), gl.STATIC_DRAW);
         this.webgl_normal_buffer.itemSize = 3;
         this.webgl_normal_buffer.numItems = this.normal_buffer.length / 3;
 
-        this.webgl_texture_coord_buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texture_coord_buffer), gl.STATIC_DRAW);
-        this.webgl_texture_coord_buffer.itemSize = 2;
-        this.webgl_texture_coord_buffer.numItems = this.texture_coord_buffer.length / 2;
+        this.webgl_binormal_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_binormal_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.binormal_buffer), gl.STATIC_DRAW);
+        this.webgl_binormal_buffer.itemSize = 3;
+        this.webgl_binormal_buffer.numItems = this.binormal_buffer.length / 3;
+
+        this.webgl_tangent_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.tangent_buffer), gl.STATIC_DRAW);
+        this.webgl_tangent_buffer.itemSize = 3;
+        this.webgl_tangent_buffer.numItems = this.tangent_buffer.length / 3;
 
         this.webgl_position_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
@@ -1270,55 +1327,65 @@ function CurvedRoadMiddle(base_height, max_height, center_x, from, to) {
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_buffer), gl.STATIC_DRAW);
         this.webgl_index_buffer.itemSize = 1;
         this.webgl_index_buffer.numItems = this.index_buffer.length;
+
+        this.webgl_texture_coord_buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texture_coord_buffer), gl.STATIC_DRAW);
+        this.webgl_texture_coord_buffer.itemSize = 2;
+        this.webgl_texture_coord_buffer.numItems = this.texture_coord_buffer.length / 2;
     }
 
-    this.setupShaders = function() {
-        gl.useProgram(shaderProgramTexturedObject);
-    }
-
-    this.setupLighting = function(lightPosition, ambientColor, diffuseColor) {
-        var lighting;
-        lighting = true;
-        gl.uniform1i(shaderProgramTexturedObject.useLightingUniform, lighting);       
-
-        gl.uniform3fv(shaderProgramTexturedObject.lightingDirectionUniform, lightPosition);
-        gl.uniform3fv(shaderProgramTexturedObject.ambientColorUniform, ambientColor );
-        gl.uniform3fv(shaderProgramTexturedObject.directionalColorUniform, diffuseColor);
+    this.getHeightsAlongRoad = function() {
+        return this.heights_along_road;
     }
     
-    this.prepareDraw = function(modelMatrix, normal_buffer, texture_coord_buffer, position_buffer, index_buffer) {
-        this.createBuffer(normal_buffer, texture_coord_buffer, position_buffer, index_buffer);
-    
-        // setViewProjectionMatrix();
-        gl.uniformMatrix4fv(shaderProgramTexturedObject.pMatrixUniform, false, pMatrix);
-        gl.uniformMatrix4fv(shaderProgramTexturedObject.ViewMatrixUniform, false, CameraMatrix); 
+    this.prepareDraw = function(shaderProgram, modelMatrix) {/*
+        HAY 182 posiciones y 182 texturas menos que las normales y tangentes
         
+        console.log("tamanio buffer posicion: "+this.webgl_position_buffer.numItems);
+        console.log("tamanio buffer normal: "+this.webgl_normal_buffer.numItems);
+        console.log("tamanio buffer binormal: "+this.webgl_binormal_buffer.numItems);
+        console.log("tamanio buffer tangente: "+this.webgl_tangent_buffer.numItems);
+        console.log("tamanio buffer coordenadas: "+this.webgl_texture_coord_buffer.numItems);
+        console.log("tamanio buffer index: "+this.webgl_index_buffer.numItems);*/
+
         // Se configuran los buffers que alimentarán el pipeline
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
-        gl.vertexAttribPointer(shaderProgramTexturedObject.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
-        gl.vertexAttribPointer(shaderProgramTexturedObject.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
-        gl.vertexAttribPointer(shaderProgramTexturedObject.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_binormal_buffer);
+        gl.vertexAttribPointer(shaderProgram.vertexBinormalAttribute, this.webgl_binormal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
+        gl.vertexAttribPointer(shaderProgram.vertexTangentAttribute, this.webgl_tangent_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.uniform1i(shaderProgram.useColorUniform, false);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, rutaTexture);
-        gl.uniform1i(shaderProgramTexturedObject.samplerUniform, 0);
+        gl.uniform1i(shaderProgram.samplerUniform, 0);
+        gl.bindTexture(gl.TEXTURE_2D, rutaTexture);
 
-        gl.uniformMatrix4fv(shaderProgramTexturedObject.ModelMatrixUniform, false, modelMatrix);
+        gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
         mat3.fromMat4(normalMatrix, modelMatrix);
         mat3.invert(normalMatrix, normalMatrix);
         mat3.transpose(normalMatrix, normalMatrix);
-        gl.uniformMatrix3fv(shaderProgramTexturedObject.nMatrixUniform, false, normalMatrix);
+        gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
 
-        gl.bindTexture(gl.TEXTURE_2D, rutaTexture);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+        gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
+        gl.uniform1f(shaderProgram.useNormalUniform, false);
+        gl.uniform1f(shaderProgram.useReflectionUniform, 0.0);
     }
 
-    this.draw = function(modelMatrix) { 
-        this.prepareDraw(modelMatrix, this.normal_buffer, this.texture_coord_buffer, this.position_buffer, this.index_buffer);
+    this.draw = function(modelMatrix, shaderProgram) { 
+        this.prepareDraw(shaderProgram, modelMatrix);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
     }
@@ -1347,17 +1414,17 @@ function Road(base_height, max_height, center_x, from, to) {
     plain_road_right_border_two.initBuffers();
     
     this.draw = function(modelMatrix, shaderProgram) {
-    //    plain_road_left_border_one.draw(modelMatrix);
-    //    plain_road_middle_one.draw(modelMatrix, shaderProgram);
-    //    plain_road_right_border_one.draw(modelMatrix);
-        
-    //    curved_road_left_border.draw(modelMatrix);
-    //    curved_road_middle.draw(modelMatrix);
-    //    curved_road_right_border.draw(modelMatrix);
-        
-    //    plain_road_left_border_two.draw(modelMatrix);
-    //    plain_road_middle_two.draw(modelMatrix, shaderProgram);
-    //    plain_road_right_border_two.draw(modelMatrix);
+        plain_road_left_border_one.draw(modelMatrix, shaderProgram);
+        plain_road_middle_one.draw(modelMatrix, shaderProgram, shaderProgram);
+        plain_road_right_border_one.draw(modelMatrix, shaderProgram);
+
+        curved_road_left_border.draw(modelMatrix, shaderProgram);
+        curved_road_middle.draw(modelMatrix, shaderProgram);
+        curved_road_right_border.draw(modelMatrix, shaderProgram);
+
+        plain_road_left_border_two.draw(modelMatrix, shaderProgram);
+        plain_road_middle_two.draw(modelMatrix, shaderProgram);
+        plain_road_right_border_two.draw(modelMatrix, shaderProgram);
     }
     
     this.getHeightsAlongRoad = function() {

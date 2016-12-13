@@ -39,7 +39,7 @@ function initTexture() {
 		handleLoadedTextureMosaic(pastoTexture);
 	}
 	pastoTexture.image.src = "maps/pasto1.jpg";
-/*
+	
 	// RUTA TEXTURE
 	rutaTexture = gl.createTexture();
 	rutaTexture.image = new Image();
@@ -55,7 +55,7 @@ function initTexture() {
 		handleLoadedTextureMosaic(veredaTexture);
 	}
 	veredaTexture.image.src = "maps/vereda.jpg";
-*/
+
 	// COLUMNA TEXTURE
 	columnaTexture = gl.createTexture();
 	columnaTexture.image = new Image();
