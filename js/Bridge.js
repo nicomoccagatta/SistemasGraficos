@@ -127,21 +127,20 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
         }
     }
 
-    this.drawGroup = function(group, modelMatrix) {
+    this.drawGroup = function(group, modelMatrix, shaderProgram) {
         for (var i = 0; i < group.length; i++) {
-            group[i].draw(modelMatrix);
+            group[i].draw(modelMatrix, shaderProgram);
         }
     }
 
     this.draw = function(modelMatrix, shaderProgram) {
         river.draw(modelMatrix, shaderProgram);
 
-        road.draw(modelMatrix, shaderProgram);
 /*
-        this.setupGroupShaders(columns);
-        this.setupGroupLighting(columns, this.lightPosition, this.ambientColor, this.diffuseColor);
-        this.drawGroup(columns, modelMatrix);
-
+        road.draw(modelMatrix, shaderProgram);
+*/ 
+        this.drawGroup(columns, modelMatrix, shaderProgram);
+/*
         this.setupGroupShaders(arcs);
         this.setupGroupLighting(arcs, this.lightPosition, this.ambientColor, this.diffuseColor);
         this.drawGroup(arcs, modelMatrix);
