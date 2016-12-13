@@ -63,7 +63,7 @@ function initTexture() {
 		handleLoadedTextureMosaic(columnaTexture);
 	}
 	columnaTexture.image.src = "maps/oxido.jpg";
-/*
+
 	// CABLES TEXTURE
 	cablesTexture = gl.createTexture();
 	cablesTexture.image = new Image();
@@ -71,7 +71,6 @@ function initTexture() {
 		handleLoadedTextureMosaic(cablesTexture);
 	}
 	cablesTexture.image.src = "maps/alambres.jpg";
-	*/
 }
 
 function handleLoadedTexture(texture) {

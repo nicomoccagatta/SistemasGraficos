@@ -213,6 +213,8 @@ function calcNormals(source, destination) {
 function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
     this.webgl_position_buffer = null;
     this.webgl_normal_buffer = null;
+    this.webgl_binormal_buffer = null;
+    this.webgl_tangent_buffer = null;
     this.webgl_texture_coord_buffer = null;
     this.webgl_index_buffer = null;
       
@@ -505,6 +507,8 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
 function BaseColumnTwo(height, center_x, center_y, delimiter) {
     this.webgl_position_buffer = null;
     this.webgl_normal_buffer = null;
+    this.webgl_binormal_buffer = null;
+    this.webgl_tangent_buffer = null;
     this.webgl_texture_coord_buffer = null;
     this.webgl_index_buffer = null;
     
@@ -678,12 +682,6 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
     }
 
     this.prepareDraw = function(shaderProgram, modelMatrix) {
-/*      console.log("Tamanio buffer position: " + this.webgl_position_buffer.numItems);
-        console.log("Tamanio buffer normal: " + this.webgl_normal_buffer.numItems);
-        console.log("Tamanio buffer binormal: " + this.webgl_binormal_buffer.numItems);
-        console.log("Tamanio buffer tangente: " + this.webgl_tangent_buffer.numItems);
-        console.log("Tamanio buffer textuura: " + this.webgl_texture_coord_buffer.numItems);
-*/
         // Se configuran los buffers que alimentarán el pipeline
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
         gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);

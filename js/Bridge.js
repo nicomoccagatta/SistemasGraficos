@@ -137,11 +137,9 @@ function Bridge(ph1, ph2, ph3, s1, center_x, number_of_columns, from, to) {
         river.draw(modelMatrix, shaderProgram);
         road.draw(modelMatrix, shaderProgram);
         this.drawGroup(columns, modelMatrix, shaderProgram);
-/*
-        this.setupGroupShaders(arcs);
-        this.setupGroupLighting(arcs, this.lightPosition, this.ambientColor, this.diffuseColor);
-        this.drawGroup(arcs, modelMatrix);
 
+        this.drawGroup(arcs, modelMatrix, shaderProgram);
+/*
         this.setupGroupShaders(tensors);
         this.setupGroupLighting(tensors, this.lightPosition, this.ambientColor, this.diffuseColor);
         this.drawGroup(tensors, modelMatrix);
