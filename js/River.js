@@ -112,10 +112,23 @@ function River() {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
         gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
+        // DIFFUSE MAP TEXTURE
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, aguaTexture);
         gl.uniform1i(shaderProgram.samplerUniform, 0);
         gl.bindTexture(gl.TEXTURE_2D, aguaTexture);
+        
+        // NORMAL MAP TEXTURE
+        gl.uniform1f(shaderProgram.useNormalUniform, true);
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, aguaNormalTexture);
+        gl.uniform1i(shaderProgram.samplerUniformNormal, 1);
+
+        // REFLECTION TEXTURE
+        gl.uniform1f(shaderProgram.useReflectionUniform, 1.0);
+        gl.activeTexture(gl.TEXTURE3);
+        gl.bindTexture(gl.TEXTURE_2D, aguaReflexionTexture);
+        gl.uniform1i(shaderProgram.samplerUniformReflection, 3);
 
         gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
