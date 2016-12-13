@@ -20,7 +20,7 @@ function River() {
         var z = RIVER_HEIGHT;
 
         var position = [x,y,z];
-        var normal = [x,y,z];
+        var normal = [0,0,1];
         var color = [0,0,0.5];
         var tangent = [x,y,0];
         var texture = [0,0];
@@ -28,20 +28,17 @@ function River() {
 
         x = RIGHT_BORDER_MAP;
         position = [x,y,z];
-        normal = [x,y,z];
         tangent = [x,y,0];
         this.vertex_buffer.push(new Vertice(position, color, normal, tangent, texture));
 
         x = LEFT_BORDER_MAP;
         y = TOP_BORDER_MAP;
         position = [x,y,z];
-        normal = [x,y,z];
         tangent = [x,y,0];
         this.vertex_buffer.push(new Vertice(position, color, normal, tangent, texture));
 
         x = RIGHT_BORDER_MAP;
         position = [x,y,z];
-        normal = [x,y,z];
         tangent = [x,y,0];
         this.vertex_buffer.push(new Vertice(position, color, normal, tangent, texture));
 
@@ -50,14 +47,12 @@ function River() {
             this.index_buffer.push(i);
         }
 
-
-          // Creación e Inicialización de los buffers a nivel de OpenGL
+        // Creación e Inicialización de los buffers a nivel de OpenGL
         var position_buffer = getPositionBuffer(this.vertex_buffer);
         var normal_buffer = getNormalBuffer(this.vertex_buffer);
         var binormal_buffer = getBinormalBuffer(this.vertex_buffer);
         var tangent_buffer = getTangentBuffer(this.vertex_buffer);
         var color_buffer = getColorBuffer(this.vertex_buffer);
-
 
         this.webgl_normal_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
@@ -96,7 +91,7 @@ function River() {
         this.webgl_color_buffer.numItems = color_buffer.length / 3;
     }
         
-    this.prepareDraw = function(shaderProgram, modelMatrix, normal_buffer, color_buffer, position_buffer, index_buffer) {
+    this.prepareDraw = function(shaderProgram, modelMatrix) {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
         gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -123,7 +118,7 @@ function River() {
     }
 
     this.draw = function(modelMatrix, shaderProgram) { 
-        this.prepareDraw(shaderProgram, modelMatrix, this.normal_buffer, this.color_buffer, this.position_buffer, this.index_buffer);
+        this.prepareDraw(shaderProgram, modelMatrix);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
     }
