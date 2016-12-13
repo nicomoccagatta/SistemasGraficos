@@ -294,7 +294,66 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
             max_center_x, max_center_y, base_height
         ];
 
-        this.texture_coord_buffer = [];
+        //TODO las tangentes ya las tenés
+        //TODO agregado
+        this.texture_coord_buffer = [
+            0, 1,
+            0, 1,
+            0, 1,
+            0, 1,
+            0, 1,
+            0, 1,
+            0, 1,
+            0, 1,
+            0, 1,
+            0, 1,
+            0, 1,
+            0, 1,
+            0, 1,
+            0, 1,
+            0, 1,
+            0, 1,
+
+            0, 1,
+            0, 0,
+            3/32, 1,
+            3/32, 0,
+            13/128, 1,
+            13/128, 0,
+            19/128, 1,
+            19/128, 0,
+            5/32, 1,
+            5/32, 0,
+            0.25, 1,
+            0.25, 0,
+            0.5, 1,
+            0.5, 0,       
+            19/32, 1,
+            19/32, 0,
+            77/128, 1,
+            77/128, 0,
+            83/128, 1,
+            83/128, 0,
+            21/32, 1,
+            21/32, 0,
+            0.75, 1,
+            0.75, 0,
+            1, 1,
+            1, 0,
+            1, 0,
+            
+            1, 0,
+            1, 0,
+            1, 0,
+            1, 0,
+            1, 0,
+            1, 0,
+            1, 0,
+            1, 0,
+            1, 0,
+            1, 0,
+            1, 0
+        ];
         
         this.normal_buffer = [];
         calcNormals(this.position_buffer, this.normal_buffer);
@@ -451,7 +510,72 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
             min_center_x_base, min_center_y_base, base_height
         ];
         
-        this.texture_coord_buffer = [];
+        //TODO tangentes
+        /*
+        dif_z = top_height - base_height;
+        
+        this.tangentes = [
+            min_center_x_base - min_center_x_top, min_center_y_base - min_center_y_top, dif_z,
+            min_center_x_base - min_center_x_top, min_center_y_base - min_center_y_top, dif_z,
+            min_center_x_base - middle_left_x_top, min_center_y_base - min_center_y_top, dif_z,
+            min_center_x_base - middle_left_x_top, min_center_y_base - min_center_y_top, dif_z,
+            middle_left_x_base - middle_left_x_top, min_center_y_base - min_center_y_top, dif_z,
+            middle_left_x_base - middle_left_x_top, middle_left_y_top - min_center_y_base, dif_z,
+            middle_left_x_base - middle_left_x_top, middle_left_y_top - middle_left_y_base, dif_z,
+            middle_left_x_base - middle_right_x_top, middle_left_y_top - middle_left_y_base, dif_z,
+            middle_right_x_top - middle_right_x_base, middle_left_y_top - middle_left_y_base, dif_z,
+            middle_right_x_base - middle_right_x_top, middle_left_y_base - min_center_y_top, dif_z,
+            middle_right_x_top - middle_right_x_base, min_center_y_top - min_center_y_base, dif_z,
+            middle_right_x_base - max_center_x_top, min_center_y_base - min_center_y_top, dif_z,
+            max_center_x_top - max_center_x_base, min_center_y_top - min_center_y_base, dif_z,
+            max_center_x_base - max_center_x_top, min_center_y_base - max_center_y_top, dif_z,
+            max_center_x_top - max_center_x_base, max_center_y_top - max_center_y_base, dif_z,
+            max_center_x_base - middle_right_x_top, max_center_y_base - max_center_y_top, dif_z,
+            middle_right_x_top - middle_right_x_base, max_center_y_top - max_center_y_base, dif_z,
+            middle_right_x_base - middle_right_x_top, max_center_y_base - middle_right_y_top, dif_z,
+            middle_right_x_top - middle_right_x_base, middle_right_y_top - middle_right_y_base, dif_z,
+            middle_right_x_base - middle_left_x_top, middle_right_y_base - middle_right_y_top, dif_z,
+            middle_left_x_top - middle_left_x_base, middle_right_y_top - middle_right_y_base, dif_z,
+            middle_left_x_base - middle_left_x_top, middle_right_y_base - max_center_y_top, dif_z,
+            middle_left_x_top - middle_left_x_base, max_center_y_top - max_center_y_base, dif_z,
+            middle_left_x_base - min_center_x_top, max_center_y_base - max_center_y_top, dif_z,
+            min_center_x_top - min_center_x_base, max_center_y_top - max_center_y_base, dif_z,
+            min_center_x_base - min_center_x_top, max_center_y_base - min_center_y_top, dif_z,
+            min_center_x_top - min_center_x_base, min_center_y_top - min_center_y_base, dif_z,
+            min_center_x_top - min_center_x_base, min_center_y_top - min_center_y_base, dif_z
+        ];
+        */
+        //TODO agregado
+        this.texture_coord_buffer = [
+            0, 1,
+            0, 1,
+            0, 1,
+            0, 0,
+            3/32, 1,
+            3/32, 0,
+            13/128, 1,
+            13/128, 0,
+            19/128, 1,
+            19/128, 0,
+            5/32, 1,
+            5/32, 0,
+            0.25, 1,
+            0.25, 0,
+            0.5, 1,
+            0.5, 0,
+            19/32, 1,
+            19/32, 0,
+            77/128, 1,
+            77/128, 0,
+            83/128, 1,
+            83/128, 0,
+            21/32, 1,
+            21/32, 0,
+            0.75, 1,
+            0.75, 0,
+            1, 1,
+            1, 0
+        ];
         
         this.normal_buffer = [];
         calcNormals(this.position_buffer, this.normal_buffer);
