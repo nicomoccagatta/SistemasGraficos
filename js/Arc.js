@@ -115,7 +115,6 @@ function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_a
     }
     
     this.createBuffer = function(normal_buffer, texture_coord_buffer, position_buffer, binormal_buffer, tangent_buffer, index_buffer) {
-
         this.webgl_normal_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal_buffer), gl.STATIC_DRAW);

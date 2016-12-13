@@ -6,6 +6,7 @@ var veredaTexture;
 var columnaTexture;
 var cablesTexture;
 var pastoTexture;
+var aguaTexture;
 
 function initTexture() {
 	// SKY TEXTURE
@@ -23,6 +24,14 @@ function initTexture() {
 		handleLoadedTextureMosaic(treeTexture);
 	}
 	treeTexture.image.src = "maps/hojas.jpg";
+
+	// AGUA TEXTURE
+	aguaTexture = gl.createTexture();
+	aguaTexture.image = new Image();
+	aguaTexture.image.onload = function() {		
+		handleLoadedTextureMosaic(aguaTexture);
+	}
+	aguaTexture.image.src = "maps/aguaDeMar.jpg";
 
 	// TIERRA TEXTURE
 	tierraTexture = gl.createTexture();
