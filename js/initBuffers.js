@@ -83,7 +83,7 @@ function initTexture() {
 	rutaNormalTexture.image.onload = function() {		
 		handleLoadedTextureMosaic(rutaNormalTexture);
 	}
-	rutaNormalTexture.image.src = "maps/ruta-normal-map.jpg";
+	rutaNormalTexture.image.src = "maps/ruta-normal-map2.jpg";
 
 	// VEREDA TEXTURE
 	veredaTexture = gl.createTexture();
