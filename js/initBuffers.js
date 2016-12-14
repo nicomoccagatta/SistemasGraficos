@@ -1,5 +1,6 @@
 var treeTexture;
 var tierraTexture;
+var tierraNormalTexture;
 var skyTexture;
 var rutaTexture;
 var rutaNormalTexture;
@@ -7,6 +8,7 @@ var veredaTexture;
 var columnaTexture;
 var columnaNormalTexture;
 var cablesTexture;
+var cablesNormalTexture;
 var pastoTexture;
 var aguaTexture;
 var aguaNormalTexture;
@@ -62,6 +64,14 @@ function initTexture() {
 	tierraTexture.image.src = "maps/tierra1.jpg";
 
 	// TIERRA TEXTURE
+	tierraNormalTexture = gl.createTexture();
+	tierraNormalTexture.image = new Image();
+	tierraNormalTexture.image.onload = function() {		
+		handleLoadedTextureMosaic(tierraNormalTexture);
+	}
+	tierraNormalTexture.image.src = "maps/fieldNormalTexture.jpg";
+
+	// TIERRA TEXTURE
 	pastoTexture = gl.createTexture();
 	pastoTexture.image = new Image();
 	pastoTexture.image.onload = function() {		
@@ -93,6 +103,14 @@ function initTexture() {
 	}
 	veredaTexture.image.src = "maps/vereda.jpg";
 
+	// VEREDA NORMAL TEXTURE
+	veredaNormalTexture = gl.createTexture();
+	veredaNormalTexture.image = new Image();
+	veredaNormalTexture.image.onload = function() {		
+		handleLoadedTextureMosaic(veredaNormalTexture);
+	}
+	veredaNormalTexture.image.src = "maps/vereda-normalmap.jpg";
+
 	// COLUMNA TEXTURE
 	columnaTexture = gl.createTexture();
 	columnaTexture.image = new Image();
@@ -116,6 +134,14 @@ function initTexture() {
 		handleLoadedTextureMosaic(cablesTexture);
 	}
 	cablesTexture.image.src = "maps/alambres.jpg";
+
+	// CABLES NORMAL MAP TEXTURE
+	cablesNormalTexture = gl.createTexture();
+	cablesNormalTexture.image = new Image();
+	cablesNormalTexture.image.onload = function() {		
+		handleLoadedTextureMosaic(cablesNormalTexture);
+	}
+	cablesNormalTexture.image.src = "maps/alambres-mormalmap.jpg";
 }
 
 function handleLoadedTexture(texture) {

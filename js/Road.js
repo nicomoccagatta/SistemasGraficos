@@ -199,10 +199,17 @@ function PlainRoadLeftBorder(height, center_x, from, to) {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
         gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
+        // DIFFUSE MAP TEXTURE
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, veredaTexture);
         gl.uniform1i(shaderProgram.samplerUniform, 0);
         gl.bindTexture(gl.TEXTURE_2D, veredaTexture);
+
+        // NORMAL MAP TEXTURE
+        gl.uniform1f(shaderProgram.useNormalUniform, true);
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, veredaNormalTexture);
+        gl.uniform1i(shaderProgram.samplerUniformNormal, 1);
 
         gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
@@ -322,14 +329,7 @@ function PlainRoadRightBorder(height, center_x, from, to) {
             1, 0,
             1, 1
         ];
-        
-        /*this.normal_buffer = [];
-        calcNormals(this.position_buffer, this.normal_buffer);
-
-        for (var i = 0; i < this.normal_buffer.length; i++) {
-            this.normal_buffer[i] = -this.normal_buffer[i];
-        }*/
-        
+                
         var normal_buffer = [
             -1.0, 0.0, 1.0,
             -1.0, 0.0, 1.0,
@@ -422,10 +422,17 @@ function PlainRoadRightBorder(height, center_x, from, to) {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
         gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
+        // DIFFUSE MAP TEXTURE
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, veredaTexture);
         gl.uniform1i(shaderProgram.samplerUniform, 0);
         gl.bindTexture(gl.TEXTURE_2D, veredaTexture);
+
+        // NORMAL MAP TEXTURE
+        gl.uniform1f(shaderProgram.useNormalUniform, true);
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, veredaNormalTexture);
+        gl.uniform1i(shaderProgram.samplerUniformNormal, 1);
 
         gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
@@ -636,7 +643,7 @@ function PlainRoadMiddle(height, center_x, from, to) {
         gl.activeTexture(gl.TEXTURE1);
         gl.bindTexture(gl.TEXTURE_2D, rutaNormalTexture);
         gl.uniform1i(shaderProgram.samplerUniformNormal, 1);
-        
+
         gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
         mat3.fromMat4(normalMatrix, modelMatrix);
@@ -889,6 +896,12 @@ function CurvedRoadLeftBorder(base_height, max_height, center_x, from, to) {
         gl.uniform1i(shaderProgram.samplerUniform, 0);
         gl.bindTexture(gl.TEXTURE_2D, veredaTexture);
 
+        // NORMAL MAP TEXTURE
+        gl.uniform1f(shaderProgram.useNormalUniform, true);
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, veredaNormalTexture);
+        gl.uniform1i(shaderProgram.samplerUniformNormal, 1);
+
         gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
         mat3.fromMat4(normalMatrix, modelMatrix);
@@ -1126,10 +1139,17 @@ function CurvedRoadRightBorder(base_height, max_height, center_x, from, to) {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
         gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
+        // DIFFUSE MAP TEXTURE
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, veredaTexture);
         gl.uniform1i(shaderProgram.samplerUniform, 0);
         gl.bindTexture(gl.TEXTURE_2D, veredaTexture);
+
+        // NORMAL MAP TEXTURE
+        gl.uniform1f(shaderProgram.useNormalUniform, true);
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, veredaNormalTexture);
+        gl.uniform1i(shaderProgram.samplerUniformNormal, 1);
 
         gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
