@@ -2,6 +2,7 @@ var treeTexture;
 var tierraTexture;
 var skyTexture;
 var rutaTexture;
+var rutaNormalTexture;
 var veredaTexture;
 var columnaTexture;
 var columnaNormalTexture;
@@ -75,6 +76,14 @@ function initTexture() {
 		handleLoadedTextureMosaic(rutaTexture);
 	}
 	rutaTexture.image.src = "maps/ruta.jpg";
+	
+	// RUTA NORMAL MAP TEXTURE
+	rutaNormalTexture = gl.createTexture();
+	rutaNormalTexture.image = new Image();
+	rutaNormalTexture.image.onload = function() {		
+		handleLoadedTextureMosaic(rutaNormalTexture);
+	}
+	rutaNormalTexture.image.src = "maps/ruta-normal-map.jpg";
 
 	// VEREDA TEXTURE
 	veredaTexture = gl.createTexture();

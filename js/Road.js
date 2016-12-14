@@ -625,11 +625,18 @@ function PlainRoadMiddle(height, center_x, from, to) {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
         gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
+        // DIFFUSE MAP TEXTURE
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, rutaTexture);
         gl.uniform1i(shaderProgram.samplerUniform, 0);
         gl.bindTexture(gl.TEXTURE_2D, rutaTexture);
 
+        // NORMAL MAP TEXTURE
+        gl.uniform1f(shaderProgram.useNormalUniform, true);
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, rutaNormalTexture);
+        gl.uniform1i(shaderProgram.samplerUniformNormal, 1);
+        
         gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
         mat3.fromMat4(normalMatrix, modelMatrix);
@@ -1339,16 +1346,7 @@ function CurvedRoadMiddle(base_height, max_height, center_x, from, to) {
         return this.heights_along_road;
     }
     
-    this.prepareDraw = function(shaderProgram, modelMatrix) {/*
-        HAY 182 posiciones y 182 texturas menos que las normales y tangentes
-        
-        console.log("tamanio buffer posicion: "+this.webgl_position_buffer.numItems);
-        console.log("tamanio buffer normal: "+this.webgl_normal_buffer.numItems);
-        console.log("tamanio buffer binormal: "+this.webgl_binormal_buffer.numItems);
-        console.log("tamanio buffer tangente: "+this.webgl_tangent_buffer.numItems);
-        console.log("tamanio buffer coordenadas: "+this.webgl_texture_coord_buffer.numItems);
-        console.log("tamanio buffer index: "+this.webgl_index_buffer.numItems);*/
-
+    this.prepareDraw = function(shaderProgram, modelMatrix) {
         // Se configuran los buffers que alimentarán el pipeline
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
         gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -1366,10 +1364,17 @@ function CurvedRoadMiddle(base_height, max_height, center_x, from, to) {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
         gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
+        // DIFFUSE MAP TEXTURE
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, rutaTexture);
         gl.uniform1i(shaderProgram.samplerUniform, 0);
         gl.bindTexture(gl.TEXTURE_2D, rutaTexture);
+
+        // NORMAL MAP TEXTURE
+        gl.uniform1f(shaderProgram.useNormalUniform, true);
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, rutaNormalTexture);
+        gl.uniform1i(shaderProgram.samplerUniformNormal, 1);
 
         gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();
