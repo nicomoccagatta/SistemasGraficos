@@ -706,10 +706,17 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
         gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
+        // DIFFUSE MAP TEXTURE
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, columnaTexture);
         gl.uniform1i(shaderProgram.samplerUniform, 0);
         gl.bindTexture(gl.TEXTURE_2D, columnaTexture);
+
+        // NORMAL MAP TEXTURE
+        gl.uniform1f(shaderProgram.useNormalUniform, true);
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, columnaNormalTexture);
+        gl.uniform1i(shaderProgram.samplerUniformNormal, 1);
 
         gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);
         var normalMatrix = mat3.create();

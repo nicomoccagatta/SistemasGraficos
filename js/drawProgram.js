@@ -21,10 +21,6 @@ function drawScene() {
     gl.uniform1i(shaderProgramSimple.useColorUniform, false);
     // En principio no utilizo mapa de normales
     gl.uniform1i(shaderProgramSimple.useNormalUniform, false);
-    // En principio no utilizo mapa de iluminacion
-    gl.uniform1i(shaderProgramSimple.useIluminationUniform, false);
-    // En principio no utilizo luces puntuales(Solo adentro de la bahia de carga)
-    gl.uniform1i(shaderProgramSimple.usePunctualLights, false);
 
     // Configuración de la luz
     // Se inicializan las variables asociadas con la iluminación
@@ -65,7 +61,7 @@ function tick() {
     updateCamera();
     field.updateField(points);
     from_and_to = field.getYPositionFromX(points, app.pos);
-    //bridge = bridge.updateBridge(app, from_and_to);
+    bridge = bridge.updateBridge(app, from_and_to);
     trees.updateTrees(app.ph1,1,2,1.5);
     drawScene();
 }
@@ -128,7 +124,7 @@ function initVariables () {
     cameraMode = 1;
     target = [0,0,0];
     var initPosToTranslate = vec3.create();
-    vec3.set(initPosToTranslate,20.0,20.0,3.0);   //Aca pongo a donde quiero que vaya
+    vec3.set(initPosToTranslate,15.0,15.0,4.0);
     var radius = vec3.squaredLength(initPosToTranslate);
     thetaAngle = Math.acos(initPosToTranslate[2]/radius);   //para las rotaciones en zy e zx
     phiAngle = Math.atan(initPosToTranslate[1]/initPosToTranslate[0]);  //para las rotaciones en el plano xy

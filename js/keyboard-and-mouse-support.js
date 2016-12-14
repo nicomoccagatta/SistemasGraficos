@@ -57,7 +57,7 @@
 			cameraMode = 1;
 			target = [0,0,0];
 			var initPosToTranslate = vec3.create();
-			vec3.set(initPosToTranslate,20.0,20.0,3.0);	//Aca pongo a donde quiero que vaya
+			vec3.set(initPosToTranslate,15.0,5.0,8.0);	//Aca pongo a donde quiero que vaya
 			var radius = vec3.squaredLength(initPosToTranslate);
 			thetaAngle = Math.acos(initPosToTranslate[2]/radius);	//para las rotaciones en zy e zx
 			phiAngle = Math.atan(initPosToTranslate[1]/initPosToTranslate[0]);	//para las rotaciones en el plano xy
@@ -73,9 +73,8 @@
 			var radius = vec3.squaredLength(initPosToTranslate);
 			thetaAngle = Math.acos(initPosToTranslate[2]/radius);	//para las rotaciones en zy e zx
 			phiAngle = Math.atan(initPosToTranslate[1]/initPosToTranslate[0]);	//para las rotaciones en el plano xy
-			vec3.set(target,Math.cos(phiAngle)*Math.sin(thetaAngle),Math.sin(phiAngle)*Math.sin(thetaAngle),-Math.cos(thetaAngle));
+			vec3.set(target, 0, 0, 0);
 			vec3.normalize(target,target);
-			vec3.scale(target,target,100);
 			cameraPosition = [0,-80,15];		
 			return;
 		}

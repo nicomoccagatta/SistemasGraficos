@@ -78,7 +78,6 @@ function PlainRoadLeftBorder(height, center_x, from, to) {
             0, 0, 0
         ];
 
-        //TODO no modifique esta parte pero creo que lo del 10 está mal y debería ser 1
         var texture_coord_buffer = [
             1 , 0,
             1 , 0,

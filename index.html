@@ -100,11 +100,6 @@
                                                                     
         vec3 vLightWeighting = vPrincipalLightWeighting;
 
-        // Auto Iluminación
-        if (uUseIlumination) {
-            vLightWeighting += uIluminationIntensity * texture2D(uSamplerIluminationMap, vec2(vTextureCoord.s, vTextureCoord.t)).rgb;
-        }
-
         // Utilizo color o textura
         vec4 textureColor;
         if (uUseColor) {

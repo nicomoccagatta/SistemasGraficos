@@ -185,7 +185,7 @@ function Arc(distance_to_floor, top_height, center_x, from, to, min_angle, max_a
         gl.uniform1i(shaderProgram.samplerUniformNormal, 1);
 
         // REFLECTION TEXTURE
-        gl.uniform1f(shaderProgram.useReflectionUniform, 10.0);
+        gl.uniform1f(shaderProgram.useReflectionUniform, 1.0);
         gl.activeTexture(gl.TEXTURE3);
         gl.bindTexture(gl.TEXTURE_2D, skyTexture);
         gl.uniform1i(shaderProgram.samplerUniformReflection, 3);
