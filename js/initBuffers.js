@@ -4,6 +4,7 @@ var skyTexture;
 var rutaTexture;
 var veredaTexture;
 var columnaTexture;
+var columnaNormalTexture;
 var cablesTexture;
 var pastoTexture;
 var aguaTexture;
@@ -41,13 +42,13 @@ function initTexture() {
 	aguaNormalTexture.image.onload = function() {		
 		handleLoadedTextureMosaic(aguaNormalTexture);
 	}
-	aguaNormalTexture.image.src = "maps/aguaDeMar_normalMap.jpg";
+	aguaNormalTexture.image.src = "maps/agua_normal_map.png";
 
 	// AGUA REFLEXION TEXTURE
 	aguaReflexionTexture = gl.createTexture();
 	aguaReflexionTexture.image = new Image();
 	aguaReflexionTexture.image.onload = function() {		
-		handleLoadedTextureMosaic(aguaReflexionTexture);
+		handleLoadedTexture(aguaReflexionTexture);
 	}
 	aguaReflexionTexture.image.src = "maps/sky_lightblue2.jpg";
 
@@ -90,6 +91,14 @@ function initTexture() {
 		handleLoadedTextureMosaic(columnaTexture);
 	}
 	columnaTexture.image.src = "maps/oxido.jpg";
+
+	// COLUMNA NORMAL TEXTURE
+	columnaNormalTexture = gl.createTexture();
+	columnaNormalTexture.image = new Image();
+	columnaNormalTexture.image.onload = function() {		
+		handleLoadedTextureMosaic(columnaNormalTexture);
+	}
+	columnaNormalTexture.image.src = "maps/oxido-normalmap.jpg";
 
 	// CABLES TEXTURE
 	cablesTexture = gl.createTexture();
