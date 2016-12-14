@@ -127,7 +127,7 @@ function River() {
         // REFLECTION TEXTURE
         gl.uniform1f(shaderProgram.useReflectionUniform, 1.0);
         gl.activeTexture(gl.TEXTURE3);
-        gl.bindTexture(gl.TEXTURE_2D, aguaReflexionTexture);
+        gl.bindTexture(gl.TEXTURE_2D, skyTexture);
         gl.uniform1i(shaderProgram.samplerUniformReflection, 3);
 
         gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);

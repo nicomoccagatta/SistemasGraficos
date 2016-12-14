@@ -5,6 +5,7 @@ var skyTexture;
 var rutaTexture;
 var rutaNormalTexture;
 var veredaTexture;
+var veredaNormalTexture;
 var columnaTexture;
 var columnaNormalTexture;
 var cablesTexture;
@@ -15,13 +16,13 @@ var aguaNormalTexture;
 var aguaReflexionTexture;
 
 function initTexture() {
-	// SKY TEXTURE
+	// SKY REFLEXION TEXTURE
 	skyTexture = gl.createTexture();
 	skyTexture.image = new Image();
 	skyTexture.image.onload = function() {		
 		handleLoadedTexture(skyTexture);
 	}
-	skyTexture.image.src = "maps/sky_lightblue2.jpg";
+	skyTexture.image.src = "maps/refMap.jpg";
 
 	// TREE TEXTURE
 	treeTexture = gl.createTexture();
