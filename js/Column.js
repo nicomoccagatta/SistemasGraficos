@@ -64,7 +64,6 @@ function calcNormals(source, destination) {
             v_normal[1] = (-v_normal[1]);
             v_normal[2] = (-v_normal[2]);
         }
-
         destination.push(v_normal[0], v_normal[1], v_normal[2]);
     }
     destination.push(v_normal[0], v_normal[1], v_normal[2]);
@@ -505,6 +504,191 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
 }
 
 
+
+//El delimitador es para saber que tan grande es esa parte de la columna.
+function LidColumn(height, center_x, center_y, delimiter) {
+    this.webgl_position_buffer = [[]];
+    this.webgl_normal_buffer = [[]];
+    this.webgl_binormal_buffer = [[]];
+    this.webgl_tangent_buffer = [[]];
+    this.webgl_texture_coord_buffer = null;
+    this.webgl_index_buffer = [[]];
+
+    this.position_buffer = [[]];
+    this.tangent_buffer = [[]];
+    this.texture_coord_buffer = [];
+      
+    this.initBuffers = function() {
+        var min_center_x = (center_x - delimiter);
+        var max_center_x = (center_x + delimiter);
+        var min_center_y = (center_y - delimiter);
+        var max_center_y = (center_y + delimiter);
+        var middle_left_x = (center_x - delimiter * 0.2);
+        var middle_right_x = (center_x + delimiter * 0.2);
+        var middle_left_y = (center_y - delimiter * 0.8);
+        var middle_right_y = (center_y + delimiter * 0.8);
+        
+        this.position_buffer[0] = [
+            min_center_x, min_center_y, height,
+            middle_left_x, min_center_y, height,
+            min_center_x, max_center_y, height,
+            middle_left_x, max_center_y, height
+        ];
+
+        this.position_buffer[1] = [
+            middle_right_x, min_center_y, height,
+            max_center_x, min_center_y, height,
+            middle_right_x, max_center_y, height,
+            max_center_x, max_center_y, height
+        ];
+
+        this.position_buffer[2] = [
+            middle_left_x, middle_left_y, height,
+            middle_right_x, middle_left_y, height,
+            middle_left_x, middle_right_y, height,
+            middle_right_x, middle_right_y, height
+        ];
+        
+        this.tangent_buffer[0] = [
+            middle_left_x - min_center_x, 0, 0,
+            middle_left_x - min_center_x, 0, 0,
+            min_center_x - middle_left_x, max_center_y - min_center_y, 0,
+            middle_left_x - min_center_x, 0, 0
+        ];
+
+        this.tangent_buffer[1] = [
+            max_center_x - middle_right_x, 0, 0,
+            max_center_x - middle_right_x, 0, 0,
+            middle_right_x - max_center_x, max_center_y - min_center_y, 0,
+            max_center_x - middle_right_x, 0, 0
+        ];
+
+        this.tangent_buffer[2] = [
+            middle_right_x - middle_left_x, 0, 0,
+            middle_right_x - middle_left_x, 0, 0,
+            middle_left_x - middle_right_x, middle_right_y - middle_left_y, 0,
+            middle_right_x - middle_left_x, 0, 0
+        ];
+        
+        this.texture_coord_buffer = [
+            0, 0,
+            1, 0,
+            0, 1,
+            1, 1
+        ];
+        
+        this.normal_buffer = [[]];
+        this.normal_buffer[0] = [];
+        this.normal_buffer[1] = [];
+        this.normal_buffer[2] = [];
+        this.binormal_buffer = [[]];
+        this.index_buffer = [[]];
+        this.index_buffer[0] = [];
+        this.index_buffer[1] = [];
+        this.index_buffer[2] = [];
+
+        for (var a = 0; a < 3; a++) {
+            calcNormals(this.position_buffer[a], this.normal_buffer[a]);
+            this.binormal_buffer[a] = getBinormalBufferFromVectors(this.normal_buffer[a], this.tangent_buffer[a]);
+            
+            for (var i = 0; i < this.normal_buffer[a].length / 3; i++) {
+                this.index_buffer[a].push(i);
+            }
+
+            this.webgl_normal_buffer[a] = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer[a]);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normal_buffer[a]), gl.STATIC_DRAW);
+            this.webgl_normal_buffer[a].itemSize = 3;
+            this.webgl_normal_buffer[a].numItems = this.normal_buffer[a].length / 3;
+
+            this.webgl_binormal_buffer[a] = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_binormal_buffer[a]);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.binormal_buffer[a]), gl.STATIC_DRAW);
+            this.webgl_binormal_buffer[a].itemSize = 3;
+            this.webgl_binormal_buffer[a].numItems = this.binormal_buffer[a].length / 3;
+
+            this.webgl_tangent_buffer[a] = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer[a]);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.tangent_buffer[a]), gl.STATIC_DRAW);
+            this.webgl_tangent_buffer[a].itemSize = 3;
+            this.webgl_tangent_buffer[a].numItems = this.tangent_buffer[a].length / 3;
+
+            this.webgl_position_buffer[a] = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer[a]);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.position_buffer[a]), gl.STATIC_DRAW);
+            this.webgl_position_buffer[a].itemSize = 3;
+            this.webgl_position_buffer[a].numItems = this.position_buffer[a].length / 3;
+
+            this.webgl_index_buffer[a] = gl.createBuffer();
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer[a]);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_buffer[a]), gl.STATIC_DRAW);
+            this.webgl_index_buffer[a].itemSize = 1;
+            this.webgl_index_buffer[a].numItems = this.index_buffer[a].length;
+
+            this.webgl_texture_coord_buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texture_coord_buffer), gl.STATIC_DRAW);
+            this.webgl_texture_coord_buffer.itemSize = 2;
+            this.webgl_texture_coord_buffer.numItems = this.texture_coord_buffer.length / 2;
+        }
+    }
+   
+    this.prepareDraw = function(shaderProgram, modelMatrix) {
+        for (var a = 0; a < 3; a++) {
+            // Se configuran los buffers que alimentarán el pipeline
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer[a]);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.webgl_position_buffer[a].itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer[a]);
+            gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, this.webgl_normal_buffer[a].itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_binormal_buffer[a]);
+            gl.vertexAttribPointer(shaderProgram.vertexBinormalAttribute, this.webgl_binormal_buffer[a].itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer[a]);
+            gl.vertexAttribPointer(shaderProgram.vertexTangentAttribute, this.webgl_tangent_buffer[a].itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.uniform1i(shaderProgram.useColorUniform, false);
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+            gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+            // DIFFUSE MAP TEXTURE
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, columnaTexture);
+            gl.uniform1i(shaderProgram.samplerUniform, 0);
+            gl.bindTexture(gl.TEXTURE_2D, columnaTexture);
+            
+            // NORMAL MAP TEXTURE
+            gl.uniform1f(shaderProgram.useNormalUniform, true);
+            gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_2D, columnaNormalTexture);
+            gl.uniform1i(shaderProgram.samplerUniformNormal, 1);
+
+            gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);
+            var normalMatrix = mat3.create();
+            mat3.fromMat4(normalMatrix, modelMatrix);
+            mat3.invert(normalMatrix, normalMatrix);
+            mat3.transpose(normalMatrix, normalMatrix);
+            gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
+
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer[a]);
+            gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer[a].numItems, gl.UNSIGNED_SHORT, 0);
+            gl.uniform1f(shaderProgram.useNormalUniform, false);
+            gl.uniform1f(shaderProgram.useReflectionUniform, 0.0);
+        }
+    }
+
+    this.draw = function(modelMatrix, shaderProgram) {
+        for (var a = 0; a < 3; a++) {
+            this.prepareDraw(shaderProgram, modelMatrix);
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer[a]);
+            gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer[a].numItems, gl.UNSIGNED_SHORT, 0);
+        }
+    }
+}
+
+
+
 function Column(first_max_height, second_max_height, third_max_height, center_x, center_y, delimiter) {
     var first_base_column_one = new BaseColumnOne(third_max_height + MIN_HEIGHT, second_max_height + MIN_HEIGHT + HEIGHT_BASE_COLUMN_TWO, center_x, center_y, delimiter);
     first_base_column_one.initBuffers();
@@ -516,8 +700,9 @@ function Column(first_max_height, second_max_height, third_max_height, center_x,
     second_base_column_two.initBuffers();
     var third_base_column_one = new BaseColumnOne(first_max_height + MIN_HEIGHT, MIN_HEIGHT, center_x, center_y, (2 * DELIMITER_DIFF) + delimiter);
     third_base_column_one.initBuffers();
+    var top_lid = new LidColumn(third_max_height + MIN_HEIGHT, center_x, center_y, delimiter);
+    top_lid.initBuffers();
     
-
     this.draw = function(modelMatrix, shaderProgram) { 
         first_base_column_one.draw(modelMatrix, shaderProgram);
 
@@ -528,5 +713,7 @@ function Column(first_max_height, second_max_height, third_max_height, center_x,
         second_base_column_two.draw(modelMatrix, shaderProgram);
 
         third_base_column_one.draw(modelMatrix, shaderProgram);
+
+        top_lid.draw(modelMatrix, shaderProgram);
     }
 }
