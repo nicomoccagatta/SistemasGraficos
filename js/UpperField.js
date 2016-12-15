@@ -167,7 +167,7 @@ function UpperField(from_x, to_x, from_y, to_y, diameter, min_height, max_height
         // NORMAL MAP TEXTURE
         gl.uniform1f(shaderProgram.useNormalUniform, true);
         gl.activeTexture(gl.TEXTURE1);
-        gl.bindTexture(gl.TEXTURE_2D, rutaNormalTexture);
+        gl.bindTexture(gl.TEXTURE_2D, pastoNormalTexture);
         gl.uniform1i(shaderProgram.samplerUniformNormal, 1);
 
         gl.uniformMatrix4fv(shaderProgram.ModelMatrixUniform, false, modelMatrix);

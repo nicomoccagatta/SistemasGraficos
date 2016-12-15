@@ -621,15 +621,7 @@ function CurvedRoadLeftBorder(base_height, max_height, center_x, from, to) {
         return this.heights_along_road;
     }
     
-    this.prepareDraw = function(shaderProgram, modelMatrix) {/*
-        HAY 2 posiciones y 2 texturas mas que las normales y tangentes!
-
-        console.log("tamanio buffer posicion: "+this.webgl_position_buffer.numItems);
-        console.log("tamanio buffer normal: "+this.webgl_normal_buffer.numItems);
-        console.log("tamanio buffer binormal: "+this.webgl_binormal_buffer.numItems);
-        console.log("tamanio buffer tangente: "+this.webgl_tangent_buffer.numItems);
-        console.log("tamanio buffer coordenadas: "+this.webgl_texture_coord_buffer.numItems);
-        console.log("tamanio buffer index: "+this.webgl_index_buffer.numItems);*/
+    this.prepareDraw = function(shaderProgram, modelMatrix) {
         // Se configuran los buffers que alimentarán el pipeline
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
         gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -817,15 +809,7 @@ function CurvedRoadRightBorder(base_height, max_height, center_x, from, to) {
         return this.heights_along_road;
     }
 
-    this.prepareDraw = function(shaderProgram, modelMatrix) {/*
-        HAY 2 posiciones y 2 texturas mas que las normales y tangentes
-        
-        console.log("tamanio buffer posicion: "+this.webgl_position_buffer.numItems);
-        console.log("tamanio buffer normal: "+this.webgl_normal_buffer.numItems);
-        console.log("tamanio buffer binormal: "+this.webgl_binormal_buffer.numItems);
-        console.log("tamanio buffer tangente: "+this.webgl_tangent_buffer.numItems);
-        console.log("tamanio buffer coordenadas: "+this.webgl_texture_coord_buffer.numItems);
-        console.log("tamanio buffer index: "+this.webgl_index_buffer.numItems);*/
+    this.prepareDraw = function(shaderProgram, modelMatrix) {
         // Se configuran los buffers que alimentarán el pipeline
         gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
         gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
