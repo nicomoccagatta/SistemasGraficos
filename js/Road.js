@@ -27,115 +27,51 @@ function PlainRoadLeftBorder(height, center_x, from, to) {
         
         var position_buffer = [
             extreme_left_x, from, height,
-            extreme_left_x, from, height,
-            extreme_left_x, from, height,
-            extreme_left_x, from, max_height,
             extreme_left_x, to, height,
-            extreme_left_x, to, max_height,
-                        
             extreme_left_x, from, max_height,
-            
-            intern_high_left_x, to, max_height,
+            extreme_left_x, to, max_height,
             intern_high_left_x, from, max_height,
-            intern_high_left_x, from, max_height,
-            intern_low_left_x, from, middle_height,
             intern_high_left_x, to, max_height,
-
-            intern_low_left_x, to, middle_height,
-            intern_low_left_x, to, middle_height,
             intern_low_left_x, from, middle_height,
-            intern_low_left_x, to, height,
-            intern_low_left_x, from, height,
-
+            intern_low_left_x, to, middle_height,
             intern_low_left_x, from, height,
             intern_low_left_x, to, height,
             extreme_left_x, from, height,
             extreme_left_x, to, height
         ];
 
-        //TODO cambie lo que estaba
         var tangent_buffer = [
-            0, 0, 0,
-            0, 0, 0,
-            0, 0, max_height - height,
-            0, to - from, height - max_height,
-            0, 0, max_height - height,
-            0, from - to, 0,
-            intern_high_left_x - extreme_left_x, to - from, 0,
-            0, from - to, 0,
-            0, 0, 0,
-            intern_low_left_x - intern_high_left_x, 0, middle_height - max_height,
-            intern_high_left_x - intern_low_left_x, to - from, max_height - middle_height,
-            intern_low_left_x - intern_high_left_x, 0, middle_height - max_height,
-            0, 0, 0,
-            0, from - to, 0,
-            0, to - from, height - middle_height,
-            0, from - to, 0,
-            0, 0, 0,
+            0, to - from, 0,
+            0, to - from, 0,
+            0, from - to, max_height - height,
+            0, to - from, 0,
+            intern_high_left_x - extreme_left_x, from - to, 0,
+            0, to - from, 0,
+            intern_low_left_x - intern_high_left_x, from - to, middle_height - max_height,
+            0, to - from, 0,
+            0, from - to, height - middle_height,
             0, to - from, 0,
             extreme_left_x - intern_low_left_x, from - to, 0,
-            0, to - from, 0,
-            0, 0, 0
+            0, to - from, 0
         ];
 
         var texture_coord_buffer = [
-            1 , 0,
-            1 , 0,
-            1 , 0,
-            .8, 0,
-            1 , 1,
-            .8, 1,
-
-            .8, 0,
-
-            .3, 1,
-            .3, 0,
-            .3, 0,
-            .1, 0,
-            .3, 1,
-
-            .1, 1,
-            .1, 1,
-            .1, 0,
-            0 , 1,
-            0 , 0,
-
+            1, 0,
+            1, 1,
+            0.8, 0,
+            0.8, 1,
+            0.3, 0,
+            0.3, 1,
+            0.1, 0,
+            0.1, 1,
             0, 0,
             0, 1,
             1, 0,
             1, 1
         ];
-                
-        var normal_buffer = [
-            1.0, 0.0, 0.0,
-            1.0, 0.0, 0.0,
-            1.0, 0.0, 0.0,
-            1.0, 0.0, 0.0,
-            1.0, 0.0, 0.0,
-            1.0, 0.0, 1.0,
-            
-            /*extreme_right_x, to, max_height,
-            extreme_right_x, to, height,
-            extreme_right_x, to, max_height,*/
-            
-            1.0, 0.0, 1.0,
-            //extreme_right_x, from, max_height,extreme_right_x, from, max_height,
-            
-            0.0, 0.0, 1.0,
-            0.0, 0.0, 1.0,
-            0.0, 0.0, 1.0,
-            -1.0, 0.0, 1.0,
-            -1.0, 0.0, 1.0,
-            -1.0, 0.0, 1.0,
-            1.0, 0.0, 0.0,
-            1.0, 0.0, 0.0,
-            1.0, 0.0, 0.0,
-            1.0, 0.0, 0.0,
-            0.0, 0.0, -1.0,
-            0.0, 0.0, -1.0,
-            0.0, 0.0, -1.0,
-            0.0, 0.0, -1.0
-        ];
+          
+        var normal_buffer = [];
+        calcNormals(position_buffer, normal_buffer);      
         
         var binormal_buffer = getBinormalBufferFromVectors(normal_buffer, tangent_buffer);
         this.index_buffer = [];
@@ -251,114 +187,51 @@ function PlainRoadRightBorder(height, center_x, from, to) {
         
         var position_buffer = [
             extreme_right_x, from, height,
-            extreme_right_x, from, height,
-            extreme_right_x, from, height,
-            extreme_right_x, from, max_height,
             extreme_right_x, to, height,
-            extreme_right_x, to, max_height,
-            
             extreme_right_x, from, max_height,
-            
-            intern_high_right_x, to, max_height,
+            extreme_right_x, to, max_height,
             intern_high_right_x, from, max_height,
-            intern_high_right_x, from, max_height,
-            intern_low_right_x, from, middle_height,
             intern_high_right_x, to, max_height,
-            intern_low_right_x, to, middle_height,
-            intern_low_right_x, to, middle_height,
             intern_low_right_x, from, middle_height,
-            intern_low_right_x, to, height,
-            intern_low_right_x, from, height,
+            intern_low_right_x, to, middle_height,
             intern_low_right_x, from, height,
             intern_low_right_x, to, height,
             extreme_right_x, from, height,
             extreme_right_x, to, height
         ];
         
-        //TODO nuevo
         var tangent_buffer = [
-            0, 0, 0,
-            0, 0, 0,
-            0, 0, max_height - height,
-            0, to - from, height - max_height,
-            0, 0, max_height - height,
-            0, from - to, 0,
-            intern_high_right_x - extreme_right_x, to - from, 0,
-            0, from - to, 0,
-            0, 0, 0,
-            intern_low_right_x - intern_high_right_x, 0, middle_height - max_height,
-            intern_high_right_x - intern_low_right_x, to - from, max_height - middle_height,
-            intern_low_right_x - intern_high_right_x, 0, middle_height - max_height,
-            0, 0, 0,
-            0, from - to, 0,
-            0, to - from, height - middle_height,
-            0, from - to, 0,
-            0, 0, 0,
+            0, to - from, 0,
+            0, to - from, 0,
+            0, from - to, max_height - height,
+            0, to - from, 0,
+            intern_high_right_x - extreme_right_x, from - to, 0,
+            0, to - from, 0,
+            intern_low_right_x - intern_high_right_x, from - to, middle_height - max_height,
+            0, to - from, 0,
+            0, from - to, height - middle_height,
             0, to - from, 0,
             extreme_right_x - intern_low_right_x, from - to, 0,
-            0, to - from, 0,
-            0, 0, 0
+            0, to - from, 0
         ];
 
-        //TODO no modifique esta parte pero creo que lo del 10 está mal y debería ser 1
         var texture_coord_buffer = [
-            1 , 0,
-            1 , 0,
-            1 , 0,
-            .8, 0,
-            1 , 1,
-            .8, 1,
-
-            .8, 0,
-
-            .3, 1,
-            .3, 0,
-            .3, 0,
-            .1, 0,
-            .3, 1,
-
-            .1, 1,
-            .1, 1,
-            .1, 0,
-            0 , 1,
-            0 , 0,
-
+            1, 0,
+            1, 1,
+            0.8, 0,
+            0.8, 1,
+            0.3, 0,
+            0.3, 1,
+            0.1, 0,
+            0.1, 1,
             0, 0,
             0, 1,
             1, 0,
             1, 1
         ];
-                
-        var normal_buffer = [
-            -1.0, 0.0, 1.0,
-            -1.0, 0.0, 1.0,
-            -1.0, 0.0, 1.0,
-            -1.0, 0.0, 1.0,
-            -1.0, 0.0, 1.0,
-            0.0, 0.0, 1.0,
-            
-            /*extreme_right_x, to, max_height,
-            extreme_right_x, to, height,
-            extreme_right_x, to, max_height,*/
-            
-            0.0, 0.0, 1.0,
-            //extreme_right_x, from, max_height,extreme_right_x, from, max_height,
-            
-            1.0, 0.0, 1.0,
-            1.0, 0.0, 1.0,
-            1.0, 0.0, 0.0,
-            1.0, 1.0, 0.0,
-            1.0, 1.0, 0.0,
-            1.0, 1.0, 0.0,
-            -1.0, 0.0, 0.0,
-            -1.0, 0.0, 0.0,
-            -1.0, 0.0, 0.0,
-            -1.0, 0.0, 0.0,
-            -1.0, 0.0, 0.0,
-            0.0, 0.0, -1.0,
-            0.0, 0.0, -1.0,
-            0.0, 0.0, -1.0
-        ];
+          
+        var normal_buffer = [];
+        calcNormals(position_buffer, normal_buffer);       
         
         var binormal_buffer = getBinormalBufferFromVectors(normal_buffer, tangent_buffer);
         this.index_buffer = [];
@@ -474,54 +347,34 @@ function PlainRoadMiddle(height, center_x, from, to) {
         
         var position_buffer = [
             intern_low_left_x, from, middle_height,
+            intern_low_left_x, to, middle_height,
+            intern_low_right_x, from, middle_height,
+            intern_low_right_x, to, middle_height,
+            intern_low_right_x, from, height,
+            intern_low_right_x, to, height,
+            intern_low_left_x, from, height,
+            intern_low_left_x, to, height,
             intern_low_left_x, from, middle_height,
-            intern_low_right_x, from, middle_height,
-            intern_low_left_x, to, middle_height,
-            intern_low_right_x, to, middle_height,
-            
-            intern_low_right_x, to, middle_height,
-            intern_low_right_x, to, height,
-            intern_low_right_x, from, middle_height,
-            intern_low_right_x, from, height,
-            
-            intern_low_right_x, from, height,
-            intern_low_left_x, from, height,
-            intern_low_right_x, to, height,
-            intern_low_left_x, to, height,
-            
-            intern_low_left_x, to, height,
-            intern_low_left_x, from, height,
-            intern_low_left_x, to, middle_height,
-            intern_low_left_x, from, middle_height
+            intern_low_left_x, to, middle_height
         ];
-        
-        //TODO nuevo
+
         var tangent_buffer = [
-            0, 0, 0,
-            intern_low_right_x - intern_low_left_x, 0, 0,
-            intern_low_left_x - intern_low_right_x, to - from, 0,
-            intern_low_right_x - intern_low_left_x, 0, 0,
-            0, 0, 0,
-            0, 0, height - middle_height,
+            0, to - from, 0,
+            0, to - from, 0,
+            intern_low_right_x - intern_low_left_x, from - to, 0,
+            0, to - from, 0,
+            0, from - to, height - middle_height,
+            0, to - from, 0,
+            intern_low_left_x - intern_low_right_x, from - to, 0,
+            0, to - from, 0,
             0, from - to, middle_height - height,
-            0, 0, height - middle_height,
-            0, 0, 0,
-            intern_low_left_x - intern_low_right_x, 0, 0,
-            intern_low_right_x - intern_low_left_x, to - from, 0,
-            intern_low_left_x - intern_low_right_x, 0, 0,
-            0, 0, 0,
-            0, from - to, 0,
-            0, to - from, middle_height - height,
-            0, from - to, 0,
-            0, 0, 0
+            0, to - from, middle_height - middle_height
         ];
         
-        //TODO no cambie nada  
         var texture_coord_buffer = [
             0, 0,
-            0, 0,
-            1, 0,
             0, 1,
+            1, 0,
             1, 1,
 
             1, 1,
@@ -529,46 +382,12 @@ function PlainRoadMiddle(height, center_x, from, to) {
             1, 1,
             1, 1,
 
-            1, 1,
-            1, 1,
-            1, 1,
-            1, 1,
-
-            1, 1,
-            1, 1,
             1, 1,
             1, 1
         ];
-        
-        var normal_buffer = [
-            //intern_low_left_x, from, middle_height,
-            -1.0, 0.0, 1.0,
-            0.0, 0.0, 1.0,
-            0.0, 0.0, 1.0,
-            0.0, 0.0, 1.0,
-            1.0, 0.0, 1.0,
-            
-            1.0, 0.0, 1.0,
-            1.0, 0.0, 0.0,
-            1.0, 0.0, 0.0,
-            1.0, 0.0, -1.0,
-            
-            1.0, 0.0, -1.0,
-            0.0, 0.0, -1.0,
-            0.0, 0.0, -1.0,
-            -1.0, 0.0, -1.0,
-            
-            -1.0, 0.0, -1.0,
-            -1.0, 0.0, 0.0,
-            -1.0, 0.0, 0.0,
-            -1.0, 0.0, 1.0
-        ];
-        
-        /*this.normal_buffer = [];
-        calcNormals(this.position_buffer, this.normal_buffer);
-        for (var i = 0; i < this.normal_buffer.length; i++) {
-            this.normal_buffer[i] = -this.normal_buffer[i];
-        }*/
+
+        var normal_buffer = [];
+        calcNormals(position_buffer, normal_buffer);
         
         var binormal_buffer = getBinormalBufferFromVectors(normal_buffer, tangent_buffer);
         this.index_buffer = [];
@@ -670,7 +489,6 @@ function CurvedRoadLeftBorder(base_height, max_height, center_x, from, to) {
     this.texture_coord_buffer = [];
     this.index_buffer = [];
     this.heights_along_road = [[]];
-    //TODO nuevo
     this.tangent_buffer = [];
 
     this.webgl_position_buffer = null;
@@ -698,28 +516,13 @@ function CurvedRoadLeftBorder(base_height, max_height, center_x, from, to) {
         this.texture_coord_buffer.push(v);
     }
     
-    this.fillNormalBuffer = function(x, y, z) {
-        this.normal_buffer.push(x);
-        this.normal_buffer.push(y);
-        this.normal_buffer.push(z);
-    }
-    
-    //TODO nuevo
     this.fillTangentBuffer = function(x, y, z) {
         this.tangent_buffer.push(x);
         this.tangent_buffer.push(y);
         this.tangent_buffer.push(z);
     }
 
-    this.initBuffers = function() {
-        var y = from;
-        var z = base_height;
-        var x = extreme_left_x; 
-        this.fillBuffers(x, y, z, 0, 0);
-            
-        x = extreme_right_x;
-        this.fillBuffers(x, y, z, 1, 0);
-            
+    this.initBuffers = function() {   
         var radius = (to - from) / 2;
         for (var angle = -89; angle <= 90; angle++) {
             var vprevstep = (angle + 89.0) / 180.0;
@@ -739,87 +542,41 @@ function CurvedRoadLeftBorder(base_height, max_height, center_x, from, to) {
             var height_this_step = this_step_z;
             var max_height_this_step = this_step_z + MAX_HEIGHT_SEPARATION;
             var middle_height_this_step = this_step_z + MIDDLE_HEIGHT_SEPARATION;
-            
-            //TODO comentado
-            /*this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step, 0, vprevstep);
-            this.fillBuffers(extreme_left_x, previous_step_y, max_height_previous_step, 0.2, vprevstep);
-            this.fillBuffers(extreme_left_x, this_step_y, height_this_step, 0, vstep);
-            this.fillBuffers(extreme_left_x, this_step_y, max_height_this_step, 0.2, vstep);*/
-            
 
-            //TODO agregados los últimos dos campos
             this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step, 0, vprevstep);
-            this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step, 0, vprevstep);
-            this.fillBuffers(extreme_left_x, previous_step_y, max_height_previous_step, 0.2, vprevstep);
             this.fillBuffers(extreme_left_x, this_step_y, height_this_step, 0, vstep);
+            this.fillBuffers(extreme_left_x, previous_step_y, max_height_previous_step, 0.2, vprevstep);
             this.fillBuffers(extreme_left_x, this_step_y, max_height_this_step, 0.2, vstep);
-            
-            this.fillBuffers(extreme_left_x, previous_step_y, max_height_previous_step, 0.2, vprevstep);
-            
-            this.fillBuffers(intern_high_left_x, this_step_y, max_height_this_step, 0.7, vstep);
             this.fillBuffers(intern_high_left_x, previous_step_y, max_height_previous_step, 0.7, vprevstep);
-            this.fillBuffers(intern_high_left_x, previous_step_y, max_height_previous_step, 0.7, vprevstep);
-            this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step, 0.9, vprevstep);
             this.fillBuffers(intern_high_left_x, this_step_y, max_height_this_step, 0.7, vstep);
-            this.fillBuffers(intern_low_left_x, this_step_y, middle_height_this_step, 0.9, vstep);
-            this.fillBuffers(intern_low_left_x, this_step_y, middle_height_this_step, 0.9, vstep);
-
             this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step, 0.9, vprevstep);
-            this.fillBuffers(intern_low_left_x, this_step_y, height_this_step, 1, vstep);
-            this.fillBuffers(intern_low_left_x, previous_step_y, height_previous_step, 1, vprevstep);
+            this.fillBuffers(intern_low_left_x, this_step_y, middle_height_this_step, 0.9, vstep);
             this.fillBuffers(intern_low_left_x, previous_step_y, height_previous_step, 1, vprevstep);
             this.fillBuffers(intern_low_left_x, this_step_y, height_this_step, 1, vstep);
             this.fillBuffers(extreme_left_x, previous_step_y, height_previous_step, 0, vprevstep);
             this.fillBuffers(extreme_left_x, this_step_y, height_this_step, 0, vstep);
         }
+
+        var normal_buffer = [];
+        calcNormals(this.position_buffer, this.normal_buffer);
         
         for (var i = 0; i < 180 ; i++) {
-            this.fillNormalBuffer(1.0, 0.0, 0.0);
-            this.fillNormalBuffer(1.0, 0.0, 0.0);
-            this.fillNormalBuffer(1.0, 0.0, 0.0);
-            this.fillNormalBuffer(1.0, 0.0, 0.0);
-            this.fillNormalBuffer(1.0, 0.0, 0.0);
-            this.fillNormalBuffer(1.0, 0.0, 0.0);
-            this.fillNormalBuffer(1.0, 0.0, 1.0);
-            this.fillNormalBuffer(1.0, 0.0, 1.0);
-            this.fillNormalBuffer(0.0, 0.0, 1.0);
-            this.fillNormalBuffer(0.0, 0.0, 1.0);
-            this.fillNormalBuffer(-1.0, 0.0, 1.0);
-            this.fillNormalBuffer(-1.0, 0.0, 1.0);
-            this.fillNormalBuffer(-1.0, 0.0, 1.0);
-            this.fillNormalBuffer(-1.0, 0.0, 0.0);
-            this.fillNormalBuffer(-1.0, 0.0, 0.0);
-            this.fillNormalBuffer(-1.0, 0.0, 0.0);
-            this.fillNormalBuffer(-1.0, 0.0, 0.0);  
-            this.fillNormalBuffer(0.0, 0.0, -1.0);
-            this.fillNormalBuffer(0.0, 0.0, -1.0);
-            this.fillNormalBuffer(0.0, 0.0, -1.0);
-            
-            //TODO agregado
-            this.fillTangentBuffer(0.0, 0.0, 0.0);
-            this.fillTangentBuffer(0.0, 0.0, max_height_previous_step - height_previous_step);
-            this.fillTangentBuffer(0.0, this_step_y - previous_step_y, height_this_step - max_height_previous_step);
-            this.fillTangentBuffer(0.0, 0.0, max_height_this_step - height_this_step);
-            this.fillTangentBuffer(0.0, previous_step_y - this_step_y, max_height_previous_step - max_height_this_step);
-            this.fillTangentBuffer(intern_high_left_x - extreme_left_x, this_step_y - previous_step_y, max_height_this_step - max_height_previous_step);
-            this.fillTangentBuffer(0.0, previous_step_y - this_step_y, max_height_previous_step - max_height_this_step);
-            this.fillTangentBuffer(intern_low_left_x - intern_high_left_x, 0.0, middle_height_previous_step - max_height_previous_step);
-            this.fillTangentBuffer(intern_high_left_x - intern_low_left_x, this_step_y - previous_step_y, max_height_this_step - middle_height_previous_step);
-            this.fillTangentBuffer(intern_low_left_x - intern_high_left_x, 0.0, middle_height_this_step - max_height_this_step);
-            this.fillTangentBuffer(0.0, 0.0, 0.0);
-            this.fillTangentBuffer(0.0, previous_step_y - this_step_y, middle_height_previous_step - middle_height_this_step);
-            this.fillTangentBuffer(0.0, this_step_y - previous_step_y, height_this_step - middle_height_previous_step);  
-            this.fillTangentBuffer(0.0, previous_step_y - this_step_y, height_previous_step - height_this_step);
-            this.fillTangentBuffer(0.0, 0.0, 0.0);
-            this.fillTangentBuffer(0.0, this_step_y - previous_step_y, height_this_step - height_previous_step);
-            this.fillTangentBuffer(0.0, this_step_y - previous_step_y, height_this_step - height_previous_step);
-            this.fillTangentBuffer(extreme_left_x - intern_low_left_x, previous_step_y - this_step_y, height_previous_step - height_this_step);  
-            this.fillTangentBuffer(0.0, this_step_y - previous_step_y, height_this_step - height_previous_step);
-            this.fillTangentBuffer(0.0, 0.0, 0.0);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, height_this_step - height_previous_step);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, height_this_step - height_previous_step);
+            this.fillTangentBuffer(0, previous_step_y - this_step_y, max_height_previous_step - height_this_step);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, max_height_this_step - max_height_previous_step);
+            this.fillTangentBuffer(intern_high_left_x - extreme_left_x, previous_step_y - this_step_y, max_height_previous_step - max_height_this_step);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, max_height_this_step - max_height_previous_step);
+            this.fillTangentBuffer(intern_low_left_x - intern_high_left_x, previous_step_y - this_step_y, middle_height_previous_step - max_height_this_step);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, middle_height_this_step - middle_height_previous_step);
+            this.fillTangentBuffer(0, previous_step_y - this_step_y, height_previous_step - middle_height_this_step);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, height_this_step - height_previous_step);
+            this.fillTangentBuffer(extreme_left_x - intern_low_left_x, previous_step_y - this_step_y, height_previous_step - height_this_step);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, height_this_step - height_previous_step);
         };
         
         this.binormal_buffer = getBinormalBufferFromVectors(this.normal_buffer, this.tangent_buffer);
-        for (var index = 0; index < 180 * 20 ; index++) {
+        for (var index = 0; index < 180 * 12 ; index++) {
             this.index_buffer.push(index); 
         }
 
@@ -928,8 +685,6 @@ function CurvedRoadRightBorder(base_height, max_height, center_x, from, to) {
     this.texture_coord_buffer = [];
     this.index_buffer = [];
     this.heights_along_road = [[]];
-    
-    //TODO agregado
     this.tangent_buffer = [];
 
     this.webgl_position_buffer = null;
@@ -957,13 +712,6 @@ function CurvedRoadRightBorder(base_height, max_height, center_x, from, to) {
         this.texture_coord_buffer.push(v);
     }
     
-    this.fillNormalBuffer = function(x, y, z) {
-        this.normal_buffer.push(x);
-        this.normal_buffer.push(y);
-        this.normal_buffer.push(z);
-    }
-
-    //TODO nuevo
     this.fillTangentBuffer = function(x, y, z) {
         this.tangent_buffer.push(x);
         this.tangent_buffer.push(y);
@@ -971,14 +719,6 @@ function CurvedRoadRightBorder(base_height, max_height, center_x, from, to) {
     }
     
     this.initBuffers = function() {
-        var y = from;
-        var z = base_height;
-        var x = extreme_left_x; 
-        this.fillBuffers(x, y, z, 0, 0);
-            
-        x = extreme_right_x;
-        this.fillBuffers(x, y, z, 1, 0);
-            
         var radius = (to - from) / 2;
         for (var angle = -89; angle <= 90; angle++) {
             var vprevstep = (angle + 89.0) / 180.0;
@@ -1000,70 +740,35 @@ function CurvedRoadRightBorder(base_height, max_height, center_x, from, to) {
             var middle_height_this_step = this_step_z + MIDDLE_HEIGHT_SEPARATION;
 
             this.fillBuffers(extreme_right_x, previous_step_y, height_previous_step, 0, vprevstep);
-            this.fillBuffers(extreme_right_x, previous_step_y, max_height_previous_step, 0.2, vprevstep);
             this.fillBuffers(extreme_right_x, this_step_y, height_this_step, 0, vstep);
-            this.fillBuffers(extreme_right_x, this_step_y, max_height_this_step, 0.2, vstep);
-            
             this.fillBuffers(extreme_right_x, previous_step_y, max_height_previous_step, 0.2, vprevstep);
-            
-            this.fillBuffers(intern_high_right_x, this_step_y, max_height_this_step, 0.7, vstep);
+            this.fillBuffers(extreme_right_x, this_step_y, max_height_this_step, 0.2, vstep);
             this.fillBuffers(intern_high_right_x, previous_step_y, max_height_previous_step, 0.7, vprevstep);
-            this.fillBuffers(intern_high_right_x, previous_step_y, max_height_previous_step, 0.7, vprevstep);
-            this.fillBuffers(intern_low_right_x, previous_step_y, middle_height_previous_step, 0.9, vprevstep);
             this.fillBuffers(intern_high_right_x, this_step_y, max_height_this_step, 0.7, vstep);
-            this.fillBuffers(intern_low_right_x, this_step_y, middle_height_this_step, 0.9, vstep);
-            this.fillBuffers(intern_low_right_x, this_step_y, middle_height_this_step, 0.9, vstep);
-
             this.fillBuffers(intern_low_right_x, previous_step_y, middle_height_previous_step, 0.9, vprevstep);
-            this.fillBuffers(intern_low_right_x, this_step_y, height_this_step, 1, vstep);
-            this.fillBuffers(intern_low_right_x, previous_step_y, height_previous_step, 1, vprevstep);
+            this.fillBuffers(intern_low_right_x, this_step_y, middle_height_this_step, 0.9, vstep);
             this.fillBuffers(intern_low_right_x, previous_step_y, height_previous_step, 1, vprevstep);
             this.fillBuffers(intern_low_right_x, this_step_y, height_this_step, 1, vstep);
             this.fillBuffers(extreme_right_x, previous_step_y, height_previous_step, 0, vprevstep);
             this.fillBuffers(extreme_right_x, this_step_y, height_this_step, 0, vstep);
         }
+
+        var normal_buffer = [];
+        calcNormals(this.position_buffer, this.normal_buffer);
         
         for (var i = 0; i < 180 ; i++) {
-            this.fillNormalBuffer(-1.0, 0.0, 1.0);
-            this.fillNormalBuffer(-1.0, 0.0, 1.0);
-            this.fillNormalBuffer(-1.0, 0.0, 1.0);
-            this.fillNormalBuffer(-1.0, 0.0, 1.0);
-            this.fillNormalBuffer(-1.0, 0.0, 0.0);
-            this.fillNormalBuffer(0.0, 0.0, 1.0);
-            this.fillNormalBuffer(0.0, 0.0, 1.0);
-            this.fillNormalBuffer(1.0, 0.0, 1.0);
-            this.fillNormalBuffer(1.0, 0.0, 1.0);
-            this.fillNormalBuffer(1.0, 0.0, 0.0);
-            this.fillNormalBuffer(1.0, 1.0, 0.0);
-            this.fillNormalBuffer(1.0, 1.0, 0.0);
-            this.fillNormalBuffer(1.0, 1.0, 0.0);
-            this.fillNormalBuffer(-1.0, 0.0, 0.0);
-            this.fillNormalBuffer(-1.0, 0.0, 0.0);
-            this.fillNormalBuffer(-1.0, 0.0, 0.0);
-            this.fillNormalBuffer(-1.0, 0.0, 0.0);  
-            this.fillNormalBuffer(-1.0, 0.0, 0.0);
-            this.fillNormalBuffer(0.0, 0.0, -1.0);
-            
-            //TODO agregado
-            this.fillTangentBuffer(0.0, 0.0, max_height_previous_step - height_previous_step);
-            this.fillTangentBuffer(0.0, this_step_y - previous_step_y, height_this_step - max_height_previous_step);
-            this.fillTangentBuffer(0.0, 0.0, max_height_this_step - height_this_step);
-            this.fillTangentBuffer(0.0, previous_step_y - this_step_y, max_height_previous_step - max_height_this_step);
-            this.fillTangentBuffer(intern_high_right_x - extreme_right_x, this_step_y - previous_step_y, max_height_this_step - max_height_previous_step);
-            this.fillTangentBuffer(0.0, previous_step_y - this_step_y, max_height_previous_step - max_height_this_step);
-            this.fillTangentBuffer(0.0, 0.0, 0.0);
-            this.fillTangentBuffer(intern_low_right_x - intern_high_right_x, 0.0, middle_height_previous_step - max_height_previous_step);
-            this.fillTangentBuffer(intern_high_right_x - intern_low_right_x, this_step_y - previous_step_y, max_height_this_step - middle_height_previous_step);
-            this.fillTangentBuffer(intern_low_right_x - intern_high_right_x, 0.0, middle_height_this_step - max_height_this_step);
-            this.fillTangentBuffer(0.0, 0.0, 0.0);
-            this.fillTangentBuffer(0.0, previous_step_y - this_step_y, middle_height_previous_step - middle_height_this_step);
-            this.fillTangentBuffer(0.0, this_step_y - previous_step_y, height_this_step - middle_height_previous_step);
-            this.fillTangentBuffer(0.0, previous_step_y - this_step_y, height_previous_step - height_this_step);
-            this.fillTangentBuffer(0.0, 0.0, 0.0);
-            this.fillTangentBuffer(0.0, this_step_y - previous_step_y, height_this_step - height_previous_step);
-            this.fillTangentBuffer(extreme_right_x - intern_low_right_x, previous_step_y - this_step_y, height_previous_step - height_this_step);  
-            this.fillTangentBuffer(0.0, this_step_y - previous_step_y, height_this_step - height_previous_step);
-            this.fillTangentBuffer(0.0, 0.0, 0.0);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, height_this_step - height_previous_step);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, height_this_step - height_previous_step);
+            this.fillTangentBuffer(0, previous_step_y - this_step_y, max_height_previous_step - height_this_step);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, max_height_this_step - max_height_previous_step);
+            this.fillTangentBuffer(intern_high_right_x - extreme_right_x, previous_step_y - this_step_y, max_height_previous_step - max_height_this_step);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, max_height_this_step - max_height_previous_step);
+            this.fillTangentBuffer(intern_low_right_x - intern_high_right_x, previous_step_y - this_step_y, middle_height_previous_step - max_height_this_step);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, middle_height_this_step - middle_height_previous_step);
+            this.fillTangentBuffer(0, previous_step_y - this_step_y, height_previous_step - middle_height_this_step);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, height_this_step - height_previous_step);
+            this.fillTangentBuffer(extreme_right_x - intern_low_right_x, previous_step_y - this_step_y, height_previous_step - height_this_step);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, height_this_step - height_previous_step);
         };
         
         this.binormal_buffer = getBinormalBufferFromVectors(this.normal_buffer, this.tangent_buffer);
@@ -1177,8 +882,6 @@ function CurvedRoadMiddle(base_height, max_height, center_x, from, to) {
     this.texture_coord_buffer = [];
     this.index_buffer = [];
     this.heights_along_road = [[]];
-    
-    //TODO agregado
     this.tangent_buffer = [];
 
     this.webgl_position_buffer = null;
@@ -1206,28 +909,13 @@ function CurvedRoadMiddle(base_height, max_height, center_x, from, to) {
         this.texture_coord_buffer.push(v);
     }
     
-    this.fillNormalBuffer = function(x, y, z) {
-        this.normal_buffer.push(x);
-        this.normal_buffer.push(y);
-        this.normal_buffer.push(z);
-    }
-    
-    //TODO nuevo
     this.fillTangentBuffer = function(x, y, z) {
         this.tangent_buffer.push(x);
         this.tangent_buffer.push(y);
         this.tangent_buffer.push(z);
     }
 
-    this.initBuffers = function() {
-        var y = from;
-        var z = base_height;
-        var x = extreme_left_x; 
-        this.fillBuffers(x, y, z, 0, 0);
-            
-        x = extreme_right_x;
-        this.fillBuffers(x, y, z, 1, 0);
-            
+    this.initBuffers = function() {  
         var radius = (to - from) / 2;
         for (var angle = -89.0; angle <= 90.0; angle++) {
             var vprevstep = (angle + 89.0) / 180.0;
@@ -1246,78 +934,33 @@ function CurvedRoadMiddle(base_height, max_height, center_x, from, to) {
             var middle_height_previous_step = previous_step_z + MIDDLE_HEIGHT_SEPARATION;
             var height_this_step = this_step_z;
             var max_height_this_step = this_step_z + MAX_HEIGHT_SEPARATION;
-            var middle_height_this_step = this_step_z + MIDDLE_HEIGHT_SEPARATION;            
-            
-            this.fillBuffers(intern_low_right_x, previous_step_y, middle_height_previous_step, 1, vprevstep);
-            this.fillBuffers(intern_low_left_x, this_step_y, middle_height_this_step, 0, vstep);
-            this.fillBuffers(intern_low_right_x, this_step_y, middle_height_this_step, 1, vstep);
-            
-            this.fillBuffers(intern_low_right_x, this_step_y, middle_height_this_step, 1, vstep);
-            this.fillBuffers(intern_low_right_x, this_step_y, height_this_step, 1, vstep);
-            this.fillBuffers(intern_low_right_x, previous_step_y, middle_height_previous_step, 1, vprevstep);
-            this.fillBuffers(intern_low_right_x, previous_step_y, height_previous_step, 1, vprevstep);
-            
-            this.fillBuffers(intern_low_right_x, previous_step_y, height_previous_step, 1, 1);
-            this.fillBuffers(intern_low_left_x, previous_step_y, height_previous_step, 1, 1);
-            this.fillBuffers(intern_low_right_x, this_step_y, height_this_step, 1, 1);
-            this.fillBuffers(intern_low_left_x, this_step_y, height_this_step, 1, 1);
-            
-            this.fillBuffers(intern_low_left_x, this_step_y, height_this_step, 0, vstep);
-            this.fillBuffers(intern_low_left_x, previous_step_y, height_previous_step, 0, vprevstep);
-            this.fillBuffers(intern_low_left_x, this_step_y, middle_height_this_step, 0, vstep);
-            this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step, 0, vprevstep);
+            var middle_height_this_step = this_step_z + MIDDLE_HEIGHT_SEPARATION;
 
-            
-            var aux_y, aux_z;
-            aux_y = this_step_y - previous_step_y;
-            if (angle > 0) {
-                aux_z = height_previous_step - height_this_step;
-            } else {
-                aux_z = height_this_step - height_previous_step;
-            }
-            this.fillNormalBuffer(-aux_z, aux_y, aux_z);
-            this.fillNormalBuffer(0.0, aux_y, aux_z);
-            this.fillNormalBuffer(0.0, aux_y, aux_z);
-            this.fillNormalBuffer(0.0, aux_y, aux_z);
-            
-            this.fillNormalBuffer(0.0, aux_y, aux_z);
-            this.fillNormalBuffer(0.0, aux_y, aux_z);
-            this.fillNormalBuffer(aux_z, 0.0, 0.0);
-            this.fillNormalBuffer(aux_z, 0.0, 0.0);
-            
-            this.fillNormalBuffer(aux_z, 0.0, -aux_z);
-            this.fillNormalBuffer(0.0, -aux_y, -aux_z);
-          //  TODO::  Comento la linea esta solo para dibujar la ruta, no se si sobra
-          //  this.fillNormalBuffer(0.0, -aux_y, -aux_z);
-            this.fillNormalBuffer(0.0, -aux_y, -aux_z);
-            
-            this.fillNormalBuffer(0.0, -aux_y, -aux_z);
-            this.fillNormalBuffer(-aux_z, 0.0, -aux_z);
-            this.fillNormalBuffer(-aux_z, 0.0, 0.0);
-            this.fillNormalBuffer(-aux_z, aux_y, aux_z);
-            
-            //TODO agregado
-            this.fillTangentBuffer(0.0, 0.0, 0.0);
-            this.fillTangentBuffer(intern_low_left_x - intern_low_right_x, this_step_y - previous_step_y, middle_height_this_step - middle_height_previous_step);
-            this.fillTangentBuffer(intern_low_right_x - intern_low_left_x, 0.0, 0.0);
-            this.fillTangentBuffer(0.0, 0.0, 0.0);
-            
-            this.fillTangentBuffer(0.0, 0.0, height_this_step - middle_height_this_step);
-            this.fillTangentBuffer(0.0, previous_step_y - this_step_y, middle_height_previous_step - height_this_step);
-            this.fillTangentBuffer(0.0, 0.0, height_previous_step - middle_height_previous_step);
-            this.fillTangentBuffer(0.0, 0.0, 0.0);
-            
-            this.fillTangentBuffer(intern_low_left_x - intern_low_right_x, 0.0, 0.0);
-            this.fillTangentBuffer(intern_low_right_x - intern_low_left_x, this_step_y - previous_step_y, height_this_step - height_previous_step);
-          //  TODO::  Comento la linea esta solo para dibujar la ruta, no se si sobra
-            //this.fillTangentBuffer(intern_low_left_x - intern_low_right_x, 0.0, 0.0);
-            this.fillTangentBuffer(0.0, 0.0, 0.0);
-            
-            this.fillTangentBuffer(0.0, previous_step_y - this_step_y, height_previous_step - height_this_step);
-            this.fillTangentBuffer(0.0, this_step_y - previous_step_y, middle_height_this_step - height_previous_step);
-            this.fillTangentBuffer(0.0, previous_step_y - this_step_y, middle_height_previous_step - middle_height_this_step);
-            this.fillTangentBuffer(0.0, 0.0, 0.0);
+            this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step, 0, vprevstep);
+            this.fillBuffers(intern_low_left_x, this_step_y, middle_height_this_step, 0, vstep);
+            this.fillBuffers(intern_low_right_x, previous_step_y, middle_height_previous_step, 1, vprevstep);
+            this.fillBuffers(intern_low_right_x, this_step_y, middle_height_this_step, 1, vstep);
+            this.fillBuffers(intern_low_right_x, previous_step_y, height_previous_step, 1, 1);
+            this.fillBuffers(intern_low_right_x, this_step_y, height_this_step, 1, vstep);
+            this.fillBuffers(intern_low_left_x, previous_step_y, height_previous_step, 1, 1);
+            this.fillBuffers(intern_low_left_x, this_step_y, height_this_step, 1, 1);
+            this.fillBuffers(intern_low_left_x, previous_step_y, middle_height_previous_step, 0, vprevstep);
+            this.fillBuffers(intern_low_left_x, this_step_y, middle_height_this_step, 0, vstep);
+
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, middle_height_this_step - middle_height_previous_step);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, middle_height_this_step - middle_height_previous_step);
+            this.fillTangentBuffer(intern_low_right_x - intern_low_left_x, previous_step_y - this_step_y, middle_height_previous_step - middle_height_this_step);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, middle_height_this_step - middle_height_previous_step);
+            this.fillTangentBuffer(0, previous_step_y - this_step_y, height_previous_step - middle_height_this_step);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, height_this_step - height_previous_step);
+            this.fillTangentBuffer(intern_low_left_x - intern_low_right_x, previous_step_y - this_step_y, height_previous_step - height_this_step);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, height_this_step - height_previous_step);
+            this.fillTangentBuffer(0, previous_step_y - this_step_y, middle_height_previous_step - height_this_step);
+            this.fillTangentBuffer(0, this_step_y - previous_step_y, middle_height_this_step - middle_height_previous_step);
         }
+
+        var normal_buffer = [];
+        calcNormals(this.position_buffer, this.normal_buffer);
   
         this.binormal_buffer = getBinormalBufferFromVectors(this.normal_buffer, this.tangent_buffer);
         for (var index = 0; index < this.normal_buffer.length / 3 ; index++) {

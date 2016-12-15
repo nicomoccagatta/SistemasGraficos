@@ -4,27 +4,6 @@ const DELIMITER_DIFF = 0.4;
 
 
 function calcNormals(source, destination) {
-    /*this._calcularNormales = function(){
-       
-       this.normal_buffer = [];
-        for (var i = 0; i < this.rows; i++){
-            for (var j = 0; j < this.forma.length-2; j+=3){
-                var anterior = this._posicion(i-1, j);
-                var siguiente = this._posicion(i+1, j);
-
-                var d = vec3.create();
-                vec3.subtract(d, siguiente, anterior);
-
-                var normalSuperficie = vec3.create();
-                vec3.cross(normalSuperficie, d, this.tangentesCurva[j/3]);
-                vec3.normalize(normalSuperficie, normalSuperficie);
-
-                this.normal_buffer.push(normalSuperficie[0], normalSuperficie[1], normalSuperficie[2]);
-            }
-        }
-    }*/
-    
-    
     var subtract = function (a, b) {
         var vec3 = new Array(3);
         vec3[0] = a[0] - b[0],
@@ -50,10 +29,6 @@ function calcNormals(source, destination) {
         return vec3;
     }
     
-    
-    /*for (var j = 0; j < 2; j++) {
-        destination.push(0, 0, 0);
-    }*///destination.push(0, 0, 0);
     var v_normal = vec3.create();
     for (var i = 0; i < source.length - 6; i += 3) {
         var index = i;
@@ -75,20 +50,7 @@ function calcNormals(source, destination) {
           source[index + 7],
           source[index + 8]
         ];
-        
-        /*if ((v1[0] == v2[0]) && (v1[1] == v2[1]) &&(v1[2] == v2[2]) || (v3[0] == v1[0]) && (v3[1] == v1[1]) &&(v3[2] == v1[2])) {
-            destination.push(v_normal[0], v_normal[1], v_normal[2]);
-        }*/
-        
-        
-        /*if ((i % 2) != 0) {
-            v1 = (-v1);
-            v2 = (-v2);
-            v3 = (-v3);
-        }*/
-        
-        
-        
+
         var u = vec3.create();
         u = subtract(v2, v1);
         var v = vec3.create();
@@ -97,115 +59,16 @@ function calcNormals(source, destination) {
         vec3.cross(v_final, u, v);
         vec3.normalize(v_normal, v_final);
         
-        
-        
         if ((i % 2) != 0) {
             v_normal[0] = (-v_normal[0]);
             v_normal[1] = (-v_normal[1]);
             v_normal[2] = (-v_normal[2]);
         }
-        
-        
-        
 
         destination.push(v_normal[0], v_normal[1], v_normal[2]);
-        
-        /*for (var j = 0; j < 2; j++) {
-            destination.push(0, 0, 0);
-        }*/
     }
     destination.push(v_normal[0], v_normal[1], v_normal[2]);
     destination.push(v_normal[0], v_normal[1], v_normal[2]);
-
-    /*for (var i = 0; i < Math.floor(source.length / 9); i++) {
-        var index = i * 9;
-        
-        var v1 = [
-         source[index],
-         source[index + 1],
-         source[index + 2]
-        ];
-        
-        var v2 = [
-          source[index + 3],
-          source[index + 4],
-          source[index + 5]
-        ];
-        
-        var v3 = [
-          source[index + 6],
-          source[index + 7],
-          source[index + 8]
-        ];
-        
-        var u = subtract(v2, v1);
-        var v = subtract(v3, v1);
-        var v_final = crossProduct(u, v);
-        var v_normal = normalize(v_final);
-        
-        for (var j = 0; j < 3; j++) {
-            destination.push(v_normal[0], v_normal[1], v_normal[2]);
-        }
-        
-        
-
-        if (((i + 1) != source.length / 9) && (i + 2) > Math.floor(source.length / 9)) {
-            var extra = (source.length - Math.floor(source.length / 9) * 9);
-            index += extra;
-            
-            v1 = [
-             source[index],
-             source[index + 1],
-             source[index + 2]
-            ];
-            
-            v2 = [
-              source[index + 3],
-              source[index + 4],
-              source[index + 5]
-            ];
-            
-            v3 = [
-              source[index + 6],
-              source[index + 7],
-              source[index + 8]
-            ];
-            
-            u = subtract(v2, v1);
-            v = subtract(v3, v1);
-            v_final = crossProduct(u, v);
-            v_normal = normalize(v_final);
-            
-            for (var j = 0; j < (extra / 3); j++) {
-                destination.push(v_normal[0], v_normal[1], v_normal[2]);
-            }
-        }
-    }*/
-    
-    
-    
-    
-    
-    /*var normalize = function (a) {
-        var vec3 = new Array(3);
-        var len = Math.sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
-        vec3[0] = a[0] / len;
-        vec3[1] = a[1] / len;
-        vec3[2] = a[2] / len;
-        return vec3;
-    }
-    
-    
-    for (var i = 0; i < source.length; i += 3) {
-        var normal = [0, 0, 0];
-        var vertex_one = [source[i], source[i + 1], source[i + 2]];
-        var vertex_two = [source[(i + 3) % source.length], source[(i + 4) % source.length], source[(i + 5) % source.length]];
-        normal[0] = ((vertex_one[1] - vertex_two[1]) * (vertex_one[2] + vertex_two[2]));
-        normal[1] = ((vertex_one[2] - vertex_two[2]) * (vertex_one[0] + vertex_two[0]));
-        normal[2] = ((vertex_one[0] - vertex_two[0]) * (vertex_one[1] + vertex_two[1]));
-        normalize(normal);
-        destination.push(normal[0], normal[1], normal[2]);
-    }*/
 }
 
 
@@ -232,25 +95,6 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
         var middle_right_y = (center_y + delimiter * 0.8);
         
         var position_buffer = [
-            middle_right_x, min_center_y, top_height,
-            max_center_x, min_center_y, top_height,
-            middle_right_x, max_center_y, top_height,
-            max_center_x, max_center_y, top_height,
-            middle_right_x, max_center_y, top_height,
-            middle_right_x, middle_right_y, top_height,
-            middle_right_x, middle_left_y, top_height,
-            middle_left_x, middle_right_y, top_height,
-            middle_left_x, middle_left_y, top_height,
-            middle_left_x, min_center_y, top_height,
-            middle_left_x, min_center_y, top_height,
-            middle_left_x, min_center_y, top_height,
-            min_center_x, min_center_y, top_height,
-            middle_left_x, max_center_y, top_height,
-            min_center_x, max_center_y, top_height,
-        
-            min_center_x, min_center_y, top_height,
-            
-            //arranca vuelta
             min_center_x, min_center_y, top_height,
             min_center_x, min_center_y, base_height,
             middle_left_x, min_center_y, top_height,
@@ -266,7 +110,7 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
             
             max_center_x, max_center_y, top_height,
             max_center_x, max_center_y, base_height,
-                      
+            
             middle_right_x, max_center_y, top_height,
             middle_right_x, max_center_y, base_height,
             middle_right_x, middle_right_y, top_height,
@@ -279,99 +123,41 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
             min_center_x, max_center_y, base_height,
             
             min_center_x, min_center_y, top_height,
-            min_center_x, min_center_y, base_height,
-            
-            min_center_x, min_center_y, base_height,
-            
-            // Base de abajo
-            min_center_x, max_center_y, base_height,
-            middle_left_x, min_center_y, base_height,
-            middle_left_x, max_center_y, base_height,
-            middle_left_x, middle_left_y, base_height,
-            middle_left_x, middle_right_y, base_height,
-            middle_right_x, middle_left_y, base_height,
-            middle_right_x, middle_right_y, base_height,
-            middle_right_x, min_center_y, base_height,
-            middle_right_x, max_center_y, base_height,
-            max_center_x, min_center_y, base_height,
-            max_center_x, max_center_y, base_height
+            min_center_x, min_center_y, base_height
         ];
 
+        dif_z = top_height - base_height;
+        
         var tangent_buffer = [
-            1,  0,  0,
-            1,  0,  0,
-            1,  0,  0,
-            1,  0,  0,
-            1,  0,  0,
-            1,  0,  0,
-            1,  0,  0,
-            1,  0,  0,
-            1,  0,  0,
-            1,  0,  0,
-            1,  0,  0,
-            1,  0,  0,
-            1,  0,  0,
-            1,  0,  0,
-            1,  0,  0,
-            1,  0,  0,
-            1,  0,  0,
-            1,  0,  0,
-            1,  1,  0,
-            0,  1,  0,
-            1,  1,  0,
-            1,  0,  0, 
-            1,  1,  0,
-            0,  1,  0,
-            1,  1,  0,
-            1,  0,  0,
-            1,  1,  0,
-            0,  1,  0,
-            0,  1,  0,
-            1,  1,  0,
-            1,  0,  0,
-            1,  1,  0,
-            0,  1,  0,
-            1,  1,  0,
-            1,  0,  0,
-            1,  1,  0,
-            0,  1,  0,
-            1,  1,  0,
-            1,  0,  0,
-            1,  1,  0,
-            0,  1,  0,
-            0,  1,  0,
-            0,  1,  0,
-            0,  1,  0,
-            0,  1,  0,
-            0,  1,  0,
-            0,  1,  0,
-            0,  1,  0,
-            0,  1,  0,
-            0,  1,  0,
-            0,  1,  0,
-            0,  1,  0,
-            0,  1,  0,
-            0,  1,  0
+            min_center_x - middle_left_x, min_center_y - min_center_y, dif_z,
+            min_center_x - middle_left_x, min_center_y - min_center_y, dif_z,
+            middle_left_x - middle_left_x, min_center_y - min_center_y, dif_z,
+            middle_left_x - middle_left_x, middle_left_y - min_center_y, dif_z,
+            middle_left_x - middle_left_x, middle_left_y - middle_left_y, dif_z,
+            middle_left_x - middle_right_x, middle_left_y - middle_left_y, dif_z,
+            middle_right_x - middle_right_x, middle_left_y - middle_left_y, dif_z,
+            middle_right_x - middle_right_x, middle_left_y - min_center_y, dif_z,
+            middle_right_x - middle_right_x, min_center_y - min_center_y, dif_z,
+            middle_right_x - max_center_x, min_center_y - min_center_y, dif_z,
+            max_center_x - max_center_x, min_center_y - min_center_y, dif_z,
+            max_center_x - max_center_x, min_center_y - max_center_y, dif_z,
+            max_center_x - max_center_x, max_center_y - max_center_y, dif_z,
+            max_center_x - middle_right_x, max_center_y - max_center_y, dif_z,
+            middle_right_x - middle_right_x, max_center_y - max_center_y, dif_z,
+            middle_right_x - middle_right_x, max_center_y - middle_right_y, dif_z,
+            middle_right_x - middle_right_x, middle_right_y - middle_right_y, dif_z,
+            middle_right_x - middle_left_x, middle_right_y - middle_right_y, dif_z,
+            middle_left_x - middle_left_x, middle_right_y - middle_right_y, dif_z,
+            middle_left_x - middle_left_x, middle_right_y - max_center_y, dif_z,
+            middle_left_x - middle_left_x, max_center_y - max_center_y, dif_z,
+            middle_left_x - min_center_x, max_center_y - max_center_y, dif_z,
+            min_center_x - min_center_x, max_center_y - max_center_y, dif_z,
+            min_center_x - min_center_x, max_center_y - min_center_y, dif_z,
+            min_center_x - min_center_x, min_center_y - min_center_y, dif_z,
+            min_center_x - min_center_x, min_center_y - min_center_y, dif_z
         ];
         
         var texture_coord_buffer = [
-            0, 1,
-            0, 1,
-            0, 1,
-            0, 1,
-            0, 1,
-            0, 1,
-            0, 1,
-            0, 1,
-            0, 1,
-            0, 1,
-            0, 1,
-            0, 1,
-            0, 1,
-            0, 1,
-            0, 1,
-            0, 1,
-
             0, 1,
             0, 0,
             3/32, 1,
@@ -385,7 +171,7 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
             0.25, 1,
             0.25, 0,
             0.5, 1,
-            0.5, 0,       
+            0.5, 0,
             19/32, 1,
             19/32, 0,
             77/128, 1,
@@ -397,19 +183,6 @@ function BaseColumnOne(max_height, min_height, center_x, center_y, delimiter) {
             0.75, 1,
             0.75, 0,
             1, 1,
-            1, 0,
-            1, 0,
-            
-            1, 0,
-            1, 0,
-            1, 0,
-            1, 0,
-            1, 0,
-            1, 0,
-            1, 0,
-            1, 0,
-            1, 0,
-            1, 0,
             1, 0
         ];
         
@@ -545,8 +318,6 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
         
         var position_buffer = [
             min_center_x_top, min_center_y_top, top_height,
-            min_center_x_top, min_center_y_top, top_height,
-            min_center_x_top, min_center_y_top, top_height,
             min_center_x_base, min_center_y_base, base_height,
             middle_left_x_top, min_center_y_top, top_height,
             middle_left_x_base, min_center_y_base, base_height,
@@ -580,8 +351,6 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
         dif_z = top_height - base_height;
         
         var tangent_buffer = [
-            min_center_x_base - min_center_x_top, min_center_y_base - min_center_y_top, dif_z,
-            min_center_x_base - min_center_x_top, min_center_y_base - min_center_y_top, dif_z,
             min_center_x_base - middle_left_x_top, min_center_y_base - min_center_y_top, dif_z,
             min_center_x_base - middle_left_x_top, min_center_y_base - min_center_y_top, dif_z,
             middle_left_x_base - middle_left_x_top, min_center_y_base - min_center_y_top, dif_z,
@@ -610,10 +379,7 @@ function BaseColumnTwo(height, center_x, center_y, delimiter) {
             min_center_x_top - min_center_x_base, min_center_y_top - min_center_y_base, dif_z
         ];
 
-        //TODO agregado
         var texture_coord_buffer = [
-            0, 1,
-            0, 1,
             0, 1,
             0, 0,
             3/32, 1,
