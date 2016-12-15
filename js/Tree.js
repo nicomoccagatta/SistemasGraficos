@@ -215,7 +215,8 @@ function Tree(points, min_height,scale) {
             this.index_buffer_tree_base.push(index_index_tree_base_buffer);
             index_index_tree_base_buffer++;
         }
-          // Creación e Inicialización de los buffers a nivel de OpenGL
+
+        // Creación e Inicialización de los buffers a nivel de OpenGL
         var position_buffer = getPositionBuffer(this.vertex_buffer_base);
         var normal_buffer = getNormalBuffer(this.vertex_buffer_base);
         var binormal_buffer = getBinormalBuffer(this.vertex_buffer_base);

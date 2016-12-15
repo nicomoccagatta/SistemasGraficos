@@ -56,7 +56,7 @@ function ArcField(from_x, to_x, from_y, to_y, diameter, min_height, max_height, 
     
                     var position = [x,y,z];
                     var normal = [x,y,z];
-                    var tangent = [0,y,z]; // <--- TODO!
+                    var tangent = [0,y,z];
                     var texture = [0,(angle-180.0)/182.0];
                     this.vertex_buffer.push(new Vertice(position, position, normal, tangent, texture));
 
@@ -68,7 +68,7 @@ function ArcField(from_x, to_x, from_y, to_y, diameter, min_height, max_height, 
 
                     var position = [x,y,z];
                     var normal = [x,y,z];
-                    var tangent = [0,y,z]; // <--- TODO!
+                    var tangent = [0,y,z];
                     var texture = [1,(angle-180.0)/182.0];
                     this.vertex_buffer.push(new Vertice(position, position, normal, tangent, texture));
 
