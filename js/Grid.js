@@ -14,8 +14,5 @@ function grid(latitud, longitud) {
         if (i != latitud-2) index_buffer.push(index + longitud); //Repito el ultimo de cada fila, salvo la ultima
     }
 
-    //console.log("Cantidad de indices: " + index_buffer.length);
-    //console.log("Max indice: " + max);
-
     return index_buffer;
 }

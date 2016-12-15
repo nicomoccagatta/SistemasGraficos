@@ -102,7 +102,7 @@ function Tree(points, min_height,scale) {
 
                     var position = [x,y,z];
                     var normal = [x,y,z];
-                    var tangent = [0,y,z]; // <--- TODO!
+                    var tangent = [0,y,z];
                     var texture = [u,v];
                     this.vertex_buffer_tree.push(new Vertice(position, position, normal, tangent, texture));
                     this.index_buffer.push(index_index_buffer);
@@ -119,7 +119,7 @@ function Tree(points, min_height,scale) {
 
                     var position = [x,y,z];
                     var normal = [x,y,z];
-                    var tangent = [0,y,z]; // <--- TODO!
+                    var tangent = [0,y,z];
                     var texture = [u,v];
                     this.vertex_buffer_tree.push(new Vertice(position, position, normal, tangent, texture));
                     this.index_buffer.push(index_index_buffer);
@@ -200,7 +200,7 @@ function Tree(points, min_height,scale) {
 
             var position = [x,y,z];
             var normal = [x,y,z];
-            var tangent = [0,y,z]; // <--- TODO!
+            var tangent = [0,y,z];
             var color = [r,g,b];
             this.vertex_buffer_base.push(new Vertice(position, color, normal, tangent, texture));
             this.index_buffer_tree_base.push(index_index_tree_base_buffer);
@@ -209,7 +209,7 @@ function Tree(points, min_height,scale) {
             z = min_height+2.0 * scale;
             position = [x,y,z];
             normal = [x,y,z];
-            tangent = [0,y,z]; // <--- TODO!
+            tangent = [0,y,z];
             color = [r,g,b];
             this.vertex_buffer_base.push(new Vertice(position, color, normal, tangent, texture));
             this.index_buffer_tree_base.push(index_index_tree_base_buffer);

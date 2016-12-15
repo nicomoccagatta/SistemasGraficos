@@ -2,7 +2,7 @@ var width = 250,
     height = 200;
 
 var points = d3.range(0, 6).map(function(i) {
-  var random = Math.random() - 0.5; //random = [-0.5,0.5]
+  var random = Math.random() - 0.5;
   return [width / 2 + random * width / 2 , height - i * height / 5];
 });
 
@@ -74,7 +74,6 @@ function mousemove() {
   var m = d3.mouse(svg.node());
   dragged[0] = Math.max(0, Math.min(width, m[0]));
   dragged[1] = Math.max(0, Math.min(height, m[1]));
-  //console.log(dragged[0]+":"+dragged[1]);
   redraw();
 }
 

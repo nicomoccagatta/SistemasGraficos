@@ -1,7 +1,6 @@
 const CYLINDER_COLOR_r = 0.1;
 const CYLINDER_COLOR_g = 0.1;
 const CYLINDER_COLOR_b = 0.1;
-
 const CYLINDER_RADIUS = 0.1;
 
 function Cylinder(number_of_sides, center_x, center_y, floor, ceiling, radius) {

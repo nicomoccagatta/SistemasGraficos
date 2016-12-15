@@ -149,7 +149,6 @@ function TexturedSphere(latitude_bands, longitude_bands) {
         gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
-        //gl.drawElements(gl.LINE_LOOP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
         gl.drawElements(gl.TRIANGLE_STRIP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
         gl.uniform1f(shaderProgram.useNormalUniform, false);
         gl.uniform1f(shaderProgram.useReflectionUniform, 0.0);
