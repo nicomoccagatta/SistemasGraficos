@@ -59,7 +59,6 @@ function TexturedSphere(latitude_bands, longitude_bands) {
                 
                 var position = [x,y,z];
                 var normal = [-x,-y,-z];
-                    //normal = [x,y,z];
                 var tangent = [-y,x,0];
                 var texture = [0,0];
 

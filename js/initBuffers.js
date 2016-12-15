@@ -65,7 +65,7 @@ function initTexture() {
 	}
 	tierraTexture.image.src = "maps/tierra1.jpg";
 
-	// TIERRA TEXTURE
+	// TIERRA NORMAL TEXTURE
 	tierraNormalTexture = gl.createTexture();
 	tierraNormalTexture.image = new Image();
 	tierraNormalTexture.image.onload = function() {		
@@ -73,13 +73,21 @@ function initTexture() {
 	}
 	tierraNormalTexture.image.src = "maps/fieldNormalTexture.jpg";
 
-	// TIERRA TEXTURE
+	// PASTO TEXTURE
 	pastoTexture = gl.createTexture();
 	pastoTexture.image = new Image();
 	pastoTexture.image.onload = function() {		
 		handleLoadedTextureMosaic(pastoTexture);
 	}
 	pastoTexture.image.src = "maps/pasto1.jpg";
+
+	// PASTO NORMAL TEXTURE
+	pastoNormalTexture = gl.createTexture();
+	pastoNormalTexture.image = new Image();
+	pastoNormalTexture.image.onload = function() {		
+		handleLoadedTextureMosaic(pastoNormalTexture);
+	}
+	pastoNormalTexture.image.src = "maps/pasto-normal-map.jpg";
 	
 	// RUTA TEXTURE
 	rutaTexture = gl.createTexture();
